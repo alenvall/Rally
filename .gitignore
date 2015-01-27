@@ -1,3 +1,7 @@
+build/
+Rally.layout
+
+
 # Compiled Object files
 *.slo
 *.lo

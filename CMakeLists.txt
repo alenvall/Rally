@@ -110,17 +110,35 @@ set(SRCS
 	./src/TutorialApplication.cpp
 )
  
+if(NOT BULLET_LIBS)
+  set(BULLET_LIBS ${CMAKE_CURRENT_SOURCE_DIR}/../bullet/lib)
+endif()
+
+if(NOT BULLET_HEADERS)
+  set(BULLET_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/../bullet-src/src)
+endif()
+ 
 include_directories( ${OIS_INCLUDE_DIRS}
 	${OGRE_INCLUDE_DIRS}
 	${OGRE_SAMPLES_INCLUDEPATH}
 	${OGRE_Overlay_INCLUDE_DIRS}
+	${BULLET_HEADERS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
  
 add_executable(Rally WIN32 ${HDRS} ${SRCS})
  
 set_target_properties(Rally PROPERTIES DEBUG_POSTFIX _d)
  
-target_link_libraries(Rally ${OGRE_LIBRARIES} ${OIS_LIBRARIES} ${OGRE_Overlay_LIBRARIES})
+target_link_libraries(Rally
+    ${OGRE_LIBRARIES}
+    ${OIS_LIBRARIES}
+    ${OGRE_Overlay_LIBRARIES}
+    ${BULLET_LIBS}/libBulletDynamics.a
+    ${BULLET_LIBS}/libBulletCollision.a
+    ${BULLET_LIBS}/libLinearMath.a
+    )
+#    -lGL -lGLU)
  
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/bin)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/media)

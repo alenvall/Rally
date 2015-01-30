@@ -9,6 +9,7 @@ Rally/
 *.vcxproj.filters
 *.vcxproj.users
 *.suo
+*.opensdf
 
 # Compiled Object files
 *.slo

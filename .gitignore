@@ -10,6 +10,8 @@ Rally/
 *.vcxproj.users
 *.suo
 *.opensdf
+Debug/
+Release/
 
 # Compiled Object files
 *.slo

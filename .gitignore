@@ -1,6 +1,14 @@
 build/
 Rally.layout
 
+# Visual Studio 2012 specific
+Rally/
+*.sdf
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.users
+*.suo
 
 # Compiled Object files
 *.slo

@@ -100,15 +100,17 @@ if (NOT OGRE_BUILD_PLATFORM_IPHONE)
 	set(OGRE_LIBRARIES ${OGRE_LIBRARIES} ${Boost_LIBRARIES})
 endif()
  
-set(HDRS
-	./include/BaseApplication.h
-	./include/TutorialApplication.h
-)
- 
-set(SRCS
-	./src/BaseApplication.cpp
-	./src/TutorialApplication.cpp
-)
+set(HDRS )
+
+aux_source_directory(src SRCS)
+aux_source_directory(src/model SRCS)
+aux_source_directory(src/view SRCS)
+aux_source_directory(src/controller SRCS)
+
+
+#set(SRCS
+#	./src/main.cpp
+#)
  
 if(NOT BULLET_LIBS)
   set(BULLET_LIBS ${CMAKE_CURRENT_SOURCE_DIR}/../bullet/lib)
@@ -123,7 +125,7 @@ include_directories( ${OIS_INCLUDE_DIRS}
 	${OGRE_SAMPLES_INCLUDEPATH}
 	${OGRE_Overlay_INCLUDE_DIRS}
 	${BULLET_HEADERS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
  
 add_executable(Rally WIN32 ${HDRS} ${SRCS})
@@ -181,7 +183,7 @@ if(WIN32)
         # NOTE: for the 1.7.1 sdk the OIS dll is called OIS.dll instead of libOIS.dll
         # so you'll have to change that to make it work with 1.7.1
 	install(FILES ${OGRE_PLUGIN_DIR_REL}/OgreMain.dll
-		${OGRE_PLUGIN_DIR_REL}/RenderSystem_Direct3D9.dll
+#		${OGRE_PLUGIN_DIR_REL}/RenderSystem_Direct3D9.dll
 		${OGRE_PLUGIN_DIR_REL}/RenderSystem_GL.dll
 		${OGRE_PLUGIN_DIR_REL}/libOIS.dll
 		DESTINATION bin
@@ -189,7 +191,7 @@ if(WIN32)
 	)
  
 	install(FILES ${OGRE_PLUGIN_DIR_DBG}/OgreMain_d.dll
-		${OGRE_PLUGIN_DIR_DBG}/RenderSystem_Direct3D9_d.dll
+#		${OGRE_PLUGIN_DIR_DBG}/RenderSystem_Direct3D9_d.dll
 		${OGRE_PLUGIN_DIR_DBG}/RenderSystem_GL_d.dll
 		${OGRE_PLUGIN_DIR_DBG}/libOIS_d.dll
 		DESTINATION bin

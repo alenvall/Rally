@@ -33,11 +33,10 @@ bool SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 
     sceneManager = root->createSceneManager(Ogre::ST_GENERIC); // Todo: Research a good scene manager
 
-    Ogre::Viewport* viewport = this->initializeViewport();
 
-    Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
-
-    camera = this->addCamera(viewport, "MainCamera");
+    camera = this->addCamera("MainCamera");
+    Ogre::Viewport* viewport = this->addViewport(camera);
+    camera->setAspectRatio(Ogre::Real(viewport->getActualWidth()) / Ogre::Real(viewport->getActualHeight()));
 
     // TODO: Fix this to follow car...
     camera->setPosition(Ogre::Vector3(0, 0, 80));
@@ -52,17 +51,16 @@ bool SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     light->setPosition(20, 80, 50);
 }
 
-Ogre::Viewport* SceneView::initializeViewport() {
+Ogre::Viewport* SceneView::addViewport(Ogre::Camera* followedCamera) {
     Ogre::Viewport* viewport = renderWindow->addViewport(camera);
     viewport->setBackgroundColour(Ogre::ColourValue(0, 0, 0));
 
     return viewport;
 }
 
-Ogre::Camera* SceneView::addCamera(Ogre::Viewport* viewport, Ogre::String cameraName) {
+Ogre::Camera* SceneView::addCamera(Ogre::String cameraName) {
     // Setup camera to match viewport
     Ogre::Camera* camera = sceneManager->createCamera(cameraName);
-    camera->setAspectRatio(Ogre::Real(viewport->getActualWidth()) / Ogre::Real(viewport->getActualHeight()));
     camera->setNearClipDistance(5);
 
     return camera;

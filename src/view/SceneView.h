@@ -13,8 +13,8 @@ class SceneView {
         bool renderFrame();
 
     private:
-        Ogre::Viewport* initializeViewport();
-        Ogre::Camera* addCamera(Ogre::Viewport* viewport, Ogre::String cameraName);
+        Ogre::Viewport* addViewport(Ogre::Camera* followedCamera);
+        Ogre::Camera* addCamera(Ogre::String cameraName);
         void loadResourceConfig(Ogre::String resourceConfigPath);
 
         Ogre::Camera* camera;

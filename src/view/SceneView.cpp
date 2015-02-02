@@ -21,7 +21,7 @@ bool SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     Ogre::Root* root = new Ogre::Root(pluginConfigPath);
 
     this->loadResourceConfig(resourceConfigPath);
-    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+    // (The actual precaching is done below, once there is a render context)
 
     if(!root->restoreConfig() && !root->showConfigDialog()) {
         return false;
@@ -33,6 +33,8 @@ bool SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 
     sceneManager = root->createSceneManager(Ogre::ST_GENERIC); // Todo: Research a good scene manager
 
+    // This should be done after creating a scene manager, so that there is a render context (GL/D3D)
+    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
     camera = this->addCamera("MainCamera");
     Ogre::Viewport* viewport = this->addViewport(camera);

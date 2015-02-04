@@ -12,6 +12,7 @@ Rally/
 *.opensdf
 Debug/
 Release/
+ipch/
 
 # Compiled Object files
 *.slo

@@ -217,6 +217,8 @@ int main(int argc, char** argv) {
                 if(clientData.getTotalPackagesReceived() == 1) {
                     std::cout << "Client " << clientIdentifier.toString() << " connected." << std::endl;
                 }
+
+                clients[clientIdentifier] = clientData;
             }
 
             // Cleanup internal map from timed out clients.

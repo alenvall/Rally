@@ -186,6 +186,7 @@ int main(int argc, char** argv) {
     std::map<ClientIdentifier, ClientData> clients;
 
     try {
+        // Read port from stdin
         unsigned short serverPort = 1337;
         if(argc >= 2) {
             std::istringstream parser(argv[1]);
@@ -195,30 +196,57 @@ int main(int argc, char** argv) {
         }
 
         std::cout << "Starting Rally server..." << std::endl;
+
         socket = startServer(serverPort);
+
         std::cout << "Rally server started!" << std::endl;
 
         while(true) {
-            // Receive packet
-            char packet[MAX_PACKET_SIZE];
-            int packetSize;
-            ClientIdentifier clientIdentifier = receivePacket(socket, packet, &packetSize);
+            // Create a set of sockets we can block on (containing one socket), waiting for anything to happen.
+            fd_set sockets;
+            FD_ZERO(&sockets);
+            FD_SET(socket, &sockets);
 
-            // Process packet, possibly broadcast it
-            if(packetSize == 21 && packet[0] == 1) {
-                ClientData clientData = clients[clientIdentifier]; // Will create if not found
+#ifdef PLATFORM_WINDOWS
+            DWORD timeout = RECEIVE_TIMEOUT;
+#else
+            timeval timeout;
+            timeout.tv_sec = RECEIVE_TIMEOUT;
+            timeout.tv_usec = 0;
+#endif
+            ::setsockopt(socket, SOL_SOCKET, SO_RCVTIMEO, (char*)&timeout, sizeof(timeout));
 
-                unsigned short packetId = ntohs((packet[1]<<8) + packet[2]); // char -> short big endian -> short machine endian
-                if(clientData.processPositionPacket(packetId)) {
-                    // Getting here means the packet was relevant/fresh
-                    broadcastPacket(socket, packet, packetSize, clientIdentifier, clients);
+            // Some important notes:
+            // select() changes the waiting set, we need to restore it each time.
+            // Also, some platforms overwrite timeout! Therefore, we need to restore it too.
+            int receivedAnything = ::select(socket + 1, &sockets, NULL, NULL, &timeout);
+
+            if(receivedAnything > 0) {
+                // Receive packet
+                char packet[MAX_PACKET_SIZE];
+                int packetSize;
+                ClientIdentifier clientIdentifier = receivePacket(socket, packet, &packetSize);
+
+                // Process packet, possibly broadcast it
+                if(packetSize == 21 && packet[0] == 1) {
+                    ClientData clientData = clients[clientIdentifier]; // Will create if not found
+
+                    unsigned short packetId = ntohs((packet[1]<<8) + packet[2]); // char -> short big endian -> short machine endian
+                    if(clientData.processPositionPacket(packetId)) {
+                        // Getting here means the packet was relevant/fresh
+                        broadcastPacket(socket, packet, packetSize, clientIdentifier, clients);
+                    }
+
+                    if(clientData.getTotalPackagesReceived() == 1) {
+                        std::cout << "Client " << clientIdentifier.toString() << " connected." << std::endl;
+                    }
+
+                    clients[clientIdentifier] = clientData;
                 }
-
-                if(clientData.getTotalPackagesReceived() == 1) {
-                    std::cout << "Client " << clientIdentifier.toString() << " connected." << std::endl;
-                }
-
-                clients[clientIdentifier] = clientData;
+            } else if(receivedAnything < 0) {
+                throw std::runtime_error("Error waiting on/select()ing from socket.");
+            } else {
+                // receivedAnything == 0 means timeout, just continue to cleanup and then retry.
             }
 
             // Cleanup internal map from timed out clients.

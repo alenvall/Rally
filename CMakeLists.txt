@@ -2,23 +2,16 @@
 #-----------------------------------------------------------------------------
 #Filename:    CMakeLists.txt
 #-----------------------------------------------------------------------------
-#
-#This source file is part of the
-#   ___                 __    __ _ _    _ 
-#  /___\__ _ _ __ ___  / / /\ \ (_) | _(_)
-# //  // _` | '__/ _ \ \ \/  \/ / | |/ / |
-#/ \_// (_| | | |  __/  \  /\  /| |   <| |
-#\___/ \__, |_|  \___|   \/  \/ |_|_|\_\_|
-#      |___/                              
-#      Tutorial Framework
-#      http://www.ogre3d.org/tikiwiki/
-#-----------------------------------------------------------------------------
 #*/
 cmake_minimum_required(VERSION 2.6)
  
 project(Rally)
- 
+
 if(WIN32)
+	if(NOT DEFINED ENV{BOOST_LIBRARYDIR})
+		message(FATAL_ERROR "BOOST_LIBRARYDIR not set?")
+	endif()
+	
 	set(CMAKE_MODULE_PATH "$ENV{OGRE_HOME}/CMake/;${CMAKE_MODULE_PATH}")
 	set(OGRE_SAMPLES_INCLUDEPATH
 		$ENV{OGRE_HOME}/Samples/include
@@ -83,9 +76,9 @@ if (NOT OGRE_BUILD_PLATFORM_IPHONE)
 		# search names with "lib". This is the workaround.
 		set(CMAKE_FIND_LIBRARY_PREFIXES ${CMAKE_FIND_LIBRARY_PREFIXES} "")
 	endif ()
-	set(Boost_ADDITIONAL_VERSIONS "1.44" "1.44.0" "1.42" "1.42.0" "1.41.0" "1.41" "1.40.0" "1.40" "1.39.0" "1.39" "1.38.0" "1.38" "1.37.0" "1.37" )
+	set(Boost_ADDITIONAL_VERSIONS "1.44" "1.44.0" "1.42" "1.42.0" "1.41.0" "1.41" "1.40.0" "1.40" "1.39.0" "1.39" "1.38.0" "1.38" "1.37.0" "1.37" "1.55.0")
 	# Components that need linking (NB does not include header-only components like bind)
-	set(OGRE_BOOST_COMPONENTS thread date_time)
+	set(OGRE_BOOST_COMPONENTS thread date_time system)
 	find_package(Boost COMPONENTS ${OGRE_BOOST_COMPONENTS} QUIET)
 	if (NOT Boost_FOUND)
 		# Try again with the other type of libs
@@ -100,25 +93,57 @@ if (NOT OGRE_BUILD_PLATFORM_IPHONE)
 	set(OGRE_LIBRARIES ${OGRE_LIBRARIES} ${Boost_LIBRARIES})
 endif()
  
+if(WIN32)
+	if(NOT BULLET_LIBS)
+		set(BULLET_LIBS $ENV{BULLET_HOME}/lib)
+	endif()
+	if(NOT BULLET_HEADERS)
+		set(BULLET_HEADERS $ENV{BULLET_HOME}/src)
+	endif()
+else()
+	if(NOT BULLET_LIBS)
+		set(BULLET_LIBS ${CMAKE_CURRENT_SOURCE_DIR}/../bullet/lib)
+	endif()
+	if(NOT BULLET_HEADERS)
+		set(BULLET_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/../bullet-src/src)
+	endif()
+ endif()
+ 
 set(HDRS )
 
-aux_source_directory(src SRCS)
-aux_source_directory(src/model SRCS)
-aux_source_directory(src/view SRCS)
-aux_source_directory(src/controller SRCS)
+# Pretty confused about this stuff... seems to be working, eh.. /Erik
+if(WIN32 AND MSVC)
+	set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+	
+	file (GLOB GAME_SOURCES
+		src/*.h
+		src/*.cpp
+		src/controller/*.h
+		src/controller/*.cpp
+		src/model/*.h
+		src/model/*.cpp
+		src/view/*.h
+		src/view/*.cpp
+	)
 
+	source_group(main src/*)
+	source_group(controller src/controller/*)
+	source_group(model src/model/*)
+	source_group(view src/view/*)
+	add_executable(Rally WIN32 ${GAME_SOURCES})
+else()
+	aux_source_directory(src SRCS)
+	aux_source_directory(src/model SRCS)
+	aux_source_directory(src/view SRCS)
+	aux_source_directory(src/controller SRCS)
+	
+	add_executable(Rally WIN32 ${HDRS} ${SRCS})
+endif()
 
 #set(SRCS
 #	./src/main.cpp
 #)
- 
-if(NOT BULLET_LIBS)
-  set(BULLET_LIBS ${CMAKE_CURRENT_SOURCE_DIR}/../bullet/lib)
-endif()
 
-if(NOT BULLET_HEADERS)
-  set(BULLET_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/../bullet-src/src)
-endif()
  
 include_directories( ${OIS_INCLUDE_DIRS}
 	${OGRE_INCLUDE_DIRS}
@@ -128,33 +153,51 @@ include_directories( ${OIS_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
  
-add_executable(Rally WIN32 ${HDRS} ${SRCS})
  
 set_target_properties(Rally PROPERTIES DEBUG_POSTFIX _d)
+
+if(WIN32)
+	set_target_properties(Rally PROPERTIES LINK_FLAGS_DEBUG "/SUBSYSTEM:CONSOLE")
+	set_target_properties(Rally PROPERTIES COMPILE_DEFINITIONS_DEBUG "_CONSOLE")
+	set_target_properties(Rally PROPERTIES LINK_FLAGS_RELWITHDEBINFO "/SUBSYSTEM:CONSOLE")
+	set_target_properties(Rally PROPERTIES COMPILE_DEFINITIONS_RELWITHDEBINFO "_CONSOLE")
+	set_target_properties(Rally PROPERTIES LINK_FLAGS_RELEASE "/SUBSYSTEM:CONSOLE")
+	set_target_properties(Rally PROPERTIES LINK_FLAGS_MINSIZEREL "/SUBSYSTEM:CONSOLE")
+   
+	target_link_libraries(Rally
+		${OGRE_LIBRARIES}
+		${OIS_LIBRARIES}
+		${OGRE_Overlay_LIBRARIES}
+		${BULLET_LIBS}/BulletDynamics_vs2010_debug.lib
+		${BULLET_LIBS}/BulletCollision_vs2010_debug.lib
+		${BULLET_LIBS}/LinearMath_vs2010_debug.lib
+		)
+else() 
+	target_link_libraries(Rally
+		${OGRE_LIBRARIES}
+		${OIS_LIBRARIES}
+		${OGRE_Overlay_LIBRARIES}
+		${BULLET_LIBS}/libBulletDynamics.a
+		${BULLET_LIBS}/libBulletCollision.a
+		${BULLET_LIBS}/libLinearMath.a
+		)
+	#    -lGL -lGLU)
+ endif()
  
-target_link_libraries(Rally
-    ${OGRE_LIBRARIES}
-    ${OIS_LIBRARIES}
-    ${OGRE_Overlay_LIBRARIES}
-    ${BULLET_LIBS}/libBulletDynamics.a
-    ${BULLET_LIBS}/libBulletCollision.a
-    ${BULLET_LIBS}/libLinearMath.a
-    )
-#    -lGL -lGLU)
- 
-file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/bin)
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/bin/debug)
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/bin/release)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/media)
- 
+
 # post-build copy for win32
 if(WIN32 AND NOT MINGW)
 	add_custom_command( TARGET Rally PRE_BUILD
-		COMMAND if not exist .\\dist\\bin mkdir .\\dist\\bin )
+		COMMAND if not exist .\\dist\\bin\\"$(ConfigurationName)\" mkdir .\\dist\\bin\\"$(ConfigurationName)\" )
 	add_custom_command( TARGET Rally POST_BUILD
-		COMMAND copy \"$(TargetPath)\" .\\dist\\bin )
+		COMMAND copy \"$(TargetPath)\" .\\dist\\bin\\"$(ConfigurationName)\\" )
 endif(WIN32 AND NOT MINGW)
 
 if(MINGW OR UNIX)
-	set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/dist/bin)
+	set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/dist/bin/debug)
 endif(MINGW OR UNIX)
  
 if(WIN32)
@@ -170,46 +213,62 @@ if(WIN32)
  
 	install(FILES ${CMAKE_SOURCE_DIR}/dist/bin/plugins.cfg
 		${CMAKE_SOURCE_DIR}/dist/bin/resources.cfg
-		DESTINATION bin
+		DESTINATION bin/release
 		CONFIGURATIONS Release RelWithDebInfo
 	)
  
 	install(FILES ${CMAKE_SOURCE_DIR}/dist/bin/plugins_d.cfg
 		${CMAKE_SOURCE_DIR}/dist/bin/resources_d.cfg
-		DESTINATION bin
+		DESTINATION bin/debug
 		CONFIGURATIONS Debug
 	)
  
         # NOTE: for the 1.7.1 sdk the OIS dll is called OIS.dll instead of libOIS.dll
         # so you'll have to change that to make it work with 1.7.1
 	install(FILES ${OGRE_PLUGIN_DIR_REL}/OgreMain.dll
-#		${OGRE_PLUGIN_DIR_REL}/RenderSystem_Direct3D9.dll
+	#	${OGRE_PLUGIN_DIR_REL}/RenderSystem_Direct3D9.dll
+	#	${OGRE_PLUGIN_DIR_REL}/RenderSystem_Direct3D11.dll
 		${OGRE_PLUGIN_DIR_REL}/RenderSystem_GL.dll
-		${OGRE_PLUGIN_DIR_REL}/libOIS.dll
-		DESTINATION bin
+		${OGRE_PLUGIN_DIR_REL}/Plugin_ParticleFX.dll
+		${OGRE_PLUGIN_DIR_REL}/Plugin_BSPSceneManager.dll
+		${OGRE_PLUGIN_DIR_REL}/Plugin_PCZSceneManager.dll
+		${OGRE_PLUGIN_DIR_REL}/Plugin_OctreeZone.dll
+		${OGRE_PLUGIN_DIR_REL}/Plugin_OctreeSceneManager.dll
+		${OGRE_PLUGIN_DIR_REL}/OIS.dll
+		DESTINATION bin/release
 		CONFIGURATIONS Release RelWithDebInfo
 	)
  
 	install(FILES ${OGRE_PLUGIN_DIR_DBG}/OgreMain_d.dll
-#		${OGRE_PLUGIN_DIR_DBG}/RenderSystem_Direct3D9_d.dll
+	#	${OGRE_PLUGIN_DIR_DBG}/RenderSystem_Direct3D9_d.dll
+	#	${OGRE_PLUGIN_DIR_DBG}/RenderSystem_Direct3D11_d.dll
 		${OGRE_PLUGIN_DIR_DBG}/RenderSystem_GL_d.dll
-		${OGRE_PLUGIN_DIR_DBG}/libOIS_d.dll
-		DESTINATION bin
+		${OGRE_PLUGIN_DIR_DBG}/Plugin_ParticleFX_d.dll
+		${OGRE_PLUGIN_DIR_DBG}/Plugin_BSPSceneManager_d.dll
+		${OGRE_PLUGIN_DIR_DBG}/Plugin_PCZSceneManager_d.dll
+		${OGRE_PLUGIN_DIR_DBG}/Plugin_OctreeZone_d.dll
+		${OGRE_PLUGIN_DIR_DBG}/Plugin_OctreeSceneManager_d.dll
+		${OGRE_PLUGIN_DIR_DBG}/OIS_d.dll
+		DESTINATION bin/debug
 		CONFIGURATIONS Debug
 	)
  
    # as of sdk 1.7.2 we need to copy the boost dll's as well
    # because they're not linked statically (it worked with 1.7.1 though)
-   install(FILES ${Boost_DATE_TIME_LIBRARY_RELEASE}
-      ${Boost_THREAD_LIBRARY_RELEASE}
-      DESTINATION bin
-      CONFIGURATIONS Release RelWithDebInfo
+   install(FILES 
+	#	${Boost_DATE_TIME_LIBRARY_RELEASE}
+	#	${Boost_THREAD_LIBRARY_RELEASE}
+		${Boost_LIBRARY_DIR}/boost_system-vc110-mt-1_55.dll	
+		DESTINATION bin/release
+		CONFIGURATIONS Release RelWithDebInfo
    )
- 
-   install(FILES ${Boost_DATE_TIME_LIBRARY_DEBUG}
-      ${Boost_THREAD_LIBRARY_DEBUG}
-      DESTINATION bin
-      CONFIGURATIONS Debug
+
+   install(FILES
+	#	${Boost_DATE_TIME_LIBRARY_DEBUG}
+	#	${Boost_THREAD_LIBRARY_DEBUG}
+		${Boost_LIBRARY_DIR}/boost_system-vc110-mt-gd-1_55.dll
+		DESTINATION bin/debug
+		CONFIGURATIONS Debug
    )
 endif(WIN32)
 
@@ -226,7 +285,7 @@ if(UNIX)
  
 	install(FILES ${CMAKE_SOURCE_DIR}/dist/bin/plugins.cfg
 		${CMAKE_SOURCE_DIR}/dist/bin/resources.cfg
-		DESTINATION bin
+		DESTINATION bin/release
 		CONFIGURATIONS Release RelWithDebInfo Debug
 	)
  

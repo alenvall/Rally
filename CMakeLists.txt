@@ -154,6 +154,7 @@ include_directories( ${OIS_INCLUDE_DIRS}
 	${OGRE_INCLUDE_DIRS}
 	${OGRE_SAMPLES_INCLUDEPATH}
 	${OGRE_Overlay_INCLUDE_DIRS}
+	${OGRE_Terrain_INCLUDE_DIRS}
 	${BULLET_HEADERS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
@@ -173,6 +174,7 @@ if(WIN32)
 		${OGRE_LIBRARIES}
 		${OIS_LIBRARIES}
 		${OGRE_Overlay_LIBRARIES}
+		${OGRE_Terrain_LIBRARIES}
 		${BULLET_LIBS}/BulletDynamics_vs2010_debug.lib
 		${BULLET_LIBS}/BulletCollision_vs2010_debug.lib
 		${BULLET_LIBS}/LinearMath_vs2010_debug.lib
@@ -182,6 +184,7 @@ else()
 		${OGRE_LIBRARIES}
 		${OIS_LIBRARIES}
 		${OGRE_Overlay_LIBRARIES}
+		${OGRE_Terrain_LIBRARIES}
 		${BULLET_LIBS}/libBulletDynamics.a
 		${BULLET_LIBS}/libBulletCollision.a
 		${BULLET_LIBS}/libLinearMath.a
@@ -218,12 +221,14 @@ if(WIN32)
  
 	install(FILES ${CMAKE_SOURCE_DIR}/dist/bin/plugins.cfg
 		${CMAKE_SOURCE_DIR}/dist/bin/resources.cfg
+		${CMAKE_SOURCE_DIR}/dist/bin/ogre.cfg
 		DESTINATION bin/release
 		CONFIGURATIONS Release RelWithDebInfo
 	)
  
 	install(FILES ${CMAKE_SOURCE_DIR}/dist/bin/plugins_d.cfg
 		${CMAKE_SOURCE_DIR}/dist/bin/resources_d.cfg
+		${CMAKE_SOURCE_DIR}/dist/bin/ogre.cfg
 		DESTINATION bin/debug
 		CONFIGURATIONS Debug
 	)
@@ -231,6 +236,8 @@ if(WIN32)
         # NOTE: for the 1.7.1 sdk the OIS dll is called OIS.dll instead of libOIS.dll
         # so you'll have to change that to make it work with 1.7.1
 	install(FILES ${OGRE_PLUGIN_DIR_REL}/OgreMain.dll
+		${OGRE_PLUGIN_DIR_REL}/OgreTerrain.dll
+		${OGRE_PLUGIN_DIR_REL}/OgrePaging.dll
 	#	${OGRE_PLUGIN_DIR_REL}/RenderSystem_Direct3D9.dll
 	#	${OGRE_PLUGIN_DIR_REL}/RenderSystem_Direct3D11.dll
 		${OGRE_PLUGIN_DIR_REL}/RenderSystem_GL.dll
@@ -245,6 +252,8 @@ if(WIN32)
 	)
  
 	install(FILES ${OGRE_PLUGIN_DIR_DBG}/OgreMain_d.dll
+		${OGRE_PLUGIN_DIR_DBG}/OgreTerrain_d.dll
+		${OGRE_PLUGIN_DIR_DBG}/OgrePaging_d.dll
 	#	${OGRE_PLUGIN_DIR_DBG}/RenderSystem_Direct3D9_d.dll
 	#	${OGRE_PLUGIN_DIR_DBG}/RenderSystem_Direct3D11_d.dll
 		${OGRE_PLUGIN_DIR_DBG}/RenderSystem_GL_d.dll

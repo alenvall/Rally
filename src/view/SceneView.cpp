@@ -1,6 +1,5 @@
 #include "view/SceneView.h"
 
-//#include "LoaderTest.h"
 #include "DotSceneLoader.h"
 
 #include <OgreRoot.h>
@@ -34,7 +33,7 @@ bool SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
         true, // auto-create the render window now
         "Rally Sport Racing Game");
 
-    sceneManager = root->createSceneManager(Ogre::ST_GENERIC); // Todo: Research a good scene manager
+    sceneManager = root->createSceneManager("OctreeSceneManager"); // Todo: Research a good scene manager
 
     // This should be done after creating a scene manager, so that there is a render context (GL/D3D)
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
@@ -44,19 +43,21 @@ bool SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     camera->setAspectRatio(Ogre::Real(viewport->getActualWidth()) / Ogre::Real(viewport->getActualHeight()));
 
     // TODO: Fix this to follow car...
-    camera->setPosition(Ogre::Vector3(0, 0, 80));
-    camera->lookAt(Ogre::Vector3(0, 0, -300));
+    camera->setPosition(Ogre::Vector3(100, 100, -50));
+    camera->lookAt(Ogre::Vector3(0, 0, 0));
 
     // TODO: Implement separate scene loading (how do we do with lights?)
     Ogre::Entity* ogreHead = sceneManager->createEntity("Head", "ogrehead.mesh");
     Ogre::SceneNode* headNode = sceneManager->getRootSceneNode()->createChildSceneNode();
     //headNode->attachObject(ogreHead);
-    sceneManager->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
-    Ogre::Light* light = sceneManager->createLight("MainLight");
-    light->setPosition(20, 80, 50);
+   sceneManager->setAmbientLight(Ogre::ColourValue(1, 1, 1));
+	Ogre::Light* light = sceneManager->createLight("MainLight");
+	light->setPosition(20, 80, 50);
 
 	DotSceneLoader loader;
-	loader.parseDotScene("world.scene", "General", sceneManager);
+	loader.parseDotScene("chalmers1d.scene", "General", sceneManager, headNode);
+
+	//headNode->scale(0.5,0.5,0.5);
 }
 
 Ogre::Viewport* SceneView::addViewport(Ogre::Camera* followedCamera) {

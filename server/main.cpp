@@ -54,7 +54,7 @@ struct ClientIdentifier {
         std::stringstream out;
 
         in_addr ip;
-        ip.s_addr = address;
+        ip.s_addr = htonl(address);
         out << inet_ntoa(ip);// "1.2.3.4"
 
         out << ":";
@@ -164,7 +164,7 @@ ClientIdentifier receivePacket(int socket, char* packet, int* packetSize) {
 
     ClientIdentifier clientIdentifier();
 
-    return ClientIdentifier(ntohl(address.sin_addr.s_addr), htons(address.sin_port));
+    return ClientIdentifier(ntohl(address.sin_addr.s_addr), ntohs(address.sin_port));
 }
 
 void broadcastPacket(int socket, char* packet, int packetSize, ClientIdentifier sendingClientIdentifier, const std::map<ClientIdentifier, ClientData> & clients) {
@@ -235,7 +235,7 @@ int main(int argc, char** argv) {
                 char packet[MAX_PACKET_SIZE];
                 int packetSize;
                 ClientIdentifier clientIdentifier = receivePacket(socket, packet, &packetSize);
-std::cout << "Client sent." << packetSize << std::endl;
+
                 // Process packet, possibly broadcast it
                 if(packetSize == 40 && packet[0] == 1) {
                     ClientData clientData = clients[clientIdentifier]; // Will create if not found

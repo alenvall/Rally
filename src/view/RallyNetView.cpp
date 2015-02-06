@@ -94,7 +94,7 @@ namespace Rally { namespace View {
         address.sin_family = AF_INET;
         // TODO: use getaddrinfo() if we need more flexibility in the future
         address.sin_addr.s_addr = inet_addr(serverAddress.c_str());
-        address.sin_port = htons(0); // 0 means any port
+        address.sin_port = htons(serverPort);
 
         // Note that connect assigns the local server:port choosen by the OS to this socket!
         if(::connect(socket, (const sockaddr*) & address, sizeof(sockaddr_in)) < 0) {
@@ -151,7 +151,7 @@ namespace Rally { namespace View {
         char packet[MAX_PACKET_SIZE];
         while(true) {
             int receivedBytes = ::recv(socket, packet, MAX_PACKET_SIZE, 0x00000000);
-            if(receivedBytes == 40 && packet[0] == 1) { // complete packetType == 1
+            if(receivedBytes == 42 && packet[0] == 1) { // complete packetType == 1
                 unsigned short sequenceId;
                 memcpy(&sequenceId, packet+1, 2);
                 sequenceId = ntohs(sequenceId);
@@ -185,9 +185,9 @@ namespace Rally { namespace View {
 
                 listener.carUpdated(
                     playerId,
-                    packetToVector3(packet + 8 + 0*4*3),
-                    packetToVector3(packet + 8 + 1*4*3),
-                    packetToVector3(packet + 8 + 2*4*3));
+                    packetToVector3(packet + 6 + 0*4*3),
+                    packetToVector3(packet + 6 + 1*4*3),
+                    packetToVector3(packet + 6 + 2*4*3));
             }
         }
     }

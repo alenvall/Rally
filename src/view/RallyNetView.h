@@ -8,7 +8,8 @@ namespace Rally { namespace View {
 
     class RallyNetView_NetworkCarListener {
         public:
-            virtual ~RallyNetView_NetworkCarListener();
+            virtual ~RallyNetView_NetworkCarListener() {
+            }
 
             /** Called when a car is added or updated. */
             virtual void carUpdated(unsigned short carId,
@@ -21,7 +22,7 @@ namespace Rally { namespace View {
     };
 
     struct RallyNetView_InternalClient {
-        InternalClient() :
+        RallyNetView_InternalClient() :
             lastPacketArrival(0),
             lastPositionSequenceId(0) {
         }
@@ -32,9 +33,9 @@ namespace Rally { namespace View {
 
     class RallyNetView {
         public:
-            RallyNetView(const RallyNetView_NetworkCarListener & listener);
+            RallyNetView(RallyNetView_NetworkCarListener & listener);
             virtual ~RallyNetView();
-            bool initialize(const std::string & server, unsigned short port);
+            void initialize(const std::string & server, unsigned short port, Model::Car & playerCar);
 
             void update();
 
@@ -43,6 +44,10 @@ namespace Rally { namespace View {
             unsigned short lastSentPacketId;
             RallyNetView_NetworkCarListener& listener;
             std::map<unsigned short, RallyNetView_InternalClient> clients;
+            Model::Car playerCar;
+
+            void updatePutCar();
+            void updateGetCars();
     };
 
 } }

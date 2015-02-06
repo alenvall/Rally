@@ -1,9 +1,11 @@
 #ifndef RALLY_MODEL_CAR_H_
 #define RALLY_MODEL_CAR_H_
 
+#include <OgreVector3.h>
+
 // Todo: Move this to shared file.
 namespace Rally {
-    typedef Vector3 Ogre::Vector3;
+    typedef Ogre::Vector3 Vector3;
 }
 
 namespace Rally { namespace Model {

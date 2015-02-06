@@ -106,7 +106,7 @@ namespace Rally { namespace View {
         bool nonBlockSucceded = false;
 #ifdef PLATFORM_WINDOWS
         DWORD nonBlocking = 1;
-        nonBlockSucceded = (ioctlsocket(socket, FIONBIO, &nonBlocking) != 0);
+        nonBlockSucceded = (ioctlsocket(socket, FIONBIO, &nonBlocking) == 0);
 #else
         int flags = fcntl(socket, F_GETFL, 0);
         flags &= ~O_NONBLOCK;

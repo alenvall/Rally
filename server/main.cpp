@@ -77,7 +77,8 @@ class ClientData {
         ClientData() :
             totalPackagesReceived(0),
             lastPositionPacketId(0),
-            lastPacketArrival(0) {
+            lastPacketArrival(0),
+            playerId(NEXT_AVAILABLE_PLAYER_ID++) {
         }
 
         bool processPositionPacket(short packetId) {
@@ -108,12 +109,20 @@ class ClientData {
             return totalPackagesReceived;
         }
 
+        unsigned short getPlayerId() {
+            return playerId;
+        }
+
     private:
         bool newClient;
         unsigned int totalPackagesReceived;
         unsigned int lastPositionPacketId;
         time_t lastPacketArrival;
+        unsigned short playerId;
+        static unsigned short NEXT_AVAILABLE_PLAYER_ID;
 };
+
+unsigned short ClientData::NEXT_AVAILABLE_PLAYER_ID = 0;
 
 int startServer(unsigned short serverPort) {
 #ifdef PLATFORM_WINDOWS
@@ -226,14 +235,21 @@ int main(int argc, char** argv) {
                 char packet[MAX_PACKET_SIZE];
                 int packetSize;
                 ClientIdentifier clientIdentifier = receivePacket(socket, packet, &packetSize);
-
+std::cout << "Client sent." << packetSize << std::endl;
                 // Process packet, possibly broadcast it
-                if(packetSize == 21 && packet[0] == 1) {
+                if(packetSize == 40 && packet[0] == 1) {
                     ClientData clientData = clients[clientIdentifier]; // Will create if not found
 
                     unsigned short packetId = ntohs((packet[1]<<8) + packet[2]); // char -> short big endian -> short machine endian
                     if(clientData.processPositionPacket(packetId)) {
                         // Getting here means the packet was relevant/fresh
+
+                        // We need to splice in the sender's playerId (it's server based)
+                        unsigned short playerId = htons(clientData.getPlayerId());
+                        packetSize += 2;
+                        memmove(packet + 6, packet + 4, 36);
+                        memcpy(packet + 4, &playerId, 2);
+
                         broadcastPacket(socket, packet, packetSize, clientIdentifier, clients);
                     }
 

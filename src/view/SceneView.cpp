@@ -1,5 +1,8 @@
 #include "view/SceneView.h"
 
+//#include "LoaderTest.h"
+#include "DotSceneLoader.h"
+
 #include <OgreRoot.h>
 #include <OgreViewport.h>
 #include <OgreConfigFile.h>
@@ -47,10 +50,13 @@ bool SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     // TODO: Implement separate scene loading (how do we do with lights?)
     Ogre::Entity* ogreHead = sceneManager->createEntity("Head", "ogrehead.mesh");
     Ogre::SceneNode* headNode = sceneManager->getRootSceneNode()->createChildSceneNode();
-    headNode->attachObject(ogreHead);
+    //headNode->attachObject(ogreHead);
     sceneManager->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
     Ogre::Light* light = sceneManager->createLight("MainLight");
     light->setPosition(20, 80, 50);
+
+	DotSceneLoader loader;
+	loader.parseDotScene("world.scene", "General", sceneManager);
 }
 
 Ogre::Viewport* SceneView::addViewport(Ogre::Camera* followedCamera) {

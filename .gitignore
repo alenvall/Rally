@@ -1,5 +1,6 @@
 build/
 Rally.layout
+*.db
 
 # Visual Studio 2012 specific
 Rally/

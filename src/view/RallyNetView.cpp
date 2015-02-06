@@ -125,7 +125,7 @@ namespace Rally { namespace View {
     }
 
     void RallyNetView::updatePutCar() {
-        char packet[36];
+        char packet[40];
 
         packet[0] = 1; // Type = 1
 

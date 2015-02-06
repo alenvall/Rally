@@ -9,7 +9,7 @@ class SceneView {
     public:
         SceneView();
         virtual ~SceneView();
-        bool initialize(std::string resourceConfigPath, std::string pluginConfigPath);
+        void initialize(std::string resourceConfigPath, std::string pluginConfigPath);
         bool renderFrame();
 
     private:

@@ -1,5 +1,5 @@
-#include "controller/MainController.h"
-#include "model/Car.h"
+#include "MainController.h"
+#include "Car.h"
 
 namespace Rally { namespace Controller {
     MainController::MainController() :

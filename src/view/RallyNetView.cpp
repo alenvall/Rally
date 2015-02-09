@@ -2,7 +2,7 @@
 #define PLATFORM_WINDOWS
 #endif
 
-#include "view/RallyNetView.h"
+#include "RallyNetView.h"
 
 #if PLATFORM_WINDOWS
 #include <WinSock2.h>

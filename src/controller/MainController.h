@@ -2,8 +2,8 @@
 #define RALLY_CONTROLLER_MAINCONTROLLER_H_
 
 #include <string>
-#include "view/SceneView.h"
-#include "view/RallyNetView.h"
+#include "SceneView.h"
+#include "RallyNetView.h"
 
 namespace Rally { namespace Controller {
     class MainController_RemoteCarListener : public Rally::View::RallyNetView_NetworkCarListener {

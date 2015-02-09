@@ -1,7 +1,7 @@
 #ifndef RALLY_VIEW_RALLYNETVIEW_H_
 #define RALLY_VIEW_RALLYNETVIEW_H_
 
-#include "model/Car.h"
+#include "Car.h"
 #include <map>
 
 namespace Rally { namespace View {

@@ -1,4 +1,4 @@
-#include "view/SceneView.h"
+#include "SceneView.h"
 
 #include <OgreRoot.h>
 #include <OgreViewport.h>

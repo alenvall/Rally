@@ -1,4 +1,4 @@
-#include "model/Car.h"
+#include "Car.h"
 
 namespace Rally { namespace Model {
 

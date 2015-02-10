@@ -4,7 +4,7 @@
 
 #include "view/RallyNetView.h"
 
-#if PLATFORM_WINDOWS
+#ifdef PLATFORM_WINDOWS
 #include <WinSock2.h>
 //#include <fcntl.h>
 #pragma comment(lib, "wsock32.lib")

@@ -8,6 +8,9 @@
 #include <OgreEntity.h>
 #include <OgreWindowEventUtilities.h>
 
+#include <btBulletDynamicsCommon.h>
+#include <../Extras/Serialize/BulletWorldImporter/btBulletWorldImporter.h>
+
 SceneView::SceneView()
     : camera(NULL),
     sceneManager(NULL),
@@ -43,21 +46,46 @@ bool SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     camera->setAspectRatio(Ogre::Real(viewport->getActualWidth()) / Ogre::Real(viewport->getActualHeight()));
 
     // TODO: Fix this to follow car...
-    camera->setPosition(Ogre::Vector3(100, 100, -50));
+    camera->setPosition(Ogre::Vector3(0, 100, -250));
     camera->lookAt(Ogre::Vector3(0, 0, 0));
 
     // TODO: Implement separate scene loading (how do we do with lights?)
-    Ogre::Entity* ogreHead = sceneManager->createEntity("Head", "ogrehead.mesh");
-    Ogre::SceneNode* headNode = sceneManager->getRootSceneNode()->createChildSceneNode();
+    //Ogre::Entity* ogreHead = sceneManager->createEntity("Head", "ogrehead.mesh");
+    Ogre::SceneNode* sceneNode = sceneManager->getRootSceneNode()->createChildSceneNode();
     //headNode->attachObject(ogreHead);
-   sceneManager->setAmbientLight(Ogre::ColourValue(1, 1, 1));
+	sceneManager->setAmbientLight(Ogre::ColourValue(1, 1, 1));
 	Ogre::Light* light = sceneManager->createLight("MainLight");
 	light->setPosition(20, 80, 50);
 
+	// Load the scene.
 	DotSceneLoader loader;
-	loader.parseDotScene("chalmers1d.scene", "General", sceneManager, headNode);
+	loader.parseDotScene("chalmers1d.scene", "General", sceneManager, sceneNode);
 
-	//headNode->scale(0.5,0.5,0.5);
+	//*******BULLET*******//
+	btBroadphaseInterface* broadphase = new btDbvtBroadphase();
+
+    // Collison config and dispatcher
+    btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
+    btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
+
+    // The physics solver
+    btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
+
+    // The world.
+    btDiscreteDynamicsWorld* dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
+
+	// Load .bullet
+	btBulletWorldImporter* fileLoader = new btBulletWorldImporter(dynamicsWorld);
+
+	//optionally enable the verbose mode to provide debugging information during file loading (a lot of data is generated, so this option is very slow)
+	//fileLoader->setVerboseMode(true);
+
+	fileLoader->loadFile("world.bullet");
+	
+	// Output the amount of loaded rigid bodies
+	int body_count = fileLoader->getNumRigidBodies();
+	Ogre::LogManager::getSingleton().logMessage("Number of rigid bodies: " + std::to_string(body_count));
+
 }
 
 Ogre::Viewport* SceneView::addViewport(Ogre::Camera* followedCamera) {

@@ -163,10 +163,10 @@
   </nodes>
   <externals >
     <item type="material" >
-      <file name="materials/edge_color000255.material" />
+      <file name="edge_color000255.material" />
     </item>
     <item type="material" >
-      <file name="materials/Material.004.material" />
+      <file name="Material.004.material" />
     </item>
   </externals>
   <environment >

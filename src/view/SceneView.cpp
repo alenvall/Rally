@@ -11,6 +11,8 @@
 #include <btBulletDynamicsCommon.h>
 #include <../Extras/Serialize/BulletWorldImporter/btBulletWorldImporter.h>
 
+#include <sstream>
+
 SceneView::SceneView()
     : camera(NULL),
     sceneManager(NULL),
@@ -81,10 +83,12 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 	//fileLoader->setVerboseMode(true);
 
 	fileLoader->loadFile("world.bullet");
-	
+
 	// Output the amount of loaded rigid bodies
-	int body_count = fileLoader->getNumRigidBodies();
-	Ogre::LogManager::getSingleton().logMessage("Number of rigid bodies: " + std::to_string(body_count));
+	int bodyCount = fileLoader->getNumRigidBodies();
+	std::ostringstream bodyCountString;
+	bodyCountString << bodyCount;
+	Ogre::LogManager::getSingleton().logMessage("Number of rigid bodies: " + bodyCountString.str());
 
 }
 

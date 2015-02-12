@@ -178,6 +178,8 @@ if(WIN32)
 		${BULLET_LIBS}/BulletDynamics_vs2010_debug.lib
 		${BULLET_LIBS}/BulletCollision_vs2010_debug.lib
 		${BULLET_LIBS}/LinearMath_vs2010_debug.lib
+		${BULLET_LIBS}/../Extras/lib/BulletWorldImporter_vs2010_debug.lib
+		${BULLET_LIBS}/../Extras/lib/BulletFileLoader_vs2010_debug.lib
 		)
 else() 
 	target_link_libraries(Rally

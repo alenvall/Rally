@@ -1,6 +1,7 @@
 #include "controller/MainController.h"
 
 #include <OgreException.h>
+#include <stdexcept>
 
 /*
 
@@ -86,14 +87,15 @@ int main(int argc, char* argv[]){
     std::string pluginConfigPath = "plugins.cfg";
 #endif
 
-    MainController mainController;
+    Rally::Controller::MainController mainController;
 
     try {
-        if(mainController.initialize(resourceConfigPath, pluginConfigPath)) {
-            mainController.start();
-        }
+        mainController.initialize(resourceConfigPath, pluginConfigPath);
+        mainController.start();
     } catch(Ogre::Exception& e) {
         std::cerr << "Ogre exception: " << e.getFullDescription().c_str() << std::endl;
+    } catch(std::exception& error) {
+        std::cerr << "Exception: " << error.what() << std::endl;
     }
 
     return 0;

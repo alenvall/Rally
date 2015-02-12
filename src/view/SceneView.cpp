@@ -22,14 +22,14 @@ SceneView::~SceneView(void) {
     delete root;
 }
 
-bool SceneView::initialize(std::string resourceConfigPath, std::string pluginConfigPath) {
+void SceneView::initialize(std::string resourceConfigPath, std::string pluginConfigPath) {
     Ogre::Root* root = new Ogre::Root(pluginConfigPath);
 
     this->loadResourceConfig(resourceConfigPath);
     // (The actual precaching is done below, once there is a render context)
 
     if(!root->restoreConfig() && !root->showConfigDialog()) {
-        return false;
+        throw std::runtime_error("Could neither restore Ogre config, nor read it from the user.");
     }
 
     renderWindow = root->initialise(

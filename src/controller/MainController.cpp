@@ -21,7 +21,7 @@ namespace Rally { namespace Controller {
 
     void MainController::start() {
         while(true) {
-            netView.update();
+         //   netView.update();
             // TODO: Drive the models here...
 
             // TODO: Investigate in which order we'll do things (buffer up graphics commands, do some CPU, flip render buffers)

@@ -12,9 +12,9 @@ namespace Rally { namespace Controller {
     }
 
     void MainController::initialize(std::string resourceConfigPath, std::string pluginConfigPath) {
-        sceneView.initialize(resourceConfigPath, pluginConfigPath);
+        world.initialize("world.bullet");
 
-        playerCar = Model::Car();
+        sceneView.initialize(resourceConfigPath, pluginConfigPath);
 
         netView.initialize(std::string("127.0.0.1"), 1337, playerCar);
     }
@@ -23,6 +23,7 @@ namespace Rally { namespace Controller {
         while(true) {
          //   netView.update();
             // TODO: Drive the models here...
+            world.update();
 
             // TODO: Investigate in which order we'll do things (buffer up graphics commands, do some CPU, flip render buffers)
             if(!sceneView.renderFrame()) {

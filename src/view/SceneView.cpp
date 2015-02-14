@@ -8,9 +8,6 @@
 #include <OgreEntity.h>
 #include <OgreWindowEventUtilities.h>
 
-#include <btBulletDynamicsCommon.h>
-#include <../Extras/Serialize/BulletWorldImporter/btBulletWorldImporter.h>
-
 #include <sstream>
 
 SceneView::SceneView()
@@ -62,34 +59,6 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 	// Load the scene.
 	DotSceneLoader loader;
 	loader.parseDotScene("chalmers1d.scene", "General", sceneManager, sceneNode);
-
-	//*******BULLET*******//
-	btBroadphaseInterface* broadphase = new btDbvtBroadphase();
-
-    // Collison config and dispatcher
-    btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
-    btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
-
-    // The physics solver
-    btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
-
-    // The world.
-    btDiscreteDynamicsWorld* dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
-
-	// Load .bullet
-	btBulletWorldImporter* fileLoader = new btBulletWorldImporter(dynamicsWorld);
-
-	//optionally enable the verbose mode to provide debugging information during file loading (a lot of data is generated, so this option is very slow)
-	//fileLoader->setVerboseMode(true);
-
-	fileLoader->loadFile("world.bullet");
-
-	// Output the amount of loaded rigid bodies
-	int bodyCount = fileLoader->getNumRigidBodies();
-	std::ostringstream bodyCountString;
-	bodyCountString << bodyCount;
-	Ogre::LogManager::getSingleton().logMessage("Number of rigid bodies: " + bodyCountString.str());
-
 }
 
 Ogre::Viewport* SceneView::addViewport(Ogre::Camera* followedCamera) {

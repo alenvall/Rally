@@ -4,6 +4,7 @@
 #include <string>
 #include "view/SceneView.h"
 #include "view/RallyNetView.h"
+#include "model/World.h"
 
 namespace Rally { namespace Controller {
     class MainController_RemoteCarListener : public Rally::View::RallyNetView_NetworkCarListener {
@@ -29,6 +30,7 @@ namespace Rally { namespace Controller {
             SceneView sceneView;
             Rally::View::RallyNetView netView;
             MainController_RemoteCarListener remoteCarListener;
+            Rally::Model::World world;
             Rally::Model::Car playerCar;
     };
 } }

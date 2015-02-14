@@ -41,6 +41,6 @@ namespace Rally { namespace Model {
     }
 
     void PhysicsWorld::update(float deltaTime) {
-        dynamicsWorld->stepSimulation(deltaTime, 12, 1.0/60.0);
+        dynamicsWorld->stepSimulation(deltaTime, 12, 1.0f/60.0f);
     }
 } }

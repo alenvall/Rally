@@ -1,6 +1,4 @@
-#if _WIN32
-#define PLATFORM_WINDOWS
-#endif
+#include "Rally.h"
 
 #include "view/RallyNetView.h"
 

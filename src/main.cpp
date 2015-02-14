@@ -1,5 +1,6 @@
 #include "controller/MainController.h"
 
+#include "Rally.h"
 #include <OgreException.h>
 #include <stdexcept>
 
@@ -68,11 +69,6 @@
         delete dispatcher;
         delete broadphase;
 */
-
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-#define WIN32_LEAN_AND_MEAN
-#include "windows.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {

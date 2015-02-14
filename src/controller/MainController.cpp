@@ -1,5 +1,6 @@
 #include "controller/MainController.h"
 #include "model/Car.h"
+#include "util/Timer.h"
 
 namespace Rally { namespace Controller {
     MainController::MainController() :
@@ -20,10 +21,27 @@ namespace Rally { namespace Controller {
     }
 
     void MainController::start() {
+        Rally::Util::Timer frameTimer;
+
+        frameTimer.reset();
         while(true) {
-         //   netView.update();
-            // TODO: Drive the models here...
-            world.update();
+            float deltaTime = frameTimer.getElapsedSeconds();
+
+            // Allow max 1000 FPS for precision/stability reasons.
+            // This is hopefully capped by vsync or atleast computation below.
+            if(deltaTime < 0.001f) {
+                continue;
+            }
+
+            // Don't forget to do this AFTER the epsilon check above
+            // (avoiding an infinite loop), but before anything else.
+            frameTimer.reset();
+
+            // ADD ANYTHING THAT'S NOT FRAME-TIMING CODE BELOW THIS LINE!
+
+            // netView.update();
+
+            world.update(deltaTime);
 
             // TODO: Investigate in which order we'll do things (buffer up graphics commands, do some CPU, flip render buffers)
             if(!sceneView.renderFrame()) {

@@ -15,7 +15,7 @@ namespace Rally { namespace Model {
         physicsWorld.initialize(bulletFile);
     }
 
-    void World::update() {
-        physicsWorld.update(1.0/100.0);
+    void World::update(float deltaTime) {
+        physicsWorld.update(deltaTime);
     }
 } }

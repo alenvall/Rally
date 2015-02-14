@@ -129,6 +129,8 @@ if(WIN32 AND MSVC)
 		src/model/*.cpp
 		src/view/*.h
 		src/view/*.cpp
+		src/util/*.h
+		src/util/*.cpp
 	)
 
 	source_group(main src/*)
@@ -141,6 +143,7 @@ else()
 	aux_source_directory(src/model SRCS)
 	aux_source_directory(src/view SRCS)
 	aux_source_directory(src/controller SRCS)
+	aux_source_directory(src/util SRCS)
 	
 	add_executable(Rally WIN32 ${HDRS} ${SRCS})
 endif()

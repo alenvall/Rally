@@ -10,7 +10,7 @@ namespace Rally { namespace Model {
             World();
             virtual ~World();
             void initialize(const std::string & bulletFile);
-            void update();
+            void update(float deltaTime);
 
         private:
             Rally::Model::PhysicsWorld physicsWorld;

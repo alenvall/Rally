@@ -13,7 +13,7 @@ namespace Rally { namespace Controller {
     }
 
     void MainController::initialize(std::string resourceConfigPath, std::string pluginConfigPath) {
-        world.initialize("world.bullet");
+        world.initialize("../../media/world.bullet");
 
         sceneView.initialize(resourceConfigPath, pluginConfigPath);
 

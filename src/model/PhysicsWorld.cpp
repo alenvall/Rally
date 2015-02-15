@@ -3,6 +3,7 @@
 #include <btBulletDynamicsCommon.h>
 #include <../Extras/Serialize/BulletWorldImporter/btBulletWorldImporter.h>
 
+#include <stdexcept>
 #include <sstream>
 #include <iostream>
 
@@ -35,9 +36,11 @@ namespace Rally { namespace Model {
         //fileLoader->setVerboseMode(true);
         fileLoader->loadFile(bulletFile.c_str());
 
-        // Debug: Output the amount of loaded rigid bodies
         int bodyCount = fileLoader->getNumRigidBodies();
-        std::cout << "Number of rigid bodied: " << bodyCount << std::endl;
+        if(bodyCount <= 0) {
+            throw std::runtime_error("Failed to load bullet world definition file.");
+        }
+        // std::cout << "Number of rigid bodied: " << bodyCount << std::endl;
     }
 
     void PhysicsWorld::update(float deltaTime) {

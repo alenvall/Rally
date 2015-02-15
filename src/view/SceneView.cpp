@@ -10,13 +10,14 @@
 
 #include <sstream>
 
-SceneView::SceneView()
-    : camera(NULL),
-    sceneManager(NULL),
-    renderWindow(NULL) {
+SceneView::SceneView(Rally::Model::World& world) :
+        world(world),
+        camera(NULL),
+        sceneManager(NULL),
+        renderWindow(NULL) {
 }
 
-SceneView::~SceneView(void) {
+SceneView::~SceneView() {
     Ogre::Root* root = Ogre::Root::getSingletonPtr();
     delete root;
 }
@@ -59,6 +60,11 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 	// Load the scene.
 	DotSceneLoader loader;
 	loader.parseDotScene("chalmers1d.scene", "General", sceneManager, sceneNode);
+
+	// Todo: Move to appropriate view
+	Ogre::Entity* playerCarEntity = sceneManager->createEntity("PlayerCar", "ogrehead.mesh");
+	playerCarNode = sceneManager->getRootSceneNode()->createChildSceneNode();
+	playerCarNode->attachObject(playerCarEntity);
 }
 
 Ogre::Viewport* SceneView::addViewport(Ogre::Camera* followedCamera) {
@@ -105,10 +111,19 @@ bool SceneView::renderFrame() {
     if(renderWindow->isClosed())  {
         return false;
     } else {
+        updatePlayerCar();
+
         Ogre::Root& root = Ogre::Root::getSingleton();
         if(!root.renderOneFrame()) {
             return false;
         }
     }
     return true;
+}
+
+void SceneView::updatePlayerCar() {
+    // Todo: Move to separate view
+    Rally::Model::Car& playerCar = world.getPlayerCar();
+    playerCarNode->setPosition(playerCar.getPosition());
+    playerCarNode->setDirection(playerCar.getOrientation());
 }

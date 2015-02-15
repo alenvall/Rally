@@ -2,6 +2,7 @@
 #define RALLY_MODEL_WORLD_H_
 
 #include "model/PhysicsWorld.h"
+#include "model/Car.h"
 
 namespace Rally { namespace Model {
 
@@ -16,8 +17,13 @@ namespace Rally { namespace Model {
                 return physicsWorld;
             }
 
+            Rally::Model::Car& getPlayerCar() {
+                return playerCar;
+            }
+
         private:
             Rally::Model::PhysicsWorld physicsWorld;
+            Rally::Model::Car playerCar;
     };
 
 } }

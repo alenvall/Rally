@@ -27,8 +27,8 @@ namespace Rally { namespace Model {
         //  - Above the car and it confuses the body with the ground => weird behavior.
         //    (The official demo does this though... Maybe the suspension is included?)
         // Values below represent the right wheel (mirrored in the yz-plane for left).
-        const btVector3 FRONT_WHEEL_DISTANCE(CAR_DIMENSIONS.x()/2 - 0.1f, 1.2f, CAR_DIMENSIONS.z()/2 - 0.3f - WHEEL_RADIUS);
-        const btVector3 BACK_WHEEL_DISTANCE(CAR_DIMENSIONS.x()/2 - 0.1f, 1.2f, CAR_DIMENSIONS.z()/2 - 0.1f - WHEEL_RADIUS);
+        const btVector3 FRONT_WHEEL_DISTANCE(CAR_DIMENSIONS.x()/2 - 0.1f, 0.f, CAR_DIMENSIONS.z()/2 - 0.3f - WHEEL_RADIUS);
+        const btVector3 BACK_WHEEL_DISTANCE(CAR_DIMENSIONS.x()/2 - 0.1f, 0.f, CAR_DIMENSIONS.z()/2 - 0.1f - WHEEL_RADIUS);
     }
 
     PhysicsCar::PhysicsCar() :

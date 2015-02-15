@@ -4,15 +4,15 @@
 
 namespace Rally { namespace Model {
 
-    Car::Car(Rally::Model::World& world) :
-            world(world) {
+    Car::Car(Rally::Model::PhysicsWorld& physicsWorld) :
+            physicsWorld(physicsWorld) {
     }
 
     Car::~Car() {
     }
 
     void Car::attachToWorld() {
-        physicsCar.attachTo(world.getPhysicsWorld());
+        physicsCar.attachTo(physicsWorld);
     }
 
     Rally::Vector3 Car::getPosition() const {

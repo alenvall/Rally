@@ -4,20 +4,16 @@
 
 namespace Rally { namespace Controller {
     MainController::MainController() :
-            sceneView(SceneView()),
+            sceneView(SceneView(world)),
             remoteCarListener(MainController_RemoteCarListener()),
             netView(View::RallyNetView(remoteCarListener)) {
     }
 
     MainController::~MainController() {
-        // delete playerCar; or so
     }
 
     void MainController::initialize(std::string resourceConfigPath, std::string pluginConfigPath) {
         world.initialize("world.bullet");
-
-        playerCar = new Rally::Model::Car(world); // Todo: Move car creation to chooseCar(Car) method?
-        playerCar->attachToWorld();
 
         sceneView.initialize(resourceConfigPath, pluginConfigPath);
 

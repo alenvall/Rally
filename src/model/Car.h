@@ -11,7 +11,7 @@ namespace Rally { namespace Model {
 
     class Car {
         public:
-            Car(Rally::Model::World& world);
+            Car(Rally::Model::PhysicsWorld& physicsWorld);
             virtual ~Car();
 
             void attachToWorld();
@@ -21,7 +21,7 @@ namespace Rally { namespace Model {
             Rally::Vector3 getVelocity() const;
 
         private:
-            Rally::Model::World& world;
+            Rally::Model::PhysicsWorld& physicsWorld;
             Rally::Model::PhysicsCar physicsCar;
     };
 

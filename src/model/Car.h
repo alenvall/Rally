@@ -1,23 +1,28 @@
 #ifndef RALLY_MODEL_CAR_H_
 #define RALLY_MODEL_CAR_H_
 
-#include <OgreVector3.h>
+#include "Rally.h"
 
-// Todo: Move this to shared file.
-namespace Rally {
-    typedef Ogre::Vector3 Vector3;
-}
+#include "model/PhysicsCar.h"
 
 namespace Rally { namespace Model {
 
+    class World;
+
     class Car {
         public:
-            Car();
+            Car(Rally::Model::World& world);
             virtual ~Car();
+
+            void attachToWorld();
 
             Rally::Vector3 getPosition() const;
             Rally::Vector3 getOrientation() const;
             Rally::Vector3 getVelocity() const;
+
+        private:
+            Rally::Model::World& world;
+            Rally::Model::PhysicsCar physicsCar;
     };
 
 } }

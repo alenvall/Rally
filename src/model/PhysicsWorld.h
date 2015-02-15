@@ -20,6 +20,10 @@ namespace Rally { namespace Model {
             void initialize(const std::string & bulletFile);
             void update(float deltaTime);
 
+            btDiscreteDynamicsWorld* getDynamicsWorld() {
+                return dynamicsWorld;
+            }
+
         private:
             btBroadphaseInterface* broadphase;
             btDefaultCollisionConfiguration* collisionConfiguration;

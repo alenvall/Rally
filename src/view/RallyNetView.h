@@ -35,7 +35,7 @@ namespace Rally { namespace View {
         public:
             RallyNetView(RallyNetView_NetworkCarListener & listener);
             virtual ~RallyNetView();
-            void initialize(const std::string & server, unsigned short port, Model::Car & playerCar);
+            void initialize(const std::string & server, unsigned short port, const Model::Car* playerCar);
 
             void update();
 
@@ -44,7 +44,7 @@ namespace Rally { namespace View {
             unsigned short lastSentPacketId;
             RallyNetView_NetworkCarListener& listener;
             std::map<unsigned short, RallyNetView_InternalClient> clients;
-            Model::Car playerCar;
+            const Model::Car* playerCar;
 
             void updatePutCar();
             void updateGetCars();

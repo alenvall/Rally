@@ -12,6 +12,10 @@ namespace Rally { namespace Model {
             void initialize(const std::string & bulletFile);
             void update(float deltaTime);
 
+            Rally::Model::PhysicsWorld& getPhysicsWorld() {
+                return physicsWorld;
+            }
+
         private:
             Rally::Model::PhysicsWorld physicsWorld;
     };

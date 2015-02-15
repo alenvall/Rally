@@ -309,6 +309,12 @@ if(UNIX)
 		DESTINATION bin/release
 		CONFIGURATIONS Release RelWithDebInfo Debug
 	)
+	
+	install(FILES ${CMAKE_SOURCE_DIR}/dist/bin/plugins.cfg
+		${CMAKE_SOURCE_DIR}/dist/bin/resources.cfg
+		DESTINATION bin/debug
+		CONFIGURATIONS Release RelWithDebInfo Debug
+	)
  
 endif(UNIX)
  

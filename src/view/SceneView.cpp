@@ -125,5 +125,5 @@ void SceneView::updatePlayerCar() {
     // Todo: Move to separate view
     Rally::Model::Car& playerCar = world.getPlayerCar();
     playerCarNode->setPosition(playerCar.getPosition());
-    playerCarNode->setDirection(playerCar.getOrientation());
+    playerCarNode->setDirection(playerCar.getOrientation(), Ogre::Node::TS_PARENT);
 }

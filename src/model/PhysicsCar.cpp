@@ -11,7 +11,7 @@ namespace Rally { namespace Model {
 
     namespace {
         const btVector3 CAR_DIMENSIONS(2.0f, 1.0f, 4.0f);
-        const float CAR_MASS = 1.0f;
+        const float CAR_MASS = 800.0f;
 
         // The rolling torque from each wheel is scaled with this (to prevent rollover).
         // 0.0f = no rolling, 1.0f = rolling like in reality.

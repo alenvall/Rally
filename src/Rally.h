@@ -5,9 +5,9 @@
 #define PLATFORM_WINDOWS
 #endif
 
-#if PLATFORM_WINDOWS
+#ifdef PLATFORM_WINDOWS
 #define WIN32_LEAN_AND_MEAN
-#include "windows.h"
+#include "Windows.h"
 #endif
 
 #include <OgreVector3.h>

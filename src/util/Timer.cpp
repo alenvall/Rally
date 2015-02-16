@@ -1,6 +1,10 @@
 #include "util/Timer.h"
 #include "Rally.h"
 #include <stdexcept>
+#ifdef PLATFORM_WINDOWS
+#include <mmsystem.h>
+#pragma comment(lib, "Winmm.lib")
+#endif
 
 namespace Rally { namespace Util {
 
@@ -27,7 +31,7 @@ namespace Rally { namespace Util {
         // The reasons include synchronization issues on multi-core processors
         // and the user changing time - or even the OS setting network time.
 #ifdef PLATFORM_WINDOWS
-        DOWRD time = timeGetTime();
+        DWORD time = timeGetTime();
 
         DWORD difference;
         // Account for wrap-around
@@ -42,7 +46,7 @@ namespace Rally { namespace Util {
         }
 
         // Return ms to sec
-        return ((float) difference) / 1000.0;
+        return ((float) difference) / 1000.0f;
 #else
         // We don't worry about wrap-around here...
         timeval time;

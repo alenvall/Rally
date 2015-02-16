@@ -1,177 +1,141 @@
-<scene export_time="1423224070.710574" previous_export_time="0" formatVersion="1.0.1" exported_by="Victor" >
+<scene formatVersion="1.0.1" exported_by="Erik" previous_export_time="1424089244.448774" export_time="1424098935.796125" >
   <nodes >
-    <node name="Sun.002" >
-      <position x="-71.208374" y="40.370552" z="-98.195114" />
-      <rotation qw="0.543018" qy="0.668271" qx="-0.464019" qz="0.207922" />
-      <scale x="1.000000" y="1.000000" z="1.000000" />
-      <game >
-        <sensors />
-        <actuators />
-      </game>
-      <light name="Sun.002" type="directional" powerScale="1.0" >
-        <position x="-71.208374" y="40.370552" z="-98.195114" />
-        <lightAttenuation quadratic="0.0" linear="0.04" constant="1.0" range="5000" />
-        <direction x="0.394" y="-0.483" z="-0.782" />
-        <colourDiffuse r="1.0" b="1.0" g="1.0" />
-        <colourSpecular r="1.0" b="1.0" g="1.0" />
-      </light>
-    </node>
-    <node name="Sun.001" >
-      <position x="-75.764046" y="39.590786" z="-85.148224" />
-      <rotation qw="0.382567" qy="-0.895045" qx="-0.162252" qz="0.161900" />
-      <scale x="1.000000" y="1.000000" z="1.000000" />
-      <game >
-        <sensors />
-        <actuators />
-      </game>
-      <light name="Sun.001" type="directional" powerScale="1.0" >
-        <position x="-75.764046" y="39.590786" z="-85.148224" />
-        <lightAttenuation quadratic="0.0" linear="0.04" constant="1.0" range="5000" />
-        <direction x="-0.414" y="-0.895" z="0.166" />
-        <colourDiffuse r="1.0" b="1.0" g="1.0" />
-        <colourSpecular r="1.0" b="1.0" g="1.0" />
-      </light>
-    </node>
-    <node name="Sun" >
-      <position x="-11.246399" y="69.163773" z="-36.204346" />
-      <rotation qw="0.233856" qy="0.615614" qx="-0.635900" qz="-0.402446" />
-      <scale x="1.000000" y="1.000000" z="1.000000" />
-      <game >
-        <sensors />
-        <actuators />
-      </game>
-      <light name="Sun" type="directional" powerScale="1.0" >
-        <position x="-11.246399" y="69.163773" z="-36.204346" />
-        <lightAttenuation quadratic="0.0" linear="0.04" constant="1.0" range="5000" />
-        <direction x="0.971" y="0.133" z="0.198" />
-        <colourDiffuse r="1.0" b="1.0" g="1.0" />
-        <colourSpecular r="1.0" b="1.0" g="1.0" />
-      </light>
-    </node>
-    <node name="Spot" >
-      <position x="-42.808304" y="0.265090" z="-93.647148" />
-      <rotation qw="0.709469" qy="-0.014559" qx="-0.704438" qz="-0.014455" />
-      <scale x="1.000000" y="1.000000" z="1.000000" />
-      <user_data value='&lt;bpy id prop: owner="OBSpot", name="cycles_visibility", address=0x0000001E0CAC9738&gt;' name="cycles_visibility" type="IDPropertyGroup" />
-      <game >
-        <sensors />
-        <actuators />
-      </game>
-      <light shadow="true" name="Spot" type="spot" powerScale="1.0" >
-        <position x="-42.808304" y="0.265090" z="-93.647148" />
-        <lightAttenuation quadratic="0.0" linear="0.04" constant="1.0" range="5000" />
-        <direction x="0.0" y="-0.007" z="-1.0" />
-        <spotLightRange falloff="1.0" outer="0.7853981852531433" inner="0.6675884527838338" />
-        <colourDiffuse r="1.0" b="1.0" g="1.0" />
-        <colourSpecular r="1.0" b="1.0" g="1.0" />
-        <colourShadow r="1.0" b="1.0" g="1.0" />
-      </light>
-    </node>
-    <node name="Point" >
-      <position x="-49.531364" y="-4.368947" z="-64.512650" />
-      <rotation qw="1.000000" qy="0.000000" qx="0.000000" qz="-0.000000" />
-      <scale x="1.000000" y="1.000000" z="1.000000" />
-      <user_data value='&lt;bpy id prop: owner="OBPoint", name="cycles_visibility", address=0x0000001E0CAC8778&gt;' name="cycles_visibility" type="IDPropertyGroup" />
-      <game >
-        <sensors />
-        <actuators />
-      </game>
-      <light name="Point" type="point" powerScale="0.33000004291534424" >
-        <position x="-49.531364" y="-4.368947" z="-64.512650" />
-        <lightAttenuation quadratic="0.0" linear="0.04" constant="1.0" range="5000" />
-        <colourDiffuse r="1.0" b="1.0" g="1.0" />
-        <colourSpecular r="1.0" b="1.0" g="1.0" />
-      </light>
-    </node>
-    <node name="Camera.001" >
-      <position x="-46.447842" y="-6.806761" z="-108.694855" />
-      <rotation qw="0.127507" qy="0.644171" qx="0.104834" qz="-0.746857" />
-      <scale x="1.000000" y="1.000000" z="1.000000" />
-      <game >
-        <sensors />
-        <actuators />
-      </game>
-      <camera projectionType="perspective" fov="0.8411292485370472" name="Camera.001" >
-        <clipping near="0.10000000149011612" nearPlaneDist="0.10000000149011612" farPlaneDist="100.0" far="100.0" />
-      </camera>
-    </node>
-    <node name="SketchUp.008" >
-      <position x="-4.443604" y="1.513311" z="8.195389" />
-      <rotation qw="1.000000" qy="0.000000" qx="0.000000" qz="-0.000000" />
+    <node name="SketchUp" >
+      <position x="0.000000" y="-7.174734" z="-0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qx="0.000000" qy="0.000000" />
       <scale x="0.025400" y="0.025400" z="0.025400" />
-      <user_data value='&lt;bpy id prop: owner="OBSketchUp.008", name="cycles_visibility", address=0x0000001E0CAC8FE8&gt;' name="cycles_visibility" type="IDPropertyGroup" />
       <game >
         <sensors />
         <actuators />
       </game>
-    </node>
-    <node name="SketchUp.007" >
-      <position x="-4.443604" y="1.513311" z="8.195389" />
-      <rotation qw="1.000000" qy="0.000000" qx="0.000000" qz="-0.000000" />
-      <scale x="0.025400" y="0.025400" z="0.025400" />
-      <user_data value='&lt;bpy id prop: owner="OBSketchUp.007", name="cycles_visibility", address=0x0000001E0CAC86E8&gt;' name="cycles_visibility" type="IDPropertyGroup" />
-      <game >
-        <sensors />
-        <actuators />
-      </game>
-    </node>
-    <node name="SketchUp.005" >
-      <position x="-4.443604" y="1.513311" z="8.195389" />
-      <rotation qw="1.000000" qy="0.000000" qx="0.000000" qz="-0.000000" />
-      <scale x="0.025400" y="0.025400" z="0.025400" />
-      <user_data value='&lt;bpy id prop: owner="OBSketchUp.005", name="cycles_visibility", address=0x0000001E0CAC9618&gt;' name="cycles_visibility" type="IDPropertyGroup" />
-      <game >
-        <sensors />
-        <actuators />
-      </game>
-    </node>
-    <node name="SketchUp.003" >
-      <position x="-4.443604" y="1.513311" z="8.195389" />
-      <rotation qw="1.000000" qy="0.000000" qx="0.000000" qz="-0.000000" />
-      <scale x="0.025400" y="0.025400" z="0.025400" />
-      <user_data value='&lt;bpy id prop: owner="OBSketchUp.003", name="cycles_visibility", address=0x0000001E0CAC8268&gt;' name="cycles_visibility" type="IDPropertyGroup" />
-      <game >
-        <sensors />
-        <actuators />
-      </game>
-    </node>
-    <node name="SketchUp.002" >
-      <position x="-341.074219" y="-8.363240" z="680.110474" />
-      <rotation qw="1.000000" qy="0.000000" qx="0.000000" qz="-0.000000" />
-      <scale x="0.025400" y="0.025400" z="0.025400" />
-      <user_data value='&lt;bpy id prop: owner="OBSketchUp.002", name="cycles_visibility", address=0x0000001E0CAC8C88&gt;' name="cycles_visibility" type="IDPropertyGroup" />
-      <game >
-        <sensors />
-        <actuators />
-      </game>
-      <entity lock_trans_z="False" damping_trans="0.03999999910593033" velocity_min="0.0" name="ID24" actor="False" mass_radius="1.0" ghost="False" lock_rot_x="False" friction_y="1.0" lock_rot_y="False" velocity_max="0.0" lock_trans_x="False" mass="1.0" friction_z="1.0" friction_x="1.0" anisotropic_friction="False" damping_rot="0.10000000149011612" lock_rot_z="False" physics_type="STATIC" meshFile="ID24.mesh" inertia_tensor="0.4000000059604645" lock_trans_y="False" >
-        <user_data value='&lt;bpy id prop: owner="MEID24", name="cycles", address=0x0000001E0CAC7A88&gt;' name="cycles" type="IDPropertyGroup" />
-      </entity>
-    </node>
-    <node name="Camera" >
-      <position x="141.736481" y="21.771286" z="1380.553833" />
-      <rotation qw="0.781600" qy="0.334251" qx="0.481707" qz="-0.212922" />
-      <scale x="1.000000" y="1.000000" z="1.000000" />
-      <game >
-        <sensors />
-        <actuators />
-      </game>
-      <camera projectionType="perspective" fov="0.5033799435163735" name="Camera" >
-        <clipping near="0.10000000149011612" nearPlaneDist="0.10000000149011612" farPlaneDist="100.0" far="100.0" />
-      </camera>
+      <entity friction_x="1.0" friction_y="1.0" inertia_tensor="0.4000000059604645" physics_type="STATIC" mass_radius="1.0" velocity_min="0.0" lock_rot_y="False" lock_trans_z="False" lock_rot_x="False" name="ID2" velocity_max="0.0" mass="1.0" damping_trans="0.03999999910593033" anisotropic_friction="False" meshFile="ID2.mesh" actor="False" lock_trans_y="False" damping_rot="0.10000000149011612" ghost="False" lock_trans_x="False" friction_z="1.0" lock_rot_z="False" />
     </node>
   </nodes>
   <externals >
     <item type="material" >
-      <file name="edge_color000255.material" />
+      <file name="D:\blenderfiler\World1\material.material" />
     </item>
     <item type="material" >
-      <file name="Material.004.material" />
+      <file name="D:\blenderfiler\World1\Material.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\Material.003.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\material.005.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\edge_color000255.016.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\material.013.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\material.012.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\edge_color000255.015.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\material.011.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\edge_color000255.014.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\material.010.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\edge_color000255.013.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\material.006.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\material.002.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\edge_color000255.012.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\material.009.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\edge_color000255.011.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\edge_color000255.010.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\edge_color000255.009.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\material.017.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\edge_color000255.008.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\material.016.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\edge_color000255.007.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\edge_color000255.006.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\edge_color000255.005.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\material.001.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\edge_color000255.004.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\edge_color000255.003.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\Material.001.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\edge_color000255.002.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\edge_color000255.001.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\edge_color000255.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\material.019.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\material.024.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\material.025.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\material.026.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\material.027.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\material.028.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\material.029.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\World1\material.030.material" />
     </item>
   </externals>
   <environment >
-    <colourAmbient r="0.0" b="0.0" g="0.0" />
-    <colourBackground r="0.05087608844041824" b="0.05087608844041824" g="0.05087608844041824" />
-    <colourDiffuse r="0.05087608844041824" b="0.05087608844041824" g="0.05087608844041824" />
+    <colourDiffuse g="0.05087608844041824" r="0.05087608844041824" b="0.05087608844041824" />
+    <colourAmbient g="0.0" r="0.0" b="0.0" />
+    <colourBackground g="0.05087608844041824" r="0.05087608844041824" b="0.05087608844041824" />
   </environment>
 </scene>

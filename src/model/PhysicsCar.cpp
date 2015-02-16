@@ -102,7 +102,7 @@ namespace Rally { namespace Model {
 
         // Left front wheel.
         leftFrontWheel = &raycastVehicle->addWheel(
-            btVector3(-FRONT_WHEEL_DISTANCE.x(), FRONT_WHEEL_DISTANCE.y(), -FRONT_WHEEL_DISTANCE.z()), // connection point
+            btVector3(-FRONT_WHEEL_DISTANCE.x(), FRONT_WHEEL_DISTANCE.y(), FRONT_WHEEL_DISTANCE.z()), // connection point
             wheelDirection, // wheel direction
             wheelAxle, // axle
             SUSPENSION_REST_LENGTH,
@@ -126,7 +126,7 @@ namespace Rally { namespace Model {
 
         // Left back wheel.
         leftBackWheel = &raycastVehicle->addWheel(
-            btVector3(-BACK_WHEEL_DISTANCE.x(), BACK_WHEEL_DISTANCE.y(), -BACK_WHEEL_DISTANCE.z()), // connection point
+            btVector3(-BACK_WHEEL_DISTANCE.x(), BACK_WHEEL_DISTANCE.y(), BACK_WHEEL_DISTANCE.z()), // connection point
             wheelDirection, // wheel direction
             wheelAxle, // axle
             SUSPENSION_REST_LENGTH,

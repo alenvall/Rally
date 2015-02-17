@@ -23,6 +23,7 @@
 #include <map>
 #include <climits>
 
+
 namespace Rally { namespace View {
 
     namespace {
@@ -149,7 +150,16 @@ namespace Rally { namespace View {
         char packet[MAX_PACKET_SIZE];
         while(true) {
             int receivedBytes = ::recv(socket, packet, MAX_PACKET_SIZE, 0x00000000);
-            if(receivedBytes == 42 && packet[0] == 1) { // complete packetType == 1
+            if(receivedBytes < 0) {
+                int error = getErrno();
+                if(error == EWOULDBLOCK || error == EAGAIN) {
+                    // No more messages, goto remote client cleanup below
+                    break;
+                } else {
+                    std::cout << error << std::endl;
+                    throw std::runtime_error("Socket error when receiving packet.");
+                }
+            } if(receivedBytes == 42 && packet[0] == 1) { // complete packetType == 1
                 unsigned short sequenceId;
                 memcpy(&sequenceId, packet+1, 2);
                 sequenceId = ntohs(sequenceId);
@@ -177,7 +187,7 @@ namespace Rally { namespace View {
                 RallyNetView_InternalClient& internalClient = (sendingClientIterator == clients.end()) ? clients[playerId] : sendingClientIterator->second;
 
                 internalClient.lastPositionSequenceId = sequenceId;
-                internalClient.lastPacketArrival = time(0);
+                internalClient.lastPacketArrival = ::time(0);
 
                 char carType = packet[3];
 
@@ -186,6 +196,26 @@ namespace Rally { namespace View {
                     packetToVector3(packet + 6 + 0*4*3),
                     packetToVector3(packet + 6 + 1*4*3),
                     packetToVector3(packet + 6 + 2*4*3));
+            }
+        }
+
+        // Clean up clients that has not been responding for a while, e.g. timed out.
+        cleanupClients();
+    }
+
+    void RallyNetView::cleanupClients() {
+        time_t now = ::time(0);
+        for(std::map<unsigned short, RallyNetView_InternalClient>::iterator clientIterator = clients.begin();
+                clientIterator != clients.end();
+                /*++clientIterator*/) {
+            RallyNetView_InternalClient& internalClient = clientIterator->second;
+
+            // Remove client if it hasn't responded the last CLIENT_TIMEOUT_DELAY seconds.
+            if(internalClient.lastPacketArrival + CLIENT_TIMEOUT_DELAY < now) {
+                listener.carRemoved(clientIterator->first);
+                clients.erase(clientIterator++); // Copy iterator, advance, then delete from copied iterator
+            } else {
+                ++clientIterator;
             }
         }
     }

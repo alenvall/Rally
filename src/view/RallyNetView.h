@@ -48,6 +48,7 @@ namespace Rally { namespace View {
 
             void updatePutCar();
             void updateGetCars();
+            void cleanupClients();
     };
 
 } }

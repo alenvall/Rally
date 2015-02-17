@@ -9,6 +9,10 @@
 namespace Rally { namespace Controller {
     class MainController_RemoteCarListener : public Rally::View::RallyNetView_NetworkCarListener {
         public:
+            MainController_RemoteCarListener(Rally::Model::World& world) :
+                world(world) {
+            }
+
             // @Override
             virtual void carUpdated(unsigned short carId,
                 Rally::Vector3 position,
@@ -17,6 +21,9 @@ namespace Rally { namespace Controller {
 
             // @Override
             virtual void carRemoved(unsigned short carId);
+
+        private:
+            Rally::Model::World& world;
     };
 
     class MainController {
@@ -27,10 +34,10 @@ namespace Rally { namespace Controller {
             void start();
 
         private:
+            Rally::Model::World world;
             SceneView sceneView;
             Rally::View::RallyNetView netView;
             MainController_RemoteCarListener remoteCarListener;
-            Rally::Model::World world;
     };
 } }
 

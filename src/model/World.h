@@ -3,6 +3,8 @@
 
 #include "model/PhysicsWorld.h"
 #include "model/Car.h"
+#include "model/RemoteCar.h"
+#include <map>
 
 namespace Rally { namespace Model {
 
@@ -21,9 +23,30 @@ namespace Rally { namespace Model {
                 return playerCar;
             }
 
+            Rally::Model::RemoteCar& getRemoteCar(int carId) {
+                std::map<int, Rally::Model::RemoteCar>::iterator found = remoteCars.find(carId);
+
+                // Lazily construct if not found
+                if(found == remoteCars.end()) {
+                    found = remoteCars.insert(std::map<int, Rally::Model::RemoteCar>::value_type(carId,
+                        Rally::Model::RemoteCar(physicsWorld))).first;
+                }
+
+                return found->second;
+            }
+
+            bool removeRemoteCar(int carId) {
+                return remoteCars.erase(carId) > 0;
+            }
+
+            const std::map<int, Rally::Model::RemoteCar>& getRemoteCars() const {
+                return remoteCars;
+            }
+
         private:
             Rally::Model::PhysicsWorld physicsWorld;
             Rally::Model::Car playerCar;
+            std::map<int, Rally::Model::RemoteCar> remoteCars;
     };
 
 } }

@@ -305,17 +305,19 @@ if(UNIX)
 		CONFIGURATIONS Release RelWithDebInfo Debug
 	)
  
-	install(FILES ${CMAKE_SOURCE_DIR}/dist/bin/plugins.cfg
+	install(FILES ${CMAKE_SOURCE_DIR}/dist/bin/plugins-linux.cfg
 		${CMAKE_SOURCE_DIR}/dist/bin/resources.cfg
 		DESTINATION bin/release
 		CONFIGURATIONS Release RelWithDebInfo Debug
 	)
 	
-	install(FILES ${CMAKE_SOURCE_DIR}/dist/bin/plugins.cfg
+	install(FILES ${CMAKE_SOURCE_DIR}/dist/bin/plugins-linux.cfg
 		${CMAKE_SOURCE_DIR}/dist/bin/resources.cfg
 		DESTINATION bin/debug
 		CONFIGURATIONS Release RelWithDebInfo Debug
 	)
+	
+	
  
 endif(UNIX)
  

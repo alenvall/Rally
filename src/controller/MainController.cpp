@@ -39,9 +39,11 @@ namespace Rally { namespace Controller {
 
             // ADD ANYTHING THAT'S NOT FRAME-TIMING CODE BELOW THIS LINE!
 
-            // netView.update();
+            netView.pullRemoteChanges();
 
             world.update(deltaTime);
+
+            netView.pushLocalChanges();
 
             // TODO: Investigate in which order we'll do things (buffer up graphics commands, do some CPU, flip render buffers)
             if(!sceneView.renderFrame()) {

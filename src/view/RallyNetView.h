@@ -37,7 +37,8 @@ namespace Rally { namespace View {
             virtual ~RallyNetView();
             void initialize(const std::string & server, unsigned short port, const Model::Car* playerCar);
 
-            void update();
+            void pullRemoteChanges();
+            void pushLocalChanges();
 
         private:
             int socket;
@@ -46,8 +47,8 @@ namespace Rally { namespace View {
             std::map<unsigned short, RallyNetView_InternalClient> clients;
             const Model::Car* playerCar;
 
-            void updatePutCar();
-            void updateGetCars();
+            void pushCar();
+            void pullCars();
             void cleanupClients();
     };
 

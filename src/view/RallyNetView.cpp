@@ -117,13 +117,15 @@ namespace Rally { namespace View {
         }
     }
 
-    void RallyNetView::update() {
-        // TODO: Rate limit!
-        updatePutCar();
-        updateGetCars();
+    void RallyNetView::pullRemoteChanges() {
+        pullCars();
     }
 
-    void RallyNetView::updatePutCar() {
+    void RallyNetView::pushLocalChanges() {
+        pushCar();
+    }
+
+    void RallyNetView::pushCar() {
         char packet[40];
 
         packet[0] = 1; // Type = 1
@@ -155,7 +157,7 @@ namespace Rally { namespace View {
         }
     }
 
-    void RallyNetView::updateGetCars() {
+    void RallyNetView::pullCars() {
         char packet[MAX_PACKET_SIZE];
         while(true) {
             int receivedBytes = ::recv(socket, packet, MAX_PACKET_SIZE, 0x00000000);

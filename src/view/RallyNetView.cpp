@@ -29,6 +29,7 @@ namespace Rally { namespace View {
     namespace {
         const unsigned int MAX_PACKET_SIZE = 255;
         const unsigned int CLIENT_TIMEOUT_DELAY = 40; // seconds
+        const float SEND_RATE_LIMIT = 0.01f; // seconds, how often to update to server (max).
 
         // Some ugly code to fill in a vector3 to a packet. Should endian-convert from
         // host to network byte order if necessary. (Usually it isn't necessary for float.)
@@ -115,6 +116,8 @@ namespace Rally { namespace View {
         if(!nonBlockSucceded) {
             throw std::runtime_error("Could not make socket non-blocking!");
         }
+
+        rateLimitTimer.reset();
     }
 
     void RallyNetView::pullRemoteChanges() {
@@ -122,7 +125,10 @@ namespace Rally { namespace View {
     }
 
     void RallyNetView::pushLocalChanges() {
-        pushCar();
+        if(rateLimitTimer.getElapsedSeconds() >= SEND_RATE_LIMIT) {
+            rateLimitTimer.reset();
+            pushCar();
+        }
     }
 
     void RallyNetView::pushCar() {

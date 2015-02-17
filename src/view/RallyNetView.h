@@ -2,6 +2,8 @@
 #define RALLY_VIEW_RALLYNETVIEW_H_
 
 #include "model/Car.h"
+#include "util/Timer.h"
+
 #include <map>
 
 namespace Rally { namespace View {
@@ -46,6 +48,7 @@ namespace Rally { namespace View {
             RallyNetView_NetworkCarListener& listener;
             std::map<unsigned short, RallyNetView_InternalClient> clients;
             const Model::Car* playerCar;
+            Rally::Util::Timer rateLimitTimer;
 
             void pushCar();
             void pullCars();

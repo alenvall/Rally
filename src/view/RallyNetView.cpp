@@ -109,7 +109,8 @@ namespace Rally { namespace View {
         nonBlockSucceded = (ioctlsocket(socket, FIONBIO, &nonBlocking) == 0);
 #else
         int flags = fcntl(socket, F_GETFL, 0);
-        flags &= ~O_NONBLOCK;
+        //flags &= ~O_NONBLOCK;
+        flags |= O_NONBLOCK;
         nonBlockSucceded = (fcntl(socket, F_SETFL, flags) == 0);
 #endif
 

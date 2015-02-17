@@ -1,0 +1,41 @@
+<scene export_time="1424163426.593908" previous_export_time="1424161561.001003" exported_by="Erik" formatVersion="1.0.1" >
+  <nodes >
+    <node name="Mark" >
+      <position y="-7.174734" z="-0.000000" x="0.000000" />
+      <rotation qz="-0.000000" qw="0.707091" qx="-0.707123" qy="0.000000" />
+      <scale y="0.025400" z="0.025400" x="0.025400" />
+      <game >
+        <sensors >
+          <sensor name="Keyboard" type="ALWAYS" />
+        </sensors>
+        <actuators />
+      </game>
+      <entity lock_trans_y="False" lock_rot_x="False" ghost="False" actor="False" velocity_min="0.0" velocity_max="0.0" damping_rot="0.10000000149011612" friction_z="1.0" anisotropic_friction="False" name="ID2" lock_rot_y="False" damping_trans="0.03999999910593033" friction_y="1.0" physics_type="STATIC" lock_rot_z="False" lock_trans_x="False" friction_x="1.0" mass_radius="1.0" inertia_tensor="0.4000000059604645" mass="1.0" lock_trans_z="False" meshFile="ID2.mesh" collisionPrim="triangle_mesh" />
+    </node>
+  </nodes>
+  <externals >
+    <item type="material" >
+      <file name="D:\blenderfiler\world1Yup\material.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\world1Yup\material.006.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\world1Yup\material.005.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\world1Yup\material.025.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\world1Yup\material.009.material" />
+    </item>
+    <item type="material" >
+      <file name="D:\blenderfiler\world1Yup\material.016.material" />
+    </item>
+  </externals>
+  <environment >
+    <colourDiffuse r="0.05087608844041824" b="0.05087608844041824" g="0.05087608844041824" />
+    <colourBackground r="0.05087608844041824" b="0.05087608844041824" g="0.05087608844041824" />
+    <colourAmbient r="0.0" b="0.0" g="0.0" />
+  </environment>
+</scene>

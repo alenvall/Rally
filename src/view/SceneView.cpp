@@ -46,7 +46,7 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     camera->setAspectRatio(Ogre::Real(viewport->getActualWidth()) / Ogre::Real(viewport->getActualHeight()));
 
     // TODO: Fix this to follow car...
-    camera->setPosition(Ogre::Vector3(0, 100, -250));
+    camera->setPosition(Ogre::Vector3(0, -250, 100));
     camera->lookAt(Ogre::Vector3(0, 0, 0));
 
     // TODO: Implement separate scene loading (how do we do with lights?)
@@ -59,7 +59,7 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 
 	// Load the scene.
 	DotSceneLoader loader;
-	loader.parseDotScene("chalmers1d.scene", "General", sceneManager, sceneNode);
+	loader.parseDotScene("world.scene", "General", sceneManager, sceneNode);
 
 	// Todo: Move to appropriate view
 	Ogre::Entity* playerCarEntity = sceneManager->createEntity("PlayerCar", "ogrehead.mesh");

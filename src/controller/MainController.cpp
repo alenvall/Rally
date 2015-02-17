@@ -17,7 +17,7 @@ namespace Rally { namespace Controller {
 
         sceneView.initialize(resourceConfigPath, pluginConfigPath);
 
-        netView.initialize(std::string("127.0.0.1"), 1337, playerCar);
+        netView.initialize(std::string("127.0.0.1"), 1337, &world.getPlayerCar());
     }
 
     void MainController::start() {

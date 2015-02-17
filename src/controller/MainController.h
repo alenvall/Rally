@@ -31,7 +31,6 @@ namespace Rally { namespace Controller {
             Rally::View::RallyNetView netView;
             MainController_RemoteCarListener remoteCarListener;
             Rally::Model::World world;
-            Rally::Model::Car* playerCar;
     };
 } }
 

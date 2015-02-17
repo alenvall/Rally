@@ -139,10 +139,19 @@ namespace Rally { namespace View {
         writeVector3toPacket(packet + 4 + 2*3*4, playerCar->getVelocity());
 
         int status = ::send(socket, packet, sizeof(packet), 0x00000000);
-        int failedBecauseNonBlocking = (getErrno() == EWOULDBLOCK || getErrno() == EAGAIN);
-        if(status < 0 && !failedBecauseNonBlocking) {
-            // Note that we don't care if we couldn't send all bytes above...
-            throw std::runtime_error("Socket error when sending position update to server.");
+        if(status < 0) {
+            int error = getErrno();
+            if(error == EWOULDBLOCK || error == EAGAIN) {
+                // Since we have a non-blocking socket, we may use this. This means we
+                // didn't throttle the messages well enough for our own system, so just
+                // skip this update and try again with fresh data next time...
+            } else if(error == ECONNREFUSED) {
+                // We may actually get this if the server replies with an ICMP packet
+                // (i.e. server application not started, so the port is not in use).
+            } else {
+                // Note that we don't care if we couldn't send all bytes above (status >= 0)...
+                throw std::runtime_error("Socket error when sending position update to server.");
+            }
         }
     }
 
@@ -155,6 +164,9 @@ namespace Rally { namespace View {
                 if(error == EWOULDBLOCK || error == EAGAIN) {
                     // No more messages, goto remote client cleanup below
                     break;
+                } else if(error == ECONNREFUSED) {
+                    // We may actually get this if the server replies with an ICMP packet
+                    // (i.e. server application not started, so the port is not in use).
                 } else {
                     std::cout << error << std::endl;
                     throw std::runtime_error("Socket error when receiving packet.");

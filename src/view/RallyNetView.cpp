@@ -57,6 +57,25 @@ namespace Rally { namespace View {
             return errno;
 #endif
         }
+
+        bool isNonblockErrno() {
+            int error = getErrno();
+#ifdef PLATFORM_WINDOWS
+            return (error == WSAEWOULDBLOCK || error == WSAEAGAIN);
+#else
+            return (error == EWOULDBLOCK || error == EAGAIN);
+#endif
+        }
+
+        bool isBadConnErrno() {
+            // Typically we get WSAECONNRESET on windows, ECONNREFUSED on *nix
+            int error = getErrno();
+#ifdef PLATFORM_WINDOWS
+            return (error == WSAECONNREFUSED || error == WSAECONNABORTED || error == WSAECONNRESET);
+#else
+            return (error == ECONNREFUSED || error == ECONNABORTED || error == ECONNRESET);
+#endif
+        }
     }
 
     RallyNetView::RallyNetView(RallyNetView_NetworkCarListener & listener)
@@ -149,12 +168,11 @@ namespace Rally { namespace View {
 
         int status = ::send(socket, packet, sizeof(packet), 0x00000000);
         if(status < 0) {
-            int error = getErrno();
-            if(error == EWOULDBLOCK || error == EAGAIN) {
+            if(isNonblockErrno()) {
                 // Since we have a non-blocking socket, we may use this. This means we
                 // didn't throttle the messages well enough for our own system, so just
                 // skip this update and try again with fresh data next time...
-            } else if(error == ECONNREFUSED) {
+            } else if(isBadConnErrno()) {
                 // We may actually get this if the server replies with an ICMP packet
                 // (i.e. server application not started, so the port is not in use).
             } else {
@@ -169,15 +187,13 @@ namespace Rally { namespace View {
         while(true) {
             int receivedBytes = ::recv(socket, packet, MAX_PACKET_SIZE, 0x00000000);
             if(receivedBytes < 0) {
-                int error = getErrno();
-                if(error == EWOULDBLOCK || error == EAGAIN) {
+                if(isNonblockErrno()) {
                     // No more messages, goto remote client cleanup below
                     break;
-                } else if(error == ECONNREFUSED) {
+                } else if(isBadConnErrno()) {
                     // We may actually get this if the server replies with an ICMP packet
                     // (i.e. server application not started, so the port is not in use).
                 } else {
-                    std::cout << error << std::endl;
                     throw std::runtime_error("Socket error when receiving packet.");
                 }
             } if(receivedBytes == 42 && packet[0] == 1) { // complete packetType == 1

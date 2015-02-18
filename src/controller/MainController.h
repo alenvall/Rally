@@ -2,8 +2,13 @@
 #define RALLY_CONTROLLER_MAINCONTROLLER_H_
 
 #include <string>
-#include "SceneView.h"
-#include "RallyNetView.h"
+#include "view/SceneView.h"
+#include "view/RallyNetView.h"
+#include <OISInputManager.h>
+#include <OISKeyboard.h>
+#include <OISMouse.h>
+#include "controller/BaseInputManager.h"
+
 
 namespace Rally { namespace Controller {
     class MainController_RemoteCarListener : public Rally::View::RallyNetView_NetworkCarListener {
@@ -18,18 +23,20 @@ namespace Rally { namespace Controller {
             virtual void carRemoved(unsigned short carId);
     };
 
-    class MainController {
+    class MainController{
         public:
             MainController();
             virtual ~MainController();
             void initialize(std::string resourceConfigPath, std::string pluginConfigPath);
             void start();
 
+
         private:
             SceneView sceneView;
             Rally::View::RallyNetView netView;
             MainController_RemoteCarListener remoteCarListener;
             Rally::Model::Car playerCar;
+			Ogre::Root* root;
     };
 } }
 

@@ -4,7 +4,6 @@
 #include <stdexcept>
 
 /*
-
         btBroadphaseInterface* broadphase = new btDbvtBroadphase();
 
         btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();

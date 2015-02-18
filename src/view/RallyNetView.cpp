@@ -61,7 +61,7 @@ namespace Rally { namespace View {
         bool isNonblockErrno() {
             int error = getErrno();
 #ifdef PLATFORM_WINDOWS
-            return (error == WSAEWOULDBLOCK || error == WSAEAGAIN);
+            return error == WSAEWOULDBLOCK; // There's no WSAEAGAIN
 #else
             return (error == EWOULDBLOCK || error == EAGAIN);
 #endif

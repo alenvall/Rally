@@ -39,7 +39,8 @@ void DotSceneLoader::parseDotScene(const Ogre::String &SceneName, const Ogre::St
     rapidxml::xml_node<>* XMLRoot;
  
     Ogre::DataStreamPtr stream = Ogre::ResourceGroupManager::getSingleton().openResource(SceneName, groupName );
-    char* scene = strdup(stream->getAsString().c_str());
+	std::string sceneString = stream->getAsString();
+	char* scene = strdup(sceneString.c_str());
     XMLDoc.parse<0>(scene);
  
     // Grab the scene node

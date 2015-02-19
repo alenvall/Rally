@@ -45,20 +45,13 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     Ogre::Viewport* viewport = this->addViewport(camera);
     camera->setAspectRatio(Ogre::Real(viewport->getActualWidth()) / Ogre::Real(viewport->getActualHeight()));
 
-	//mCameraMan = new OgreBites::SdkCameraMan(camera);
-
     // TODO: Fix this to follow car...
     camera->setPosition(Ogre::Vector3(0, 0, 80));
     camera->lookAt(Ogre::Vector3(0, 0, -300));
 
 	std::cout << ((Ogre::RenderWindow*)root->getRenderTarget("Rally Sport Racing Game"))->getName();
 
-	if(setup(renderWindow)){
-		std::cout << " about to start rendering ";
-		root->startRendering();
-		std::cout << " after startrendering "; 
-		
-	}
+	setup(renderWindow);
 
  
     // TODO: Implement separate scene loading (how do we do with lights?)
@@ -160,8 +153,8 @@ bool SceneView::processUnbufferedInput(const Ogre::FrameEvent& evt)
     if ((mToggle < 0.0f ) && mKeyboard->isKeyDown(OIS::KC_1))
     {
         mToggle  = 0.5;
-   //     Ogre::Light* light = sceneManager->getLight("pointLight");
-   //     light->setVisible(! light->isVisible());
+        Ogre::Light* light = sceneManager->getLight("pointLight");
+        light->setVisible(! light->isVisible());
     }
    
     return true;

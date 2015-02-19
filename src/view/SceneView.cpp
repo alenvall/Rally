@@ -13,8 +13,8 @@ SceneView::SceneView()
     : camera(NULL),
 	root(0),
     sceneManager(NULL),
-    renderWindow(NULL),
-	mCameraMan(0){
+    renderWindow(NULL)
+	/*mCameraMan(0)*/{
 }
 
 SceneView::~SceneView(void) {
@@ -46,7 +46,7 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     Ogre::Viewport* viewport = this->addViewport(camera);
     camera->setAspectRatio(Ogre::Real(viewport->getActualWidth()) / Ogre::Real(viewport->getActualHeight()));
 
-	mCameraMan = new OgreBites::SdkCameraMan(camera);
+//	mCameraMan = new OgreBites::SdkCameraMan(camera);
 
     // TODO: Fix this to follow car...
     camera->setPosition(Ogre::Vector3(0, 0, 80));
@@ -57,11 +57,11 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 	if(setup(renderWindow)){
 		std::cout << " about to start rendering ";
 		root->startRendering();
-		std::cout << " after startrendering "; 
-		
+		std::cout << " after startrendering ";
+
 	}
 
- 
+
     // TODO: Implement separate scene loading (how do we do with lights?)
     Ogre::Entity* ogreHead = sceneManager->createEntity("Head", "ogrehead.mesh");
     Ogre::SceneNode* headNode = sceneManager->getRootSceneNode()->createChildSceneNode();
@@ -133,9 +133,9 @@ bool SceneView::renderFrame() {
 bool SceneView::frameRenderingQueued(const Ogre::FrameEvent& evt)
 {
     bool ret = BaseInputManager::frameRenderingQueued(evt);
- 
+
     if(!processUnbufferedInput(evt)) return false;
- 
+
     return ret;
 }
 
@@ -145,26 +145,27 @@ bool SceneView::processUnbufferedInput(const Ogre::FrameEvent& evt)
     static Ogre::Real mToggle = 0.0;    // The time left until next toggle
     static Ogre::Real mRotate = 0.13;   // The rotate constant
     static Ogre::Real mMove = 250;      // The movement constant
- 
+
     bool currMouse = mMouse->getMouseState().buttonDown(OIS::MB_Left);
- 
+
     if (currMouse && ! mMouseDown)
     {
-        Ogre::Light* light = sceneManager->getLight("pointLight");
-        light->setVisible(! light->isVisible());
+        // denna failar /Joel
+        //Ogre::Light* light = sceneManager->getLight("pointLight");
+        //light->setVisible(! light->isVisible());
     }
- 
+
     mMouseDown = currMouse;
- 
+
     mToggle -= evt.timeSinceLastFrame;
- 
+
     if ((mToggle < 0.0f ) && mKeyboard->isKeyDown(OIS::KC_1))
     {
         mToggle  = 0.5;
         Ogre::Light* light = sceneManager->getLight("pointLight");
         light->setVisible(! light->isVisible());
     }
-   
+
     return true;
 }
 

@@ -16,10 +16,14 @@
 #include <OISKeyboard.h>
 #include <OISMouse.h>
 
-#include <SdkTrays.h>
-#include <SdkCameraMan.h>
+//#include <SdkTrays.h>
+//#include <SdkCameraMan.h>
 
-class BaseInputManager : public Ogre::FrameListener, public Ogre::WindowEventListener, public OIS::KeyListener, public OIS::MouseListener, OgreBites::SdkTrayListener
+class BaseInputManager :
+public Ogre::FrameListener,
+ //public Ogre::WindowEventListener,
+  public OIS::KeyListener,
+   public OIS::MouseListener
 {
 public:
     BaseInputManager(void);
@@ -58,16 +62,16 @@ protected:
     Ogre::String mPluginsCfg;
 
 	//Fix for 1.9
-	Ogre::OverlaySystem *mOverlaySystem;
+//	Ogre::OverlaySystem *mOverlaySystem;
 
     // OgreBites
-    OgreBites::SdkTrayManager* mTrayMgr;
-    OgreBites::SdkCameraMan* mCameraMan;       // basic camera controller
-    OgreBites::ParamsPanel* mDetailsPanel;     // sample details panel
-   
+//    OgreBites::SdkTrayManager* mTrayMgr;
+//    OgreBites::SdkCameraMan* mCameraMan;       // basic camera controller
+//    OgreBites::ParamsPanel* mDetailsPanel;     // sample details panel
+
 	//Fix for 1.9:
-	OgreBites::InputContext mInputContext;
-	
+//	OgreBites::InputContext mInputContext;
+
 	bool mCursorWasVisible;                    // was cursor visible before dialog appeared
     bool mShutDown;
 

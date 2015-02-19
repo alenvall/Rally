@@ -5,7 +5,7 @@
 namespace Rally { namespace Controller {
     MainController::MainController() :
             sceneView(SceneView(world)),
-            remoteCarListener(MainController_RemoteCarListener(world)),
+            remoteCarListener(MainController_RemoteCarListener(world, sceneView)),
             netView(View::RallyNetView(remoteCarListener)) {
     }
 
@@ -57,10 +57,15 @@ namespace Rally { namespace Controller {
             Rally::Vector3 orientation,
             Rally::Vector3 velocity) {
         Rally::Model::RemoteCar& remoteCar = world.getRemoteCar(carId); // carId is upcast to int
+
         remoteCar.setTargetTransform(position, velocity, Rally::Vector3::NEGATIVE_UNIT_Z.getRotationTo(orientation));
+
+        sceneView.remoteCarUpdated(carId, remoteCar);
     }
 
     void MainController_RemoteCarListener::carRemoved(unsigned short carId) {
+        sceneView.remoteCarRemoved(carId, world.getRemoteCar(carId)); // carId is upcast to int
+
         world.removeRemoteCar(carId); // carId is upcast to int
     }
 

@@ -9,6 +9,7 @@
 #include <OgreWindowEventUtilities.h>
 
 #include <sstream>
+#include <string>
 
 SceneView::SceneView(Rally::Model::World& world) :
         world(world),
@@ -126,4 +127,43 @@ void SceneView::updatePlayerCar() {
     Rally::Model::Car& playerCar = world.getPlayerCar();
     playerCarNode->setPosition(playerCar.getPosition());
     playerCarNode->setDirection(playerCar.getOrientation(), Ogre::Node::TS_PARENT);
+}
+
+void SceneView::remoteCarUpdated(int carId, const Rally::Model::RemoteCar& remoteCar) {
+    // Todo: Move to separate view
+    std::ostringstream baseNameStream;
+    baseNameStream << "RemoteCar_" << carId;
+    std::string baseString = baseNameStream.str();
+    std::string nodeName = baseString + "_Node";
+
+    Ogre::SceneNode* remoteCarNode;
+    if(sceneManager->hasSceneNode(nodeName)) {
+        remoteCarNode = sceneManager->getSceneNode(nodeName);// Throws if nodeName not found.
+    } else {
+        // Lazily construct if not found
+        Ogre::Entity* remoteCarEntity = sceneManager->createEntity(baseString + "_Entity", "ogrehead.mesh");
+        remoteCarNode = sceneManager->getRootSceneNode()->createChildSceneNode(nodeName);
+        remoteCarNode->attachObject(remoteCarEntity);
+    }
+
+    remoteCarNode->setPosition(remoteCar.getPosition());
+    remoteCarNode->setOrientation(remoteCar.getOrientation());
+
+    /*std::map<const Rally::Model::RemoteCar&, TheViewType::iterator found = remoteCarViews.find(remoteCar);
+
+    // Lazily construct if not found
+    if(found == remoteCarViews.end()) {
+        found = remoteCarViews.insert(std::map<const Rally::Model::RemoteCar&, TheViewType>::value_type(remoteCar,
+            TheViewType(remoteCar))).first;
+    }*/
+}
+
+void SceneView::remoteCarRemoved(int carId, const Rally::Model::RemoteCar& remoteCar) {
+    // Todo: Move to separate view
+    std::ostringstream baseNameStream;
+    baseNameStream << "RemoteCar_" << carId;
+    std::string baseString = baseNameStream.str();
+
+    sceneManager->destroySceneNode(baseString + "_Node");
+    sceneManager->destroyEntity(baseString + "_Entity");
 }

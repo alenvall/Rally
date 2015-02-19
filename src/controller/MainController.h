@@ -9,8 +9,9 @@
 namespace Rally { namespace Controller {
     class MainController_RemoteCarListener : public Rally::View::RallyNetView_NetworkCarListener {
         public:
-            MainController_RemoteCarListener(Rally::Model::World& world) :
-                world(world) {
+            MainController_RemoteCarListener(Rally::Model::World& world, SceneView& sceneView) :
+                world(world),
+                sceneView(sceneView) {
             }
 
             // @Override
@@ -24,6 +25,7 @@ namespace Rally { namespace Controller {
 
         private:
             Rally::Model::World& world;
+            SceneView& sceneView;
     };
 
     class MainController {

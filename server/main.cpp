@@ -238,7 +238,7 @@ int main(int argc, char** argv) {
 
                 // Process packet, possibly broadcast it
                 if(packetSize == 40 && packet[0] == 1) {
-                    ClientData clientData = clients[clientIdentifier]; // Will create if not found
+                    ClientData& clientData = clients[clientIdentifier]; // Will create if not found
 
                     unsigned short packetId = ntohs((packet[1]<<8) + packet[2]); // char -> short big endian -> short machine endian
                     if(clientData.processPositionPacket(packetId)) {
@@ -256,8 +256,6 @@ int main(int argc, char** argv) {
                     if(clientData.getTotalPackagesReceived() == 1) {
                         std::cout << "Client " << clientIdentifier.toString() << " connected." << std::endl;
                     }
-
-                    clients[clientIdentifier] = clientData;
                 }
             } else if(receivedAnything < 0) {
                 throw std::runtime_error("Error waiting on/select()ing from socket.");

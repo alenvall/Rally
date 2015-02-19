@@ -162,8 +162,6 @@ ClientIdentifier receivePacket(int socket, char* packet, int* packetSize) {
 
     *packetSize = receivedBytes;
 
-    ClientIdentifier clientIdentifier();
-
     return ClientIdentifier(ntohl(address.sin_addr.s_addr), ntohs(address.sin_port));
 }
 

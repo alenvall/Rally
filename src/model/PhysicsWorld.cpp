@@ -9,14 +9,20 @@
 
 namespace Rally { namespace Model {
 
-    PhysicsWorld::PhysicsWorld() {
+    PhysicsWorld::PhysicsWorld() :
+			fileLoader(NULL),
+			dynamicsWorld(NULL),
+			solver(NULL),
+			dispatcher(NULL),
+			collisionConfiguration(NULL),
+			broadphase(NULL) {
     }
 
     PhysicsWorld::~PhysicsWorld() {
         delete fileLoader;
         delete dynamicsWorld;
         delete solver;
-        delete dispatcher,
+        delete dispatcher;
         delete collisionConfiguration;
         delete broadphase;
     }

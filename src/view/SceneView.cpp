@@ -10,6 +10,9 @@
 
 #include <sstream>
 
+#include <MyGUI_Gui.h>
+#include <MyGUI_OgrePlatform.h>
+
 SceneView::SceneView(Rally::Model::World& world) :
         world(world),
         camera(NULL),
@@ -65,6 +68,17 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 	Ogre::Entity* playerCarEntity = sceneManager->createEntity("PlayerCar", "ogrehead.mesh");
 	playerCarNode = sceneManager->getRootSceneNode()->createChildSceneNode();
 	playerCarNode->attachObject(playerCarEntity);
+
+	MyGUI::Gui* mGUI;
+	
+	// These rows cause errors. Can't fint boost library
+	MyGUI::OgrePlatform* mPlatform;
+
+	mPlatform = new MyGUI::OgrePlatform();
+	mPlatform->initialise(renderWindow, sceneManager);
+
+	mGUI = new MyGUI::Gui();
+	mGUI->initialise();
 }
 
 Ogre::Viewport* SceneView::addViewport(Ogre::Camera* followedCamera) {

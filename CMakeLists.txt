@@ -153,6 +153,19 @@ endif()
 #	./src/main.cpp
 #)
 
+if(NOT MYGUI_LIBS)
+	set(MYGUI_LIBS $ENV{MYGUI_ROOT}/build/lib/Debug)
+endif()
+if(NOT MYGUI_INCLUDE_DIR)
+	set(MYGUI_INCLUDE_DIR $ENV{MYGUI_ROOT}/MyGUIEngine/include)
+endif()
+if(NOT MYGUI_INCLUDE_OGRE_DIR)
+	set(MYGUI_INCLUDE_OGRE_DIR $ENV{MYGUI_ROOT}/Platforms/Ogre/OgrePlatform/include )
+endif()
+if(NOT MYGUI_PLUGIN_DIR)
+	file( TO_CMAKE_PATH $ENV{MYGUI_ROOT}/build/bin MYGUI_PLUGIN_DIR )
+endif()
+
  
 include_directories( ${OIS_INCLUDE_DIRS}
 	${OGRE_INCLUDE_DIRS}
@@ -161,6 +174,8 @@ include_directories( ${OIS_INCLUDE_DIRS}
 	${OGRE_Terrain_INCLUDE_DIRS}
 	${BULLET_HEADERS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${MYGUI_INCLUDE_DIR}
+    ${MYGUI_INCLUDE_OGRE_DIR}
 )
  
  
@@ -184,6 +199,8 @@ if(WIN32)
 		${BULLET_LIBS}/LinearMath_vs2010_debug.lib
 		${BULLET_LIBS}/../Extras/lib/BulletWorldImporter_vs2010_debug.lib
 		${BULLET_LIBS}/../Extras/lib/BulletFileLoader_vs2010_debug.lib
+		${MYGUI_LIBS}/MyGUIEngine_d.lib
+		${MYGUI_LIBS}/MyGUI.OgrePlatform_d.lib
 		)
 else() 
 	target_link_libraries(Rally
@@ -255,6 +272,7 @@ if(WIN32)
 		${OGRE_PLUGIN_DIR_REL}/Plugin_OctreeZone.dll
 		${OGRE_PLUGIN_DIR_REL}/Plugin_OctreeSceneManager.dll
 		${OGRE_PLUGIN_DIR_REL}/OIS.dll
+		${MYGUI_PLUGIN_DIR}/release/MyGUIEngine.dll
 		DESTINATION bin/release
 		CONFIGURATIONS Release RelWithDebInfo
 	)
@@ -271,6 +289,7 @@ if(WIN32)
 		${OGRE_PLUGIN_DIR_DBG}/Plugin_OctreeZone_d.dll
 		${OGRE_PLUGIN_DIR_DBG}/Plugin_OctreeSceneManager_d.dll
 		${OGRE_PLUGIN_DIR_DBG}/OIS_d.dll
+		${MYGUI_PLUGIN_DIR}/debug/MyGUIEngine_d.dll
 		DESTINATION bin/debug
 		CONFIGURATIONS Debug
 	)

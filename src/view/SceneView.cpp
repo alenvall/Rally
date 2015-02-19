@@ -56,7 +56,7 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 
 	if(setup(renderWindow)){
 		std::cout << " about to start rendering ";
-		root->startRendering();
+		//root->startRendering();
 		std::cout << " after startrendering ";
 
 	}

@@ -34,7 +34,7 @@ BaseInputManager::~BaseInputManager(void)
 //	if (mOverlaySystem) delete mOverlaySystem;
 
     //Remove ourself as a Window listener
-//    Ogre::WindowEventUtilities::removeWindowEventListener(mWindow, this);
+//   Ogre::WindowEventUtilities::removeWindowEventListener(mWindow, this);
     windowClosed(mWindow);
     delete root;
 }
@@ -153,14 +153,6 @@ bool BaseInputManager::frameRenderingQueued(const Ogre::FrameEvent& evt)
 	//Need to capture/update each device
     mKeyboard->capture();
     mMouse->capture();
-//	mInputContext.capture();
-
-	//SPAM std::cout << " input captures ";
-
-	//hit exekverar programmet, det breakar nästa rad
-//    mTrayMgr->frameRenderingQueued(evt);
-
-	//SPAM std::cout << " last in framerenderinqueued ";
 
     return true;
 }

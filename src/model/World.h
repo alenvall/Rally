@@ -30,6 +30,7 @@ namespace Rally { namespace Model {
                 if(found == remoteCars.end()) {
                     found = remoteCars.insert(std::map<int, Rally::Model::RemoteCar>::value_type(carId,
                         Rally::Model::RemoteCar(physicsWorld))).first;
+                    found->second.attachToWorld();
                 }
 
                 return found->second;

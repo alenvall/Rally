@@ -18,7 +18,10 @@ namespace Rally { namespace Model {
 
             Rally::Vector3 getPosition() const;
             Rally::Quaternion getOrientation() const;
-            Rally::Vector3 getVelocity() const;
+
+            void setTargetTransform(const Rally::Vector3& targetPosition,
+                const Rally::Vector3& incomingVelocity,
+                const Rally::Quaternion& targetOrientation);
 
         private:
             Rally::Model::PhysicsWorld& physicsWorld;

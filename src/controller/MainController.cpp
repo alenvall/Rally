@@ -57,10 +57,7 @@ namespace Rally { namespace Controller {
             Rally::Vector3 orientation,
             Rally::Vector3 velocity) {
         Rally::Model::RemoteCar& remoteCar = world.getRemoteCar(carId); // carId is upcast to int
-        // Todo: Research how to do this
-        //remoteCar.setPosition(position);
-        //remoteCar.setOrientation(Rally::Vector3::NEGATIVE_UNIT_Z.getRotationTo(orientation)); // Forward vector to quaternion
-        //remoteCar.setVelocity(velocity);
+        remoteCar.setTargetTransform(position, velocity, Rally::Vector3::NEGATIVE_UNIT_Z.getRotationTo(orientation));
     }
 
     void MainController_RemoteCarListener::carRemoved(unsigned short carId) {

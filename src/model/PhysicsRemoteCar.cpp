@@ -16,7 +16,6 @@ namespace Rally { namespace Model {
     PhysicsRemoteCar::PhysicsRemoteCar() :
             dynamicsWorld(NULL),
             bodyShape(NULL),
-            bodyMotionState(btTransform(btQuaternion(0.0f, 0.0f, 0.0f, 1.0f), btVector3(0.0f, 10.0f, 0.0f))),
             bodyConstructionInfo(NULL),
             bodyRigidBody(NULL) {
     }
@@ -45,26 +44,37 @@ namespace Rally { namespace Model {
         dynamicsWorld->addRigidBody(bodyRigidBody);
     }
 
+    void PhysicsRemoteCar::setTargetTransform(const Rally::Vector3& targetPosition,
+            const Rally::Vector3& incomingVelocity,
+            const Rally::Quaternion& targetOrientation) {
+        bodyMotionState.setTargetTransform(targetPosition, incomingVelocity, targetOrientation);
+    }
+
     Rally::Vector3 PhysicsRemoteCar::getPosition() const {
         // Note that we cannot ask the rigidbody for its position,
         // as we won't get interpolated values then. That's motion-state exclusive info.
-        const btTransform& graphicsTransform = bodyMotionState.m_graphicsWorldTrans;
-        const btVector3& position = graphicsTransform.getOrigin();
+        const btVector3& position = bodyMotionState.currentTransform.getOrigin();
         return Rally::Vector3(position.x(), position.y(), position.z());
     }
 
     Rally::Quaternion PhysicsRemoteCar::getOrientation() const {
-        const btTransform& graphicsTransform = bodyMotionState.m_graphicsWorldTrans;
-        const btQuaternion orientation = graphicsTransform.getRotation();
+        const btQuaternion orientation = bodyMotionState.currentTransform.getRotation();
         return Rally::Quaternion(orientation.x(), orientation.y(), orientation.z(), orientation.w());
     }
 
-    Rally::Vector3 PhysicsRemoteCar::getVelocity() const {
-        if(bodyRigidBody == NULL) {
-            return Rally::Vector3(0, 0, 0);
-        }
+    void PhysicsRemoteCar_BodyMotionState::setTargetTransform(const Rally::Vector3& targetPosition,
+            const Rally::Vector3& incomingVelocity,
+            const Rally::Quaternion& targetOrientation) {
+        //bodyRigidBody->setLinearVelocity(incomingVelocity);
+        currentTransform.setOrigin(btVector3(targetPosition.x, targetPosition.y, targetPosition.z));
+        currentTransform.setRotation(btQuaternion(targetOrientation.x, targetOrientation.y, targetOrientation.z, targetOrientation.w));
+    }
 
-        const btVector3 velocity = bodyRigidBody->getLinearVelocity();
-        return Rally::Vector3(velocity.x(), velocity.y(), velocity.z());
+    void PhysicsRemoteCar_BodyMotionState::getWorldTransform(btTransform& worldTransform) const {
+        worldTransform = currentTransform;
+    }
+
+    void PhysicsRemoteCar_BodyMotionState::setWorldTransform(const btTransform& worldTransform) {
+        std::cout << "SetWorldTransform called for remote car. Notify Joel if you see this!" << std::endl;
     }
 } }

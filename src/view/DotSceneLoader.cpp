@@ -40,11 +40,7 @@ void DotSceneLoader::parseDotScene(const Ogre::String &SceneName, const Ogre::St
  
     Ogre::DataStreamPtr stream = Ogre::ResourceGroupManager::getSingleton().openResource(SceneName, groupName );
 	std::string sceneString = stream->getAsString();
-    const char* sceneConst = sceneString.c_str();
-	int sceneConstLength = sceneString.length() + 1;
-	char* scene = new char[sceneConstLength];
-	scene[sceneConstLength] = 0; // We had problems with this...
-	memcpy(scene, sceneConst, sceneConstLength);
+	char* scene = strdup(sceneString.c_str());
     XMLDoc.parse<0>(scene);
  
     // Grab the scene node

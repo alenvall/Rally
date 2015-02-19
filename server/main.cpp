@@ -97,15 +97,20 @@ class ClientData {
 
             // Keep everything except the last short, overwrite that.
             lastPositionPacketId = (lastPositionPacketId & (UINT_MAX xor USHRT_MAX)) + packetId;
-            lastPacketArrival = ::time(0);
+            ::time(&lastPacketArrival);
             return true;
         }
 
-        bool isClientTimedOut(time_t now) {
-            return (lastPacketArrival + CLIENT_TIMEOUT_DELAY < now);
+        bool isClientTimedOut(const time_t& now) {
+            if(lastPacketArrival == 0) {
+                // No packet before
+                return false;
+            }
+            // difftime(end, start) -> double seconds
+            return difftime(now, lastPacketArrival) > CLIENT_TIMEOUT_DELAY;
         }
 
-        bool getTotalPackagesReceived() {
+        int getTotalPackagesReceived() {
             return totalPackagesReceived;
         }
 
@@ -262,17 +267,22 @@ int main(int argc, char** argv) {
             }
 
             // Cleanup internal map from timed out clients.
-            time_t now = ::time(0);
+            time_t now;
+            ::time(&now);
             for(std::map<ClientIdentifier, ClientData>::iterator clientIterator = clients.begin();
                     clientIterator != clients.end();
-                    ++clientIterator) {
-                ClientData clientData = clientIterator->second;
+                    /*++clientIterator*/) {
+                ClientData& clientData = clientIterator->second;
 
                 if(clientData.isClientTimedOut(now)) {
                     std::cout << "Client " << clientIterator->first.toString() << " timed out, after a total of " <<
                     clientData.getTotalPackagesReceived() << " valid packages received." << std::endl;
-
-                    clients.erase(clientIterator);
+                    
+                    std::map<ClientIdentifier, ClientData>::iterator removeIterator = clientIterator;
+                    ++clientIterator;
+                    clients.erase(removeIterator);
+                } else {
+                    ++clientIterator;
                 }
             }
         }

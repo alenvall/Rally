@@ -248,7 +248,9 @@ namespace Rally { namespace View {
             RallyNetView_InternalClient& internalClient = clientIterator->second;
 
             // Remove client if it hasn't responded the last CLIENT_TIMEOUT_DELAY seconds.
-            if(internalClient.lastPacketArrival + CLIENT_TIMEOUT_DELAY < now) {
+            // difftime(end, start) -> double seconds
+            if(internalClient.lastPacketArrival != 0 &&
+                    difftime(now, internalClient.lastPacketArrival) >= CLIENT_TIMEOUT_DELAY) {
                 listener.carRemoved(clientIterator->first);
                 clients.erase(clientIterator++); // Copy iterator, advance, then delete from copied iterator
             } else {

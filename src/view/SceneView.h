@@ -4,12 +4,10 @@
 #include <OgreCamera.h>
 #include <OgreSceneManager.h>
 #include <OgreRenderWindow.h>
-#include <SdkCameraMan.h>
 #include <OISEvents.h>
 #include <OISInputManager.h>
 #include <OISKeyboard.h>
 #include <OISMouse.h>
-#include <SdkTrays.h>
 #include "controller/BaseInputManager.h"
 
 class SceneView : public BaseInputManager{
@@ -31,7 +29,6 @@ class SceneView : public BaseInputManager{
 
         Ogre::Camera* camera;
         Ogre::SceneManager* sceneManager;
-		OgreBites::SdkCameraMan* mCameraMan;
 		Ogre::Root* root;
 		Ogre::RenderWindow* renderWindow;
 

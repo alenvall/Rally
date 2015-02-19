@@ -12,15 +12,12 @@ BaseInputManager::BaseInputManager(void)
     mWindow(0),
     mResourcesCfg(Ogre::StringUtil::BLANK),
     mPluginsCfg(Ogre::StringUtil::BLANK),
-    mTrayMgr(0),
-    mCameraMan(0),
-    mDetailsPanel(0),
     mCursorWasVisible(false),
     mShutDown(false),
     mInputManager(0),
     mMouse(0),
-    mKeyboard(0),
-	mOverlaySystem(0)
+    mKeyboard(0)
+	//mOverlaySystem(0)
 {
 	root = Ogre::Root::getSingletonPtr();
 }
@@ -29,12 +26,12 @@ BaseInputManager::BaseInputManager(void)
 BaseInputManager::~BaseInputManager(void)
 {
 	//Fix for 1.9
-	if (mTrayMgr) delete mTrayMgr;
-    if (mCameraMan) delete mCameraMan;
-	if (mOverlaySystem) delete mOverlaySystem;
+	//if (mTrayMgr) delete mTrayMgr;
+    //if (mCameraMan) delete mCameraMan;
+	//if (mOverlaySystem) delete mOverlaySystem;
 
     //Remove ourself as a Window listener
-    Ogre::WindowEventUtilities::removeWindowEventListener(mWindow, this);
+  //  Ogre::WindowEventUtilities::removeWindowEventListener(mWindow, this);
     windowClosed(mWindow);
     delete root;
 }
@@ -66,8 +63,8 @@ void BaseInputManager::createFrameListener(Ogre::RenderWindow* rw)
 	std::cout << " inputobjects created ";
 
 	//Fix for 1.9
-	mInputContext.mKeyboard = mKeyboard;
-    mInputContext.mMouse = mMouse;
+	//mInputContext.mKeyboard = mKeyboard;
+    //mInputContext.mMouse = mMouse;
 
     mMouse->setEventCallback(this);
     mKeyboard->setEventCallback(this);
@@ -78,9 +75,9 @@ void BaseInputManager::createFrameListener(Ogre::RenderWindow* rw)
 	std::cout << " something bout mouse clipping size ";
 
     //Register as a Window listener
-    Ogre::WindowEventUtilities::addWindowEventListener(rw, this);
+    //Ogre::WindowEventUtilities::addWindowEventListener(rw, this);
 
-	std::cout << " windoweventlistener added ";
+	//std::cout << " windoweventlistener added ";
 
 	//Fix for 1.9 - take this out:
 	/*OgreBites::InputContext inputContext;
@@ -141,7 +138,7 @@ bool BaseInputManager::setup(Ogre::RenderWindow* rw)
 //-------------------------------------------------------------------------------------
 bool BaseInputManager::frameRenderingQueued(const Ogre::FrameEvent& evt)
 {
-	std::cout << " inside framerenderingqueued ";
+	//std::cout << " inside framerenderingqueued ";
 	mWindow = (Ogre::RenderWindow*)(Ogre::Root::getSingletonPtr()->getRenderTarget("Rally Sport Racing Game"));
     if(mWindow->isClosed())
         return false;
@@ -153,14 +150,14 @@ bool BaseInputManager::frameRenderingQueued(const Ogre::FrameEvent& evt)
 	//Need to capture/update each device
     mKeyboard->capture();
     mMouse->capture();
-	mInputContext.capture();
+	//mInputContext.capture();
 
-	std::cout << " input captures ";
+	//std::cout << " input captures ";
 
 	//hit exekverar programmet, det breakar nästa rad
-    mTrayMgr->frameRenderingQueued(evt);
+    //mTrayMgr->frameRenderingQueued(evt);
 
-	std::cout << " last in framerenderinqueued ";
+	//std::cout << " last in framerenderinqueued ";
 
     return true;
 }
@@ -172,34 +169,35 @@ bool BaseInputManager::keyPressed( const OIS::KeyEvent &arg )
         mShutDown = true;
     }
 
-    mCameraMan->injectKeyDown(arg);
+   // mCameraMan->injectKeyDown(arg);
     return true;
 }
 
 bool BaseInputManager::keyReleased( const OIS::KeyEvent &arg )
 {
-    mCameraMan->injectKeyUp(arg);
+    //mCameraMan->injectKeyUp(arg);
+	std::cout << " User pressed " << arg.key << std::endl;
     return true;
 }
 
 bool BaseInputManager::mouseMoved( const OIS::MouseEvent &arg )
 {
-    if (mTrayMgr->injectMouseMove(arg)) return true;
-    mCameraMan->injectMouseMove(arg);
+    //if (mTrayMgr->injectMouseMove(arg)) return true;
+    //mCameraMan->injectMouseMove(arg);
     return true;
 }
 
 bool BaseInputManager::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
 {
-    if (mTrayMgr->injectMouseDown(arg, id)) return true;
-    mCameraMan->injectMouseDown(arg, id);
+    //if (mTrayMgr->injectMouseDown(arg, id)) return true;
+    //mCameraMan->injectMouseDown(arg, id);
     return true;
 }
 
 bool BaseInputManager::mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
 {
-    if (mTrayMgr->injectMouseUp(arg, id)) return true;
-    mCameraMan->injectMouseUp(arg, id);
+    //if (mTrayMgr->injectMouseUp(arg, id)) return true;
+    //mCameraMan->injectMouseUp(arg, id);
     return true;
 }
 

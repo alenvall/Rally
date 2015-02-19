@@ -13,8 +13,7 @@ SceneView::SceneView()
     : camera(NULL),
 	root(0),
     sceneManager(NULL),
-    renderWindow(NULL),
-	mCameraMan(0){
+    renderWindow(NULL){
 }
 
 SceneView::~SceneView(void) {
@@ -46,7 +45,7 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     Ogre::Viewport* viewport = this->addViewport(camera);
     camera->setAspectRatio(Ogre::Real(viewport->getActualWidth()) / Ogre::Real(viewport->getActualHeight()));
 
-	mCameraMan = new OgreBites::SdkCameraMan(camera);
+	//mCameraMan = new OgreBites::SdkCameraMan(camera);
 
     // TODO: Fix this to follow car...
     camera->setPosition(Ogre::Vector3(0, 0, 80));
@@ -148,11 +147,11 @@ bool SceneView::processUnbufferedInput(const Ogre::FrameEvent& evt)
  
     bool currMouse = mMouse->getMouseState().buttonDown(OIS::MB_Left);
  
-    if (currMouse && ! mMouseDown)
-    {
-        Ogre::Light* light = sceneManager->getLight("pointLight");
-        light->setVisible(! light->isVisible());
-    }
+    //if (currMouse && ! mMouseDown)
+    //{
+    //    Ogre::Light* light = sceneManager->getLight("pointLight");
+    //    light->setVisible(! light->isVisible());
+    //}
  
     mMouseDown = currMouse;
  
@@ -161,8 +160,8 @@ bool SceneView::processUnbufferedInput(const Ogre::FrameEvent& evt)
     if ((mToggle < 0.0f ) && mKeyboard->isKeyDown(OIS::KC_1))
     {
         mToggle  = 0.5;
-        Ogre::Light* light = sceneManager->getLight("pointLight");
-        light->setVisible(! light->isVisible());
+   //     Ogre::Light* light = sceneManager->getLight("pointLight");
+   //     light->setVisible(! light->isVisible());
     }
    
     return true;

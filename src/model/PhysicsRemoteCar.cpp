@@ -40,6 +40,8 @@ namespace Rally { namespace Model {
         // Create car body
         this->initializeConstructionInfo();
         bodyRigidBody = new btRigidBody(*bodyConstructionInfo);
+        bodyRigidBody->setCollisionFlags(bodyRigidBody->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
+        bodyRigidBody->setActivationState(DISABLE_DEACTIVATION); // So that our motion stte is queried every simulation stop
         dynamicsWorld->addRigidBody(bodyRigidBody);
     }
 

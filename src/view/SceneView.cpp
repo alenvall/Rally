@@ -47,7 +47,7 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     camera->setAspectRatio(Ogre::Real(viewport->getActualWidth()) / Ogre::Real(viewport->getActualHeight()));
 
     // TODO: Fix this to follow car...
-    camera->setPosition(Ogre::Vector3(0, 50, 500));
+    camera->setPosition(Ogre::Vector3(0, 50, 50));
     camera->lookAt(Ogre::Vector3(0, 0, 0));
 
     // TODO: Implement separate scene loading (how do we do with lights?)
@@ -66,6 +66,7 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 	Ogre::Entity* playerCarEntity = sceneManager->createEntity("PlayerCar", "car.mesh");
 	playerCarNode = sceneManager->getRootSceneNode()->createChildSceneNode();
 	playerCarNode->attachObject(playerCarEntity);
+    playerCarNode->scale(Ogre::Vector3(2.0f, 1.0f, 4.0f) / playerCarEntity->getBoundingBox().getSize()); // Force scale to 2, 1, 4. Might be buggy...
 }
 
 Ogre::Viewport* SceneView::addViewport(Ogre::Camera* followedCamera) {

@@ -145,6 +145,7 @@ void SceneView::remoteCarUpdated(int carId, const Rally::Model::RemoteCar& remot
         Ogre::Entity* remoteCarEntity = sceneManager->createEntity(baseString + "_Entity", "car.mesh");
         remoteCarNode = sceneManager->getRootSceneNode()->createChildSceneNode(nodeName);
         remoteCarNode->attachObject(remoteCarEntity);
+        remoteCarNode->scale(Ogre::Vector3(2.0f, 1.0f, 4.0f) / remoteCarEntity->getBoundingBox().getSize()); // Force scale to 2, 1, 4. Might be buggy...
     }
 
     remoteCarNode->setPosition(remoteCar.getPosition());

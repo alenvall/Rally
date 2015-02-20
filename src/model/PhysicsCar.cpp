@@ -34,7 +34,7 @@ namespace Rally { namespace Model {
     PhysicsCar::PhysicsCar() :
             dynamicsWorld(NULL),
             bodyShape(NULL),
-            bodyMotionState(btTransform(btQuaternion(0.0f, 0.0f, 0.0f, 1.0f), btVector3(0.0f, 10.0f, 0.0f))),
+            bodyMotionState(btTransform(btQuaternion(0.0f, 0.0f, 0.0f, 1.0f), btVector3(0.0f, 50.0f, 0.0f))),
             bodyConstructionInfo(NULL),
             bodyRigidBody(NULL),
             vehicleRaycaster(NULL),

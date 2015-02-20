@@ -35,13 +35,13 @@ namespace Rally { namespace Model {
         solver = new btSequentialImpulseConstraintSolver;
         dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
 
-        dynamicsWorld->addRigidBody(new btRigidBody(btRigidBody::btRigidBodyConstructionInfo(
+        /*dynamicsWorld->addRigidBody(new btRigidBody(btRigidBody::btRigidBodyConstructionInfo(
             0.f, // mass
             new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1.f),
                 btVector3(0,0,0))), // position
             new btBoxShape(btVector3(5000.f, 3.f, 5000.f)),
-            btVector3(0,0,0)))); // inertia (0 for 0-mass objects)
-/*
+            btVector3(0,0,0)))); // inertia (0 for 0-mass objects)*/
+
         // Import world file
         fileLoader = new btBulletWorldImporter(dynamicsWorld);
         // Optionally enable the verbose mode to provide debugging information during file loading
@@ -54,7 +54,6 @@ namespace Rally { namespace Model {
             throw std::runtime_error("Failed to load bullet world definition file.");
         }
         // std::cout << "Number of rigid bodied: " << bodyCount << std::endl;
-*/
     }
 
     void PhysicsWorld::update(float deltaTime) {

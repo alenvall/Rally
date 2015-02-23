@@ -34,7 +34,7 @@ namespace Rally { namespace Model {
     PhysicsCar::PhysicsCar() :
             dynamicsWorld(NULL),
             bodyShape(NULL),
-            bodyMotionState(btTransform(btQuaternion(0.0f, 0.0f, 0.0f, 1.0f), btVector3(-80.0f, 15.f+1.2f, 40.0f))),
+            bodyMotionState(btTransform(btQuaternion(0.0f, 0.0f, 0.0f, 1.0f), btVector3(-60.0f, 1.2f, 40.0f))),
             bodyConstructionInfo(NULL),
             bodyRigidBody(NULL),
             vehicleRaycaster(NULL),
@@ -161,11 +161,11 @@ namespace Rally { namespace Model {
     }
 
     Rally::Vector3 PhysicsCar::getVelocity() const {
-        raycastVehicle->setSteeringValue(0.1f, 0);
-        raycastVehicle->setSteeringValue(0.0f, 1);
-        raycastVehicle->applyEngineForce(500.0f, 2);
-        raycastVehicle->applyEngineForce(500.0f, 3);
-        std::cout << getRightBackWheelTraction() << " X " << getLeftBackWheelTraction() << std::endl;
+        raycastVehicle->setSteeringValue(-0.3f, 0);
+        raycastVehicle->setSteeringValue(-0.3f, 1);
+        raycastVehicle->applyEngineForce(1000.0f, 2);
+        raycastVehicle->applyEngineForce(2000.0f, 3);
+        //std::cout << getRightBackWheelTraction() << " X " << getLeftBackWheelTraction() << std::endl;
 
         if(bodyRigidBody == NULL) {
             return Rally::Vector3(0, 0, 0);

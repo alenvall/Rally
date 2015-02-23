@@ -1,6 +1,8 @@
 #include "controller/MainController.h"
 #include "model/Car.h"
 #include "util/Timer.h"
+#include "view/InputInit.h"
+#include "view/SceneView.h"
 
 namespace Rally { namespace Controller {
     MainController::MainController() :
@@ -25,6 +27,27 @@ namespace Rally { namespace Controller {
 
         frameTimer.reset();
         while(true) {
+
+			//funkar inte, får hitta på annat sätt att få tag på keymap.
+			static InputInit::Map keyMap = InputInit::getKeyMap();
+			std::cout << keyMap["up"] <<std::endl;
+			if(keyMap["up"]){
+				
+				//do something with car
+				//test:
+				std::cout << "up!" << std::endl;
+			}
+			if(keyMap["down"]){
+				//do something with car
+			}
+
+			if(keyMap["left"]){
+				//do something with car
+			}
+
+			if(keyMap["right"]){
+				//do something with car
+			}
             float deltaTime = frameTimer.getElapsedSeconds();
 
             // Allow max 1000 FPS for precision/stability reasons.

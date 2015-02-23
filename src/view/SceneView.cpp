@@ -7,6 +7,7 @@
 #include <OgreConfigFile.h>
 #include <OgreEntity.h>
 #include <OgreWindowEventUtilities.h>
+#include "InputInit.h"
 
 #include <sstream>
 
@@ -14,7 +15,7 @@ SceneView::SceneView(Rally::Model::World& world) :
         world(world),
         camera(NULL),
         sceneManager(NULL),
-        renderWindow(NULL) {
+        renderWindow(NULL){
 }
 
 SceneView::~SceneView() {
@@ -35,6 +36,8 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     renderWindow = root->initialise(
         true, // auto-create the render window now
         "Rally Sport Racing Game");
+
+	setup(renderWindow);
 
     sceneManager = root->createSceneManager("OctreeSceneManager"); // Todo: Research a good scene manager
 
@@ -127,3 +130,6 @@ void SceneView::updatePlayerCar() {
     playerCarNode->setPosition(playerCar.getPosition());
     playerCarNode->setDirection(playerCar.getOrientation(), Ogre::Node::TS_PARENT);
 }
+
+
+

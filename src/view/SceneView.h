@@ -6,8 +6,9 @@
 #include <OgreCamera.h>
 #include <OgreSceneManager.h>
 #include <OgreRenderWindow.h>
+#include "InputInit.h"
 
-class SceneView {
+class SceneView : public InputInit{
     public:
         SceneView(Rally::Model::World& world);
         virtual ~SceneView();

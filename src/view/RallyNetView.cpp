@@ -163,7 +163,7 @@ namespace Rally { namespace View {
         packet[3]  = 0; // Car type = 0
 
         writeVector3toPacket(packet + 4 + 0*3*4, playerCar->getPosition());
-        writeVector3toPacket(packet + 4 + 1*3*4, playerCar->getOrientation());
+        writeVector3toPacket(packet + 4 + 1*3*4, Rally::Vector3(0, 0, -1.0f));
         writeVector3toPacket(packet + 4 + 2*3*4, playerCar->getVelocity());
 
         int status = ::send(socket, packet, sizeof(packet), 0x00000000);

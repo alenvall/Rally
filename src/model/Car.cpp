@@ -19,7 +19,7 @@ namespace Rally { namespace Model {
         return physicsCar.getPosition();
     }
 
-    Rally::Vector3 Car::getOrientation() const {
+    Rally::Quaternion Car::getOrientation() const {
         return physicsCar.getOrientation();
     }
 

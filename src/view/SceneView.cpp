@@ -46,17 +46,12 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     Ogre::Viewport* viewport = this->addViewport(camera);
     camera->setAspectRatio(Ogre::Real(viewport->getActualWidth()) / Ogre::Real(viewport->getActualHeight()));
 
-    // TODO: Fix this to follow car...
-    camera->setPosition(Ogre::Vector3(0, 50, 50));
-    camera->lookAt(Ogre::Vector3(0, 0, 0));
-
     // TODO: Implement separate scene loading (how do we do with lights?)
     //Ogre::Entity* ogreHead = sceneManager->createEntity("Head", "ogrehead.mesh");
     Ogre::SceneNode* sceneNode = sceneManager->getRootSceneNode()->createChildSceneNode();
     //headNode->attachObject(ogreHead);
 	sceneManager->setAmbientLight(Ogre::ColourValue(1, 1, 1));
 	Ogre::Light* light = sceneManager->createLight("MainLight");
-	light->setPosition(0, 50, 500);
 
 	// Load the scene.
 	DotSceneLoader loader;
@@ -126,8 +121,14 @@ bool SceneView::renderFrame() {
 void SceneView::updatePlayerCar() {
     // Todo: Move to separate view
     Rally::Model::Car& playerCar = world.getPlayerCar();
-    playerCarNode->setPosition(playerCar.getPosition());
-    playerCarNode->setDirection(playerCar.getOrientation(), Ogre::Node::TS_PARENT);
+    Rally::Vector3 position = playerCar.getPosition();
+    playerCarNode->setPosition(position);
+    playerCarNode->setOrientation(playerCar.getOrientation());
+
+    Rally::Vector3 cameraPosition = position + Ogre::Vector3(0.0f, 7.0f, -10.0f);
+    camera->setPosition(cameraPosition);
+    sceneManager->getLight("MainLight")->setPosition(cameraPosition);
+    camera->lookAt(position);
 }
 
 void SceneView::remoteCarUpdated(int carId, const Rally::Model::RemoteCar& remoteCar) {

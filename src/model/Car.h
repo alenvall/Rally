@@ -17,7 +17,7 @@ namespace Rally { namespace Model {
             void attachToWorld();
 
             Rally::Vector3 getPosition() const;
-            Rally::Vector3 getOrientation() const;
+            Rally::Quaternion getOrientation() const;
             Rally::Vector3 getVelocity() const;
 
         private:

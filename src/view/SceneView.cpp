@@ -133,7 +133,7 @@ void SceneView::updatePlayerCar() {
     playerCarNode->setPosition(position);
     playerCarNode->setOrientation(playerCar.getOrientation());
 
-    Rally::Vector3 cameraPosition = position + Ogre::Vector3(0.0f, 350.0f, -500.0f);
+    Rally::Vector3 cameraPosition = position + Ogre::Vector3(0.0f, 2.0f*35.0f, 2.0f*-50.0f);
     camera->setPosition(cameraPosition);
     sceneManager->getLight("MainLight")->setPosition(cameraPosition);
     camera->lookAt(position);

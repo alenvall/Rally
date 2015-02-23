@@ -50,10 +50,9 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     Ogre::Viewport* viewport = this->addViewport(camera);
     camera->setAspectRatio(Ogre::Real(viewport->getActualWidth()) / Ogre::Real(viewport->getActualHeight()));
 
-    // TODO: Implement separate scene loading (how do we do with lights?)
-    //Ogre::Entity* ogreHead = sceneManager->createEntity("Head", "ogrehead.mesh");
     Ogre::SceneNode* sceneNode = sceneManager->getRootSceneNode()->createChildSceneNode();
-    //headNode->attachObject(ogreHead);
+    sceneNode->setPosition(Ogre::Vector3(0, 110.0f, 0));
+
 	sceneManager->setAmbientLight(Ogre::ColourValue(1, 1, 1));
 	Ogre::Light* light = sceneManager->createLight("MainLight");
 

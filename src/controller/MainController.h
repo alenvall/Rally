@@ -17,7 +17,7 @@ namespace Rally { namespace Controller {
             // @Override
             virtual void carUpdated(unsigned short carId,
                 Rally::Vector3 position,
-                Rally::Vector3 orientation,
+                Rally::Quaternion orientation,
                 Rally::Vector3 velocity);
 
             // @Override

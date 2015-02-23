@@ -17,7 +17,7 @@ namespace Rally { namespace Controller {
 
         sceneView.initialize(resourceConfigPath, pluginConfigPath);
 
-        netView.initialize(std::string("81.91.1.185"), 1337, &world.getPlayerCar());
+        netView.initialize(std::string("127.0.0.1"), 1337, &world.getPlayerCar());
     }
 
     void MainController::start() {
@@ -54,11 +54,11 @@ namespace Rally { namespace Controller {
 
     void MainController_RemoteCarListener::carUpdated(unsigned short carId,
             Rally::Vector3 position,
-            Rally::Vector3 orientation,
+            Rally::Quaternion orientation,
             Rally::Vector3 velocity) {
         Rally::Model::RemoteCar& remoteCar = world.getRemoteCar(carId); // carId is upcast to int
 
-        remoteCar.setTargetTransform(position, velocity, Rally::Vector3::NEGATIVE_UNIT_Z.getRotationTo(orientation));
+        remoteCar.setTargetTransform(position, velocity, orientation);
 
         sceneView.remoteCarUpdated(carId, remoteCar);
     }

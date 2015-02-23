@@ -39,6 +39,15 @@ namespace Rally { namespace View {
             memcpy(packet + 2*4, &vector.z, 4);
         }
 
+        // Some ugly code to fill in a vector3 to a packet. Should endian-convert from
+        // host to network byte order if necessary. (Usually it isn't necessary for float.)
+        void writeQuaternionToPacket(char* packet, const Rally::Quaternion& vector) {
+            memcpy(packet + 0*4, &vector.x, 4);
+            memcpy(packet + 1*4, &vector.y, 4);
+            memcpy(packet + 2*4, &vector.z, 4);
+            memcpy(packet + 4*4, &vector.w, 4);
+        }
+
         // Takes a packet with offset pre-added and returns a Vector3. This should
         // convert from network to host byte order if necessary (usually not for float).
         Rally::Vector3 packetToVector3(char* packet) {
@@ -47,6 +56,17 @@ namespace Rally { namespace View {
             float* c = reinterpret_cast<float*>(packet + 2*4);
 
             return Rally::Vector3(*a, *b, *c);
+        }
+
+        // Takes a packet with offset pre-added and returns a Vector3. This should
+        // convert from network to host byte order if necessary (usually not for float).
+        Rally::Quaternion packetToQuaternion(char* packet) {
+            float* a = reinterpret_cast<float*>(packet + 0*4);
+            float* b = reinterpret_cast<float*>(packet + 1*4);
+            float* c = reinterpret_cast<float*>(packet + 2*4);
+            float* d = reinterpret_cast<float*>(packet + 3*4);
+
+            return Rally::Quaternion(*a, *b, *c, *d);
         }
 
         // Windows does it another way. Actually a better way too...
@@ -152,7 +172,7 @@ namespace Rally { namespace View {
     }
 
     void RallyNetView::pushCar() {
-        char packet[40];
+        char packet[44];
 
         packet[0] = 1; // Type = 1
 
@@ -163,8 +183,8 @@ namespace Rally { namespace View {
         packet[3]  = 0; // Car type = 0
 
         writeVector3toPacket(packet + 4 + 0*3*4, playerCar->getPosition());
-        writeVector3toPacket(packet + 4 + 1*3*4, Rally::Vector3(0, 0, -1.0f));
-        writeVector3toPacket(packet + 4 + 2*3*4, playerCar->getVelocity());
+        writeVector3toPacket(packet + 4 + 1*3*4, playerCar->getVelocity());
+        writeQuaternionToPacket(packet + 4 + 2*3*4, playerCar->getOrientation());
 
         int status = ::send(socket, packet, sizeof(packet), 0x00000000);
         if(status < 0) {
@@ -196,7 +216,7 @@ namespace Rally { namespace View {
                 } else {
                     throw std::runtime_error("Socket error when receiving packet.");
                 }
-            } if(receivedBytes == 42 && packet[0] == 1) { // complete packetType == 1
+            } if(receivedBytes == 46 && packet[0] == 1) { // complete packetType == 1
                 unsigned short sequenceId;
                 memcpy(&sequenceId, packet+1, 2);
                 sequenceId = ntohs(sequenceId);
@@ -231,8 +251,8 @@ namespace Rally { namespace View {
                 listener.carUpdated(
                     playerId,
                     packetToVector3(packet + 6 + 0*4*3),
-                    packetToVector3(packet + 6 + 1*4*3),
-                    packetToVector3(packet + 6 + 2*4*3));
+                    packetToQuaternion(packet + 6 + 2*4*3),
+                    packetToVector3(packet + 6 + 1*4*3));
             }
         }
 

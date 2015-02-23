@@ -16,7 +16,7 @@ namespace Rally { namespace View {
             /** Called when a car is added or updated. */
             virtual void carUpdated(unsigned short carId,
                 Rally::Vector3 position,
-                Rally::Vector3 orientation,
+                Rally::Quaternion orientation,
                 Rally::Vector3 velocity) = 0;
 
             /** Called when a car is removed due to disconenct/timeout. */

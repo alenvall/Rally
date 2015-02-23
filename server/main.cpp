@@ -240,7 +240,7 @@ int main(int argc, char** argv) {
                 ClientIdentifier clientIdentifier = receivePacket(socket, packet, &packetSize);
 
                 // Process packet, possibly broadcast it
-                if(packetSize == 40 && packet[0] == 1) {
+                if(packetSize == 44 && packet[0] == 1) {
                     ClientData& clientData = clients[clientIdentifier]; // Will create if not found
 
                     unsigned short packetId = ntohs((packet[1]<<8) + packet[2]); // char -> short big endian -> short machine endian

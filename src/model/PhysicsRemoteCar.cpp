@@ -21,6 +21,14 @@ namespace Rally { namespace Model {
     }
 
     PhysicsRemoteCar::~PhysicsRemoteCar() {
+        if(dynamicsWorld != NULL && bodyRigidBody != NULL) {
+            dynamicsWorld->removeRigidBody(bodyRigidBody);
+            delete bodyRigidBody;
+        }
+
+        // TODO: These could be shared among all remote cars...
+        delete bodyConstructionInfo;
+        delete bodyShape;
     }
 
     void PhysicsRemoteCar::initializeConstructionInfo() {

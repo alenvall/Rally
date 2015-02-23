@@ -2,6 +2,8 @@
 
 #include "DotSceneLoader.h"
 
+#include "util/BulletDebugDrawer.h"
+
 #include <OgreRoot.h>
 #include <OgreViewport.h>
 #include <OgreConfigFile.h>
@@ -19,6 +21,8 @@ SceneView::SceneView(Rally::Model::World& world) :
 }
 
 SceneView::~SceneView() {
+    delete bulletDebugDrawer;
+
     Ogre::Root* root = Ogre::Root::getSingletonPtr();
     delete root;
 }
@@ -62,6 +66,10 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 	playerCarNode = sceneManager->getRootSceneNode()->createChildSceneNode();
 	playerCarNode->attachObject(playerCarEntity);
     playerCarNode->scale(Ogre::Vector3(2.0f, 1.0f, 4.0f) / playerCarEntity->getBoundingBox().getSize()); // Force scale to 2, 1, 4. Might be buggy...
+
+    // Debug draw Bullet
+    bulletDebugDrawer = new Rally::Util::BulletDebugDrawer(sceneManager);
+    world.getPhysicsWorld().getDynamicsWorld()->setDebugDrawer(bulletDebugDrawer);
 }
 
 Ogre::Viewport* SceneView::addViewport(Ogre::Camera* followedCamera) {
@@ -109,6 +117,7 @@ bool SceneView::renderFrame() {
         return false;
     } else {
         updatePlayerCar();
+        world.getPhysicsWorld().getDynamicsWorld()->debugDrawWorld();
 
         Ogre::Root& root = Ogre::Root::getSingleton();
         if(!root.renderOneFrame()) {

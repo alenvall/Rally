@@ -9,6 +9,10 @@
 
 #include <map>
 
+namespace Rally { namespace Util {
+    class BulletDebugDrawer;
+} }
+
 class SceneView {
     public:
         SceneView(Rally::Model::World& world);
@@ -34,6 +38,8 @@ class SceneView {
         Ogre::SceneNode* playerCarNode;
 
         //std::map<const Rally::Model::RemoteCar&, TheViewType&> remoteCarViews;
+
+        Rally::Util::BulletDebugDrawer* bulletDebugDrawer;
 };
 
 #endif // RALLY_VIEW_SCENEVIEW_H_

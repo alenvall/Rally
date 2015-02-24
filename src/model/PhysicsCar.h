@@ -2,6 +2,7 @@
 #define RALLY_MODEL_PHYSICSCAR_H_
 
 #include "Rally.h"
+#include "model/PhysicsWorld.h"
 
 #include <btBulletDynamicsCommon.h>
 
@@ -9,9 +10,7 @@
 
 namespace Rally { namespace Model {
 
-    class PhysicsWorld;
-
-    class PhysicsCar {
+    class PhysicsCar : public PhysicsWorld_StepCallback {
         public:
             PhysicsCar();
             virtual ~PhysicsCar();
@@ -25,6 +24,21 @@ namespace Rally { namespace Model {
             float getLeftFrontWheelTraction() const;
             float getRightBackWheelTraction() const;
             float getLeftBackWheelTraction() const;
+
+            // @Override
+            virtual void stepped(float deltaTime);
+
+            void setAccelerationRequested(bool accelerationRequested) {
+                this->accelerationRequested = accelerationRequested;
+            }
+
+            void setBreakingRequested(bool breakingRequested) {
+                this->breakingRequested = breakingRequested;
+            }
+
+            void setSteeringRequested(int steeringRequested) {
+                this->steeringRequested = steeringRequested;
+            }
 
         private:
             void initializeConstructionInfo();
@@ -41,6 +55,11 @@ namespace Rally { namespace Model {
             btWheelInfo* leftFrontWheel;
             btWheelInfo* rightBackWheel;
             btWheelInfo* leftBackWheel;
+
+            float steering;
+            bool accelerationRequested;
+            bool breakingRequested;
+            int steeringRequested; // steeringRequested is -1, 0 or 1
     };
 
 } }

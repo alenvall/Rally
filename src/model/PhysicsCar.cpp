@@ -17,9 +17,17 @@ namespace Rally { namespace Model {
         // 0.0f = no rolling, 1.0f = rolling like in reality.
         const float ROLL_INFLUENCE = 0.1f;
 
-        const float SUSPENSION_REST_LENGTH = 0.4f; // (see also maxSuspensionTravelCm)
-        const float WHEEL_RADIUS = 0.2f;
+        const float SUSPENSION_REST_LENGTH = 0.6f; // (see also maxSuspensionTravelCm)
+        const float WHEEL_RADIUS = 0.5f;
+        const float WHEEL_GROUND_FRICTION = 0.8f;
         // (There is no wheel width.)
+
+        const float ENGINE_FORCE = -2000.0f;
+        const float ENGINE_REVERSE_FORCE = 1500.0f;
+        const float BREAKING_FORCE = 100.0f;
+
+        const float MAX_STEERING = 0.9f;
+        const float STEERING_INCREASE = 5.0f; // [same unit as steering] per second
 
         // The wheel distance is calculated from the origin = center of the car.
         // The wheel (including radius) should be located inside the car body:
@@ -34,7 +42,7 @@ namespace Rally { namespace Model {
     PhysicsCar::PhysicsCar() :
             dynamicsWorld(NULL),
             bodyShape(NULL),
-            bodyMotionState(btTransform(btQuaternion(0.0f, 0.0f, 0.0f, 1.0f), btVector3(-60.0f, 1.2f, 40.0f))),
+            bodyMotionState(btTransform(btQuaternion(0.0f, 0.0f, 0.0f, 1.0f), btVector3(-50.0f, 1.2f, 40.0f))),
             bodyConstructionInfo(NULL),
             bodyRigidBody(NULL),
             vehicleRaycaster(NULL),
@@ -42,7 +50,11 @@ namespace Rally { namespace Model {
             leftFrontWheel(NULL),
             rightFrontWheel(NULL),
             leftBackWheel(NULL),
-            rightBackWheel(NULL) {
+            rightBackWheel(NULL),
+            steering(0),
+            accelerationRequested(false),
+            breakingRequested(false),
+            steeringRequested(0) {
     }
 
     PhysicsCar::~PhysicsCar() {
@@ -76,7 +88,7 @@ namespace Rally { namespace Model {
         tuning.m_suspensionStiffness = 20.0f;
         tuning.m_suspensionDamping = 2.3f;
         tuning.m_suspensionCompression = 4.4f;
-        tuning.m_frictionSlip = 0.8f;// no drift = 1000.0f;
+        tuning.m_frictionSlip = WHEEL_GROUND_FRICTION;// no drift = 1000.0f;
         // rollInfluence cannot be set here, so we have to apply it to every wheel individually.
 
         // Create the raycasting part for the "wheels"
@@ -139,6 +151,8 @@ namespace Rally { namespace Model {
         );
         leftBackWheel = &raycastVehicle->getWheelInfo(3);
         leftBackWheel->m_rollInfluence = ROLL_INFLUENCE;
+
+        physicsWorld.registerStepCallback(this);
     }
 
     Rally::Vector3 PhysicsCar::getPosition() const {
@@ -161,11 +175,6 @@ namespace Rally { namespace Model {
     }
 
     Rally::Vector3 PhysicsCar::getVelocity() const {
-        raycastVehicle->setSteeringValue(-0.3f, 0);
-        raycastVehicle->setSteeringValue(-0.3f, 1);
-        raycastVehicle->applyEngineForce(1000.0f, 2);
-        raycastVehicle->applyEngineForce(2000.0f, 3);
-        //std::cout << getRightBackWheelTraction() << " X " << getLeftBackWheelTraction() << std::endl;
 
         if(bodyRigidBody == NULL) {
             return Rally::Vector3(0, 0, 0);
@@ -189,6 +198,50 @@ namespace Rally { namespace Model {
 
     float PhysicsCar::getLeftBackWheelTraction() const {
         return leftBackWheel->m_skidInfo;
+    }
+
+    void PhysicsCar::stepped(float deltaTime) {
+        float engineForce = 0;
+        float breakingForce = 0;
+
+        if(breakingRequested) {
+            engineForce = 0;
+            breakingForce = BREAKING_FORCE;
+
+            // Some special logic for putting in the reverse
+            if(true) {
+                engineForce = ENGINE_REVERSE_FORCE;
+                breakingForce = 0;
+            }
+        } else if(accelerationRequested) {
+            engineForce = ENGINE_FORCE;
+            breakingForce = 0;
+        } else {
+            // (Free wheeling)
+        }
+
+        // Apply equally to both back wheels.
+        raycastVehicle->applyEngineForce(engineForce, 2);
+        raycastVehicle->applyEngineForce(engineForce, 3);
+        raycastVehicle->setBrake(breakingForce, 2);
+        raycastVehicle->setBrake(breakingForce, 3);
+
+        // Fast-move steering to 0 if it isn't requested anymore.
+        if((steering < 0 && steeringRequested >= 0) || (steering > 0 && steeringRequested <= 0)) {
+            steering = 0;
+        }
+
+        // Steering, integrated from last step to deltaTime seconds later.
+        steering += deltaTime * STEERING_INCREASE * steeringRequested; // steeringRequested is -1, 0 or 1
+        if(steering > MAX_STEERING) {
+            steering = MAX_STEERING;
+        } else if(steering < -MAX_STEERING) {
+            steering = -MAX_STEERING;
+        }
+
+        // Apply equally on both front wheels.
+        raycastVehicle->setSteeringValue(steering, 0);
+        raycastVehicle->setSteeringValue(steering, 1);
     }
 
 } }

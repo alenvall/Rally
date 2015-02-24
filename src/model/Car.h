@@ -20,6 +20,18 @@ namespace Rally { namespace Model {
             Rally::Quaternion getOrientation() const;
             Rally::Vector3 getVelocity() const;
 
+            void setAccelerationRequested(bool accelerationRequested) {
+                physicsCar.setAccelerationRequested(accelerationRequested);
+            }
+
+            void setBreakingRequested(bool breakingRequested) {
+                physicsCar.setBreakingRequested(breakingRequested);
+            }
+
+            void setSteeringRequested(int steeringRequested) {
+                physicsCar.setSteeringRequested(steeringRequested);
+            }
+
         private:
             Rally::Model::PhysicsWorld& physicsWorld;
             Rally::Model::PhysicsCar physicsCar;

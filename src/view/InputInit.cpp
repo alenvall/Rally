@@ -2,7 +2,7 @@
 #include "OISKeyboard.h"
 
 //-------------------------------------------------------------------------------------
-InputInit::Map InputInit::keyMap;
+
 InputInit::InputInit(void)
     : mCamera(0),
     mSceneMgr(0),
@@ -13,14 +13,10 @@ InputInit::InputInit(void)
     mShutDown(false),
     mInputManager(0),
     mMouse(0),
-    mKeyboard(0)
+    mKeyboard(0),
+	keyMap(0)
 {
 	root = Ogre::Root::getSingletonPtr();
-	InputInit::keyMap["up"] = false;
-	InputInit::keyMap["down"] = false;
-	InputInit::keyMap["left"] = false;
-	InputInit::keyMap["right"] = false;
-	InputInit::keyMap["escape"] = false;
 }
 
 //-------------------------------------------------------------------------------------
@@ -56,6 +52,9 @@ void InputInit::createFrameListener(Ogre::RenderWindow* rw)
     mKeyboard = static_cast<OIS::Keyboard*>(mInputManager->createInputObject( OIS::OISKeyboard, true ));
     mMouse = static_cast<OIS::Mouse*>(mInputManager->createInputObject( OIS::OISMouse, true ));
 
+	keyMap = new Map();
+	keyInit();
+
 	std::cout << " inputobjects created ";
 
 
@@ -77,6 +76,14 @@ void InputInit::createFrameListener(Ogre::RenderWindow* rw)
 	std::cout << " framelistener added ";
 }
 
+void InputInit::keyInit(){
+	keyMap->at("up") = false;
+	keyMap->at("down") = false;
+	keyMap->at("left") = false;
+	keyMap->at("right") = false;
+	keyMap->at("escape") = false;
+//	std::cout << "keymap init" << keyMap["up"] << std::endl;
+}
 //-------------------------------------------------------------------------------------
 bool InputInit::setup(Ogre::RenderWindow* rw)
 {
@@ -128,31 +135,34 @@ bool InputInit::frameRenderingQueued(const Ogre::FrameEvent& evt)
     //return true;
 //}
 
-InputInit::Map InputInit::getKeyMap(){
-	return keyMap;
+bool InputInit::isKeyPressed(const std::string &s){
+	std::cout << "the value of key string is: " << s << std::endl;
+	return keyMap->at(s);
+	
 }
 //-------------------------------------------------------------------------------------
 bool InputInit::keyPressed( const OIS::KeyEvent &arg )
 {
+	std::cout << " User pressed " << arg.key << std::endl;
     if (arg.key == OIS::KC_UP)
     {
-        getKeyMap().at("up") = true;
+        keyMap->at("up") = true;
     }
 	if (arg.key == OIS::KC_DOWN)
     {
-        getKeyMap().at("down") = true;
+        keyMap->at("down") = true;
     }
 	if (arg.key == OIS::KC_LEFT)
     {
-        getKeyMap().at("left") = true;
+        keyMap->at("left") = true;
     }
 	if (arg.key == OIS::KC_RIGHT)
     {
-        getKeyMap().at("right") = true;
+        keyMap->at("right") = true;
     }
 	if (arg.key == OIS::KC_ESCAPE)
     {
-        getKeyMap().at("escape") = true;
+        keyMap->at("escape") = true;
 		mShutDown = true;
 
     }
@@ -161,27 +171,28 @@ bool InputInit::keyPressed( const OIS::KeyEvent &arg )
 
 bool InputInit::keyReleased( const OIS::KeyEvent &arg )
 {
-	//std::cout << " User pressed " << arg.key << std::endl;
+	std::cout << " User released " << arg.key << std::endl;
 	if (arg.key == OIS::KC_UP)
     {
-        getKeyMap().at("up") = false;
+        keyMap->at("up") = false;
     }
 	if (arg.key == OIS::KC_DOWN)
     {
-        getKeyMap().at("down") = false;
+        keyMap->at("down") = false;
     }
 	if (arg.key == OIS::KC_LEFT)
     {
-        getKeyMap().at("left") = false;
+        keyMap->at("left") = false;
     }
 	if (arg.key == OIS::KC_RIGHT)
     {
-        getKeyMap().at("right") = false;
+        keyMap->at("right") = false;
     }
 	if (arg.key == OIS::KC_ESCAPE)
     {
-        getKeyMap().at("escape") = false;
-    }
+        keyMap->at("escape") = false;
+
+	}
     return true;
 }
 

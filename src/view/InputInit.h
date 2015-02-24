@@ -24,7 +24,7 @@ public:
     virtual ~InputInit(void);
 //	typedef OIS::KeyCode::KC_UP up;
 	typedef std::map<std::string, bool> Map;
-	static InputInit::Map InputInit::getKeyMap();
+	bool isKeyPressed(const std::string &s);
 
 protected:
     virtual bool setup(Ogre::RenderWindow* rw);
@@ -35,6 +35,7 @@ protected:
     // Ogre::FrameListener
     virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
 	//virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
+	void keyInit();
 
     // OIS::KeyListener
     virtual bool keyPressed( const OIS::KeyEvent &arg );
@@ -56,7 +57,7 @@ protected:
     Ogre::RenderWindow* mWindow;
     Ogre::String mResourcesCfg;
     Ogre::String mPluginsCfg;
-	static InputInit::Map InputInit::keyMap;
+	InputInit::Map* keyMap;
 
 
 	//Fix for 1.9

@@ -8,7 +8,8 @@ namespace Rally { namespace Controller {
     MainController::MainController() :
             sceneView(SceneView(world)),
             remoteCarListener(MainController_RemoteCarListener(world)),
-            netView(View::RallyNetView(remoteCarListener)) {
+            netView(View::RallyNetView(remoteCarListener))
+	{
     }
 
     MainController::~MainController() {
@@ -28,24 +29,22 @@ namespace Rally { namespace Controller {
         frameTimer.reset();
         while(true) {
 
-			//funkar inte, får hitta på annat sätt att få tag på keymap.
-			static InputInit::Map keyMap = InputInit::getKeyMap();
-			std::cout << keyMap["up"] <<std::endl;
-			if(keyMap["up"]){
+			if(isKeyPressed("up")){
 				
 				//do something with car
 				//test:
 				std::cout << "up!" << std::endl;
 			}
-			if(keyMap["down"]){
+			if(isKeyPressed("down")){
+				//do something with car
+				std::cout << "down!" << std::endl;
+			}
+
+			if(isKeyPressed("left")){
 				//do something with car
 			}
 
-			if(keyMap["left"]){
-				//do something with car
-			}
-
-			if(keyMap["right"]){
+			if(isKeyPressed("right")){
 				//do something with car
 			}
             float deltaTime = frameTimer.getElapsedSeconds();

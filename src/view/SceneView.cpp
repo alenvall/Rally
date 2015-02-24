@@ -134,7 +134,7 @@ void SceneView::updatePlayerCar() {
     playerCarNode->setPosition(position);
     playerCarNode->setOrientation(playerCar.getOrientation());
 
-    Rally::Vector3 displacementBase = playerCar.getOrientation() * Ogre::Vector3::UNIT_Z;
+    Rally::Vector3 displacementBase = playerCar.getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_Z;
     Rally::Vector3 displacement(12.0f * displacementBase.x, 3.0f, 12.0f*displacementBase.z);
     Rally::Vector3 cameraPosition = position + displacement;//Ogre::Vector3(0.0f, 0.2f*35.0f, 0.2f*-50.0f);
     camera->setPosition(cameraPosition);

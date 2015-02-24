@@ -17,13 +17,13 @@ namespace Rally { namespace Model {
         // 0.0f = no rolling, 1.0f = rolling like in reality.
         const float ROLL_INFLUENCE = 0.1f;
 
-        const float SUSPENSION_REST_LENGTH = 0.6f; // (see also maxSuspensionTravelCm)
-        const float WHEEL_RADIUS = 0.5f;
+        const float SUSPENSION_REST_LENGTH = 0.4f; // (see also maxSuspensionTravelCm)
+        const float WHEEL_RADIUS = 0.4f;
         const float WHEEL_GROUND_FRICTION = 0.8f;
         // (There is no wheel width.)
 
-        const float ENGINE_FORCE = -2000.0f;
-        const float ENGINE_REVERSE_FORCE = 1500.0f;
+        const float ENGINE_FORCE = 3000.0f;
+        const float ENGINE_REVERSE_FORCE = -2000.0f;
         const float BREAKING_FORCE = 100.0f;
 
         const float MAX_STEERING = 0.9f;
@@ -35,14 +35,14 @@ namespace Rally { namespace Model {
         //  - Above the car and it confuses the body with the ground => weird behavior.
         //    (The official demo does this though... Maybe the suspension is included?)
         // Values below represent the right wheel (mirrored in the yz-plane for left).
-        const btVector3 FRONT_WHEEL_DISTANCE(CAR_DIMENSIONS.x()/2 + 0.1f, 0.f, -(CAR_DIMENSIONS.z()/2 - 0.3f - WHEEL_RADIUS));
-        const btVector3 BACK_WHEEL_DISTANCE(CAR_DIMENSIONS.x()/2 + 0.1f, 0.f, CAR_DIMENSIONS.z()/2 - 0.1f - WHEEL_RADIUS);
+        const btVector3 FRONT_WHEEL_DISTANCE(CAR_DIMENSIONS.x()/2 - 0.1f, 0.1f, (CAR_DIMENSIONS.z()/2 - 0.3f - WHEEL_RADIUS));
+        const btVector3 BACK_WHEEL_DISTANCE(CAR_DIMENSIONS.x()/2 - 0.1f, 0.1f, -(CAR_DIMENSIONS.z()/2 - 0.1f - WHEEL_RADIUS));
     }
 
     PhysicsCar::PhysicsCar() :
             dynamicsWorld(NULL),
             bodyShape(NULL),
-            bodyMotionState(btTransform(btQuaternion(0.0f, 0.0f, 0.0f, 1.0f), btVector3(-50.0f, 1.2f, 40.0f))),
+            bodyMotionState(btTransform(btQuaternion(0.0f, 0.0f, 0.0f, 1.0f), btVector3(-50.0f, 5.2f, 40.0f))),
             bodyConstructionInfo(NULL),
             bodyRigidBody(NULL),
             vehicleRaycaster(NULL),

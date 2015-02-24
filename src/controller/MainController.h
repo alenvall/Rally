@@ -5,6 +5,7 @@
 #include "view/SceneView.h"
 #include "view/RallyNetView.h"
 #include "model/World.h"
+#include "view/InputInit.h"
 
 namespace Rally { namespace Controller {
     class MainController_RemoteCarListener : public Rally::View::RallyNetView_NetworkCarListener {
@@ -28,7 +29,7 @@ namespace Rally { namespace Controller {
             SceneView& sceneView;
     };
 
-    class MainController {
+	class MainController {
         public:
             MainController();
             virtual ~MainController();
@@ -36,8 +37,11 @@ namespace Rally { namespace Controller {
             void start();
 
         private:
+            void updateInput();
+
             Rally::Model::World world;
             SceneView sceneView;
+            InputInit inputInit;
             Rally::View::RallyNetView netView;
             MainController_RemoteCarListener remoteCarListener;
     };

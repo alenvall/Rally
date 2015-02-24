@@ -9,6 +9,7 @@
 #include <OgreConfigFile.h>
 #include <OgreEntity.h>
 #include <OgreWindowEventUtilities.h>
+#include "InputInit.h"
 
 #include <sstream>
 #include <string>
@@ -17,7 +18,7 @@ SceneView::SceneView(Rally::Model::World& world) :
         world(world),
         camera(NULL),
         sceneManager(NULL),
-        renderWindow(NULL) {
+        renderWindow(NULL){
 }
 
 SceneView::~SceneView() {
@@ -178,3 +179,6 @@ void SceneView::remoteCarRemoved(int carId, const Rally::Model::RemoteCar& remot
     sceneManager->destroySceneNode(baseString + "_Node");
     sceneManager->destroyEntity(baseString + "_Entity");
 }
+
+
+

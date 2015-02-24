@@ -6,6 +6,7 @@
 #include <OgreCamera.h>
 #include <OgreSceneManager.h>
 #include <OgreRenderWindow.h>
+#include "InputInit.h"
 
 #include <map>
 

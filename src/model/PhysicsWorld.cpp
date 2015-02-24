@@ -9,6 +9,13 @@
 
 namespace Rally { namespace Model {
 
+    namespace {
+        void stepCallbackProxy(btDynamicsWorld* dynamicsWorld, btScalar deltaTime) {
+            PhysicsWorld* physicsWorld = static_cast<PhysicsWorld*>(dynamicsWorld->getWorldUserInfo());
+            physicsWorld->invokeStepCallbacks(deltaTime);
+        }
+    }
+
     PhysicsWorld::PhysicsWorld() :
 			fileLoader(NULL),
 			dynamicsWorld(NULL),
@@ -54,9 +61,35 @@ namespace Rally { namespace Model {
             throw std::runtime_error("Failed to load bullet world definition file.");
         }
         // std::cout << "Number of rigid bodied: " << bodyCount << std::endl;*/
+
+        dynamicsWorld->setInternalTickCallback(stepCallbackProxy, static_cast<void*>(this));
     }
 
     void PhysicsWorld::update(float deltaTime) {
         dynamicsWorld->stepSimulation(deltaTime, 12, 1.0f/60.0f);
     }
+
+    void PhysicsWorld::registerStepCallback(PhysicsWorld_StepCallback* stepCallback) {
+        stepCallbacks.push_back(stepCallback);
+    }
+
+    void PhysicsWorld::unregisterStepCallback(PhysicsWorld_StepCallback* stepCallback) {
+        for(std::vector<PhysicsWorld_StepCallback*>::iterator callbackIterator = stepCallbacks.begin();
+                callbackIterator != stepCallbacks.end();
+                ++callbackIterator) {
+            if(*callbackIterator == stepCallback) {
+                stepCallbacks.erase(callbackIterator);
+                return;
+            }
+        }
+    }
+
+    void PhysicsWorld::invokeStepCallbacks(float deltaTime) {
+        for(std::vector<PhysicsWorld_StepCallback*>::iterator callbackIterator = stepCallbacks.begin();
+                callbackIterator != stepCallbacks.end();
+                ++callbackIterator) {
+            (*callbackIterator)->stepped(deltaTime);
+        }
+    }
+
 } }

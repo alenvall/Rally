@@ -2,6 +2,7 @@
 #define RALLY_MODEL_PHYSICSWORLD_H_
 
 #include <string>
+#include <vector>
 
 class btBroadphaseInterface;
 class btBulletWorldImporter;
@@ -12,6 +13,13 @@ class btDiscreteDynamicsWorld;
 class btBulletWorldImporter;
 
 namespace Rally { namespace Model {
+
+    class PhysicsWorld_StepCallback {
+        public:
+            virtual ~PhysicsWorld_StepCallback() {
+            }
+            virtual void stepped(float deltaTime) = 0;
+    };
 
     class PhysicsWorld {
         public:
@@ -24,6 +32,10 @@ namespace Rally { namespace Model {
                 return dynamicsWorld;
             }
 
+            void registerStepCallback(PhysicsWorld_StepCallback* stepCallback);
+            void unregisterStepCallback(PhysicsWorld_StepCallback* stepCallback);
+            void invokeStepCallbacks(float deltaTime);
+
         private:
             btBroadphaseInterface* broadphase;
             btDefaultCollisionConfiguration* collisionConfiguration;
@@ -31,6 +43,7 @@ namespace Rally { namespace Model {
             btSequentialImpulseConstraintSolver* solver;
             btDiscreteDynamicsWorld* dynamicsWorld;
             btBulletWorldImporter* fileLoader;
+            std::vector<PhysicsWorld_StepCallback*> stepCallbacks;
     };
 
 } }

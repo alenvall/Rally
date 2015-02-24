@@ -44,7 +44,8 @@ namespace Rally { namespace Model {
             void initializeConstructionInfo();
             btDynamicsWorld* dynamicsWorld;
 
-            btCollisionShape* bodyShape;
+            btBoxShape* bodyShape;
+            btCompoundShape* lowerMassCenterShape;
             btDefaultMotionState bodyMotionState;
             btRigidBody::btRigidBodyConstructionInfo* bodyConstructionInfo;
             btRigidBody* bodyRigidBody;

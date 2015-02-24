@@ -12,22 +12,23 @@ namespace Rally { namespace Model {
     namespace {
         const btVector3 CAR_DIMENSIONS(2.0f, 1.0f, 4.0f);
         const float CAR_MASS = 800.0f;
+        const float MASS_OFFSET = 1.0f;
 
         // The rolling torque from each wheel is scaled with this (to prevent rollover).
         // 0.0f = no rolling, 1.0f = rolling like in reality.
         const float ROLL_INFLUENCE = 0.1f;
 
-        const float SUSPENSION_REST_LENGTH = 0.4f; // (see also maxSuspensionTravelCm)
-        const float WHEEL_RADIUS = 0.4f;
-        const float WHEEL_GROUND_FRICTION = 0.8f;
-        // (There is no wheel width.)
+        const float SUSPENSION_REST_LENGTH = 0.6f; // (see also maxSuspensionTravelCm)
+        const float WHEEL_RADIUS = 0.5f;
+        const float FRONT_WHEEL_FRICTION = 5.0f;
+        const float BACK_WHEEL_FRICTION = 4.5f;
 
-        const float ENGINE_FORCE = 3000.0f;
-        const float ENGINE_REVERSE_FORCE = -2000.0f;
+        const float ENGINE_FORCE = 3500.0f;
+        const float ENGINE_REVERSE_FORCE = -2800.0f;
         const float BREAKING_FORCE = 100.0f;
 
-        const float MAX_STEERING = 0.9f;
-        const float STEERING_INCREASE = 5.0f; // [same unit as steering] per second
+        const float MAX_STEERING = 0.4f;
+        const float STEERING_INCREASE = 0.8f; // [same unit as steering] per second
 
         // The wheel distance is calculated from the origin = center of the car.
         // The wheel (including radius) should be located inside the car body:
@@ -35,13 +36,14 @@ namespace Rally { namespace Model {
         //  - Above the car and it confuses the body with the ground => weird behavior.
         //    (The official demo does this though... Maybe the suspension is included?)
         // Values below represent the right wheel (mirrored in the yz-plane for left).
-        const btVector3 FRONT_WHEEL_DISTANCE(CAR_DIMENSIONS.x()/2 - 0.1f, 0.1f, (CAR_DIMENSIONS.z()/2 - 0.3f - WHEEL_RADIUS));
-        const btVector3 BACK_WHEEL_DISTANCE(CAR_DIMENSIONS.x()/2 - 0.1f, 0.1f, -(CAR_DIMENSIONS.z()/2 - 0.1f - WHEEL_RADIUS));
+        const btVector3 FRONT_WHEEL_DISTANCE(CAR_DIMENSIONS.x()/2 - 0.1f, MASS_OFFSET, (CAR_DIMENSIONS.z()/2 - 0.3f - WHEEL_RADIUS));
+        const btVector3 BACK_WHEEL_DISTANCE(CAR_DIMENSIONS.x()/2 - 0.1f, MASS_OFFSET, -(CAR_DIMENSIONS.z()/2 - 0.1f - WHEEL_RADIUS));
     }
 
     PhysicsCar::PhysicsCar() :
             dynamicsWorld(NULL),
             bodyShape(NULL),
+            lowerMassCenterShape(NULL),
             bodyMotionState(btTransform(btQuaternion(0.0f, 0.0f, 0.0f, 1.0f), btVector3(-50.0f, 5.2f, 40.0f))),
             bodyConstructionInfo(NULL),
             bodyRigidBody(NULL),
@@ -67,11 +69,15 @@ namespace Rally { namespace Model {
 
         bodyShape = new btBoxShape(CAR_DIMENSIONS / 2); // Takes half-extents
 
+        // Lower the center of mass to improve steering and counteract rolling.
+        lowerMassCenterShape = new btCompoundShape();
+        lowerMassCenterShape->addChildShape(btTransform(btQuaternion(0, 0, 0, 1.0f), btVector3(0, MASS_OFFSET, 0)), bodyShape);
+
         // Initialize what I think is the diagonal in the inertia tensor
         btVector3 inertia(0, 0, 0);
-        bodyShape->calculateLocalInertia(CAR_MASS, inertia); // TODO: We might want to lower/move center of gravity...
+        lowerMassCenterShape->calculateLocalInertia(CAR_MASS, inertia); // TODO: We might want to lower/move center of gravity...
 
-        bodyConstructionInfo = new btRigidBody::btRigidBodyConstructionInfo(CAR_MASS, &bodyMotionState, bodyShape, inertia);
+        bodyConstructionInfo = new btRigidBody::btRigidBodyConstructionInfo(CAR_MASS, &bodyMotionState, lowerMassCenterShape, inertia);
     }
 
     void PhysicsCar::attachTo(PhysicsWorld& physicsWorld) {
@@ -88,7 +94,7 @@ namespace Rally { namespace Model {
         tuning.m_suspensionStiffness = 20.0f;
         tuning.m_suspensionDamping = 2.3f;
         tuning.m_suspensionCompression = 4.4f;
-        tuning.m_frictionSlip = WHEEL_GROUND_FRICTION;// no drift = 1000.0f;
+        // tuning.m_frictionSlip set below for each wheel
         // rollInfluence cannot be set here, so we have to apply it to every wheel individually.
 
         // Create the raycasting part for the "wheels"
@@ -112,6 +118,7 @@ namespace Rally { namespace Model {
         );
         rightFrontWheel = &raycastVehicle->getWheelInfo(0);
         rightFrontWheel->m_rollInfluence = ROLL_INFLUENCE;
+        rightFrontWheel->m_frictionSlip = FRONT_WHEEL_FRICTION;
 
         // Left front wheel.
         raycastVehicle->addWheel(
@@ -125,6 +132,7 @@ namespace Rally { namespace Model {
         );
         leftFrontWheel = &raycastVehicle->getWheelInfo(1);
         leftFrontWheel->m_rollInfluence = ROLL_INFLUENCE;
+        leftFrontWheel->m_frictionSlip = FRONT_WHEEL_FRICTION;
 
         // Right back wheel.
         raycastVehicle->addWheel(
@@ -138,6 +146,7 @@ namespace Rally { namespace Model {
         );
         rightBackWheel = &raycastVehicle->getWheelInfo(2);
         rightBackWheel->m_rollInfluence = ROLL_INFLUENCE;
+        rightBackWheel->m_frictionSlip = BACK_WHEEL_FRICTION;
 
         // Left back wheel.
         raycastVehicle->addWheel(
@@ -151,6 +160,7 @@ namespace Rally { namespace Model {
         );
         leftBackWheel = &raycastVehicle->getWheelInfo(3);
         leftBackWheel->m_rollInfluence = ROLL_INFLUENCE;
+        leftBackWheel->m_frictionSlip = BACK_WHEEL_FRICTION;
 
         physicsWorld.registerStepCallback(this);
     }
@@ -158,9 +168,10 @@ namespace Rally { namespace Model {
     Rally::Vector3 PhysicsCar::getPosition() const {
         // Note that we cannot ask the rigidbody or use raycastVehicle->getForwardVector(),
         // as we won't get interpolated values then. That's motion-state exclusive info.
+        // std::cout << getLeftFrontWheelTraction() << " " << getRightFrontWheelTraction() << std::endl;
         const btTransform& graphicsTransform = bodyMotionState.m_graphicsWorldTrans;
         const btVector3& position = graphicsTransform.getOrigin();
-        return Rally::Vector3(position.x(), position.y(), position.z());
+        return Rally::Vector3(position.x(), position.y() + MASS_OFFSET, position.z());
     }
 
     Rally::Quaternion PhysicsCar::getOrientation() const {

@@ -8,7 +8,7 @@
 #include <OgreRenderWindow.h>
 #include "InputInit.h"
 
-class SceneView : public InputInit{
+class SceneView {
     public:
         SceneView(Rally::Model::World& world);
         virtual ~SceneView();

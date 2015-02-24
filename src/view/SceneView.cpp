@@ -37,8 +37,6 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
         true, // auto-create the render window now
         "Rally Sport Racing Game");
 
-	setup(renderWindow);
-
     sceneManager = root->createSceneManager("OctreeSceneManager"); // Todo: Research a good scene manager
 
     // This should be done after creating a scene manager, so that there is a render context (GL/D3D)

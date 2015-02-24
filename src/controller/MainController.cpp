@@ -21,6 +21,8 @@ namespace Rally { namespace Controller {
         sceneView.initialize(resourceConfigPath, pluginConfigPath);
 
         netView.initialize(std::string("127.0.0.1"), 1337, &world.getPlayerCar());
+
+        inputInit.setup();
     }
 
     void MainController::start() {
@@ -28,25 +30,8 @@ namespace Rally { namespace Controller {
 
         frameTimer.reset();
         while(true) {
+            updateInput();
 
-			if(isKeyPressed("up")){
-				
-				//do something with car
-				//test:
-				std::cout << "up!" << std::endl;
-			}
-			if(isKeyPressed("down")){
-				//do something with car
-				std::cout << "down!" << std::endl;
-			}
-
-			if(isKeyPressed("left")){
-				//do something with car
-			}
-
-			if(isKeyPressed("right")){
-				//do something with car
-			}
             float deltaTime = frameTimer.getElapsedSeconds();
 
             // Allow max 1000 FPS for precision/stability reasons.
@@ -74,6 +59,25 @@ namespace Rally { namespace Controller {
         }
     }
 
+    void MainController::updateInput() {
+        if(inputInit.isKeyPressed("up")) {
+            std::cout << "up!" << std::endl;
+        }
+
+        if(inputInit.isKeyPressed("down")) {
+            //do something with car
+            std::cout << "down!" << std::endl;
+        }
+
+        if(inputInit.isKeyPressed("left")) {
+            //do something with car
+        }
+
+        if(inputInit.isKeyPressed("right")){
+            //do something with car
+        }
+    }
+
     void MainController_RemoteCarListener::carUpdated(unsigned short carId,
             Rally::Vector3 position,
             Rally::Vector3 orientation,
@@ -88,5 +92,4 @@ namespace Rally { namespace Controller {
     void MainController_RemoteCarListener::carRemoved(unsigned short carId) {
         world.removeRemoteCar(carId); // carId is upcast to int
     }
-
 } }

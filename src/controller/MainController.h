@@ -27,7 +27,7 @@ namespace Rally { namespace Controller {
             Rally::Model::World& world;
     };
 
-	class MainController : public InputInit{
+	class MainController {
         public:
             MainController();
             virtual ~MainController();
@@ -35,8 +35,11 @@ namespace Rally { namespace Controller {
             void start();
 
         private:
+            void updateInput();
+
             Rally::Model::World world;
             SceneView sceneView;
+            InputInit inputInit;
             Rally::View::RallyNetView netView;
             MainController_RemoteCarListener remoteCarListener;
     };

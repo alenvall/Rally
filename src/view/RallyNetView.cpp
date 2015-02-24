@@ -45,7 +45,7 @@ namespace Rally { namespace View {
             memcpy(packet + 0*4, &vector.x, 4);
             memcpy(packet + 1*4, &vector.y, 4);
             memcpy(packet + 2*4, &vector.z, 4);
-            memcpy(packet + 4*4, &vector.w, 4);
+            memcpy(packet + 3*4, &vector.w, 4);
         }
 
         // Takes a packet with offset pre-added and returns a Vector3. This should

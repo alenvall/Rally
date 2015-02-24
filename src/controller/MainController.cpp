@@ -59,21 +59,22 @@ namespace Rally { namespace Controller {
     }
 
     void MainController::updateInput() {
-        if(inputInit.isKeyPressed("up")) {
-            std::cout << "up!" << std::endl;
-        }
+        Rally::Model::Car& car = world.getPlayerCar();
 
-        if(inputInit.isKeyPressed("down")) {
-            //do something with car
-            std::cout << "down!" << std::endl;
-        }
+        // Accelerate and break
+        car.setAccelerationRequested(inputInit.isKeyPressed("up"));
+        car.setBreakingRequested(inputInit.isKeyPressed("down"));
 
-        if(inputInit.isKeyPressed("left")) {
-            //do something with car
-        }
-
-        if(inputInit.isKeyPressed("right")){
-            //do something with car
+        // Steering
+        bool left = inputInit.isKeyPressed("left");
+        bool right = inputInit.isKeyPressed("right");
+        if(left && !right) {
+            car.setSteeringRequested(1);
+        } else if(!left && right) {
+            car.setSteeringRequested(-1);
+        } else {
+            // neither left nor right, or left and right
+            car.setSteeringRequested(0);
         }
     }
 

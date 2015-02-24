@@ -171,7 +171,7 @@ namespace Rally { namespace Model {
             graphicsTransform.getBasis()[2][2] // The z-column basis vector
         );*/
         const btQuaternion orientation = graphicsTransform.getRotation();
-        return Rally::Quaternion(orientation.x(), orientation.y(), orientation.z(), orientation.w());
+        return Rally::Quaternion(orientation.w(), orientation.x(), orientation.y(), orientation.z());
     }
 
     Rally::Vector3 PhysicsCar::getVelocity() const {

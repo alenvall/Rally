@@ -16,7 +16,7 @@ InputInit::InputInit() :
         mInputManager(0),
         mMouse(0),
         mKeyboard(0) {
-	root = Ogre::Root::getSingletonPtr();
+    root = Ogre::Root::getSingletonPtr();
 }
 
 InputInit::~InputInit() {
@@ -57,16 +57,16 @@ void InputInit::createFrameListener()
     //Register as a Window listener
     //Ogre::WindowEventUtilities::addWindowEventListener(rw, this);
 
-	root = Ogre::Root::getSingletonPtr();
+    root = Ogre::Root::getSingletonPtr();
     root->addFrameListener(this);
 }
 
 void InputInit::keyInit() {
-	keyMap["up"] = false;
-	keyMap["down"] = false;
-	keyMap["left"] = false;
-	keyMap["right"] = false;
-	keyMap["escape"] = false;
+    keyMap["up"] = false;
+    keyMap["down"] = false;
+    keyMap["left"] = false;
+    keyMap["right"] = false;
+    keyMap["escape"] = false;
 }
 
 bool InputInit::frameRenderingQueued(const Ogre::FrameEvent& evt)
@@ -77,8 +77,8 @@ bool InputInit::frameRenderingQueued(const Ogre::FrameEvent& evt)
     if(shutDown)
         return false;
 
-	//Fix for 1.9
-	//Need to capture/update each device
+    //Fix for 1.9
+    //Need to capture/update each device
     mKeyboard->capture();
     mMouse->capture();
 
@@ -86,7 +86,7 @@ bool InputInit::frameRenderingQueued(const Ogre::FrameEvent& evt)
 }
 
 bool InputInit::isKeyPressed(const std::string& s) {
-	return keyMap.at(s);
+    return keyMap.at(s);
 }
 
 bool InputInit::keyPressed(const OIS::KeyEvent& arg) {
@@ -94,48 +94,48 @@ bool InputInit::keyPressed(const OIS::KeyEvent& arg) {
     {
         keyMap.at("up") = true;
     }
-	if (arg.key == OIS::KC_DOWN)
+    if (arg.key == OIS::KC_DOWN)
     {
         keyMap.at("down") = true;
     }
-	if (arg.key == OIS::KC_LEFT)
+    if (arg.key == OIS::KC_LEFT)
     {
         keyMap.at("left") = true;
     }
-	if (arg.key == OIS::KC_RIGHT)
+    if (arg.key == OIS::KC_RIGHT)
     {
         keyMap.at("right") = true;
     }
-	if (arg.key == OIS::KC_ESCAPE)
+    if (arg.key == OIS::KC_ESCAPE)
     {
         keyMap.at("escape") = true;
-		shutDown = true;
+        shutDown = true;
     }
     return true;
 }
 
 bool InputInit::keyReleased(const OIS::KeyEvent& arg) {
-	if (arg.key == OIS::KC_UP)
+    if (arg.key == OIS::KC_UP)
     {
         keyMap.at("up") = false;
     }
-	if (arg.key == OIS::KC_DOWN)
+    if (arg.key == OIS::KC_DOWN)
     {
         keyMap.at("down") = false;
     }
-	if (arg.key == OIS::KC_LEFT)
+    if (arg.key == OIS::KC_LEFT)
     {
         keyMap.at("left") = false;
     }
-	if (arg.key == OIS::KC_RIGHT)
+    if (arg.key == OIS::KC_RIGHT)
     {
         keyMap.at("right") = false;
     }
-	if (arg.key == OIS::KC_ESCAPE)
+    if (arg.key == OIS::KC_ESCAPE)
     {
         keyMap.at("escape") = false;
 
-	}
+    }
     return true;
 }
 

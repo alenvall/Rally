@@ -8,8 +8,7 @@ namespace Rally { namespace Controller {
     MainController::MainController() :
             sceneView(SceneView(world)),
             remoteCarListener(MainController_RemoteCarListener(world)),
-            netView(View::RallyNetView(remoteCarListener))
-	{
+            netView(View::RallyNetView(remoteCarListener)) {
     }
 
     MainController::~MainController() {

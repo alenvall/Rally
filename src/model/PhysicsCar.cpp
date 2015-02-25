@@ -20,12 +20,12 @@ namespace Rally { namespace Model {
 
         const float SUSPENSION_REST_LENGTH = 0.6f; // (see also maxSuspensionTravelCm)
         const float WHEEL_RADIUS = 0.5f;
-        const float FRONT_WHEEL_FRICTION = 5.0f;
-        const float BACK_WHEEL_FRICTION = 4.5f;
+        const float FRONT_WHEEL_FRICTION = 2.0f;
+        const float BACK_WHEEL_FRICTION = 1.999f;
 
         const float ENGINE_FORCE = 3500.0f;
         const float ENGINE_REVERSE_FORCE = -2800.0f;
-        const float BREAKING_FORCE = 100.0f;
+        const float BREAKING_FORCE = 2000.0f;
 
         const float MAX_STEERING = 0.4f;
         const float STEERING_INCREASE = 0.8f; // [same unit as steering] per second
@@ -56,7 +56,9 @@ namespace Rally { namespace Model {
             steering(0),
             accelerationRequested(false),
             breakingRequested(false),
-            steeringRequested(0) {
+            steeringRequested(0),
+            engineForce(0),
+            breakingForce(0) {
     }
 
     PhysicsCar::~PhysicsCar() {
@@ -100,6 +102,7 @@ namespace Rally { namespace Model {
         // Create the raycasting part for the "wheels"
         vehicleRaycaster = new btDefaultVehicleRaycaster(dynamicsWorld);
         raycastVehicle = new btRaycastVehicle(tuning, bodyRigidBody, vehicleRaycaster);
+        raycastVehicle->setCoordinateSystem(0, 1, 2);
         dynamicsWorld->addVehicle(raycastVehicle);
 
         // Create the actual wheels:
@@ -212,25 +215,27 @@ namespace Rally { namespace Model {
     }
 
     void PhysicsCar::stepped(float deltaTime) {
-        float engineForce = 0;
-        float breakingForce = 0;
-
+        breakingForce = 0;
         if(breakingRequested) {
-            engineForce = 0;
-            breakingForce = BREAKING_FORCE;
-
-            // Some special logic for putting in the reverse
-            if(true) {
-                engineForce = ENGINE_REVERSE_FORCE;
-                breakingForce = 0;
-            }
+            // Breaking actually means reverse
+            engineForce = ENGINE_REVERSE_FORCE;
         } else if(accelerationRequested) {
             engineForce = ENGINE_FORCE;
-            breakingForce = 0;
         } else {
-            // (Free wheeling)
+            // Free wheeling
+            engineForce = 0;
         }
 
+        // In case someone tries to go in the other direction, we break to a halt first.
+        btVector3 velocity = bodyRigidBody->getLinearVelocity();
+        if(velocity.length() > 0.5f) {
+            float directionInfo = raycastVehicle->getForwardVector().dot(velocity); // ||v||*cos(shortest angle)
+            bool isActuallyReversing = directionInfo < 0; // If we actually go backwards in the simulation
+            if((engineForce > 0 && isActuallyReversing) || (engineForce < 0 && !isActuallyReversing)) {
+                engineForce = 0;
+                breakingForce = BREAKING_FORCE;
+            }
+        }
         // Apply equally to both back wheels.
         raycastVehicle->applyEngineForce(engineForce, 2);
         raycastVehicle->applyEngineForce(engineForce, 3);

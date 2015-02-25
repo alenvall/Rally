@@ -61,6 +61,9 @@ namespace Rally { namespace Model {
             bool accelerationRequested;
             bool breakingRequested;
             int steeringRequested; // steeringRequested is -1, 0 or 1
+
+            float engineForce;
+            float breakingForce;
     };
 
 } }

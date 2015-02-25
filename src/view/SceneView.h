@@ -19,7 +19,7 @@ class SceneView {
         SceneView(Rally::Model::World& world);
         virtual ~SceneView();
         void initialize(std::string resourceConfigPath, std::string pluginConfigPath);
-        bool renderFrame();
+        bool renderFrame(float deltaTime);
         void remoteCarUpdated(int carId, const Rally::Model::RemoteCar& remoteCar);
         void remoteCarRemoved(int carId, const Rally::Model::RemoteCar& remoteCar);
 
@@ -28,7 +28,7 @@ class SceneView {
         Ogre::Camera* addCamera(Ogre::String cameraName);
         void loadResourceConfig(Ogre::String resourceConfigPath);
 
-        void updatePlayerCar();
+        void updatePlayerCar(float deltaTime);
 
         Rally::Model::World& world;
 

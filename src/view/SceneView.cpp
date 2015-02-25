@@ -9,7 +9,6 @@
 #include <OgreConfigFile.h>
 #include <OgreEntity.h>
 #include <OgreWindowEventUtilities.h>
-#include "InputInit.h"
 
 #include <sstream>
 #include <string>
@@ -18,11 +17,11 @@ SceneView::SceneView(Rally::Model::World& world) :
         world(world),
         camera(NULL),
         sceneManager(NULL),
-        renderWindow(NULL){
+        renderWindow(NULL) {
 }
 
 SceneView::~SceneView() {
-    delete bulletDebugDrawer;
+    //delete bulletDebugDrawer;
 
     Ogre::Root* root = Ogre::Root::getSingletonPtr();
     delete root;
@@ -68,8 +67,8 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     playerCarNode->scale(Ogre::Vector3(2.0f, 1.0f, 4.0f) / playerCarEntity->getBoundingBox().getSize()); // Force scale to 2, 1, 4. Might be buggy...
 
     // Debug draw Bullet
-    bulletDebugDrawer = new Rally::Util::BulletDebugDrawer(sceneManager);
-    world.getPhysicsWorld().getDynamicsWorld()->setDebugDrawer(bulletDebugDrawer);
+    //bulletDebugDrawer = new Rally::Util::BulletDebugDrawer(sceneManager);
+    //world.getPhysicsWorld().getDynamicsWorld()->setDebugDrawer(bulletDebugDrawer);
 }
 
 Ogre::Viewport* SceneView::addViewport(Ogre::Camera* followedCamera) {
@@ -110,14 +109,14 @@ void SceneView::loadResourceConfig(Ogre::String resourceConfigPath) {
     }
 }
 
-bool SceneView::renderFrame() {
+bool SceneView::renderFrame(float deltaTime) {
     Ogre::WindowEventUtilities::messagePump();
 
     if(renderWindow->isClosed())  {
         return false;
     } else {
-        updatePlayerCar();
-        world.getPhysicsWorld().getDynamicsWorld()->debugDrawWorld();
+        updatePlayerCar(deltaTime);
+		world.getPhysicsWorld().getDynamicsWorld()->debugDrawWorld();
 
         Ogre::Root& root = Ogre::Root::getSingleton();
         if(!root.renderOneFrame()) {
@@ -127,19 +126,37 @@ bool SceneView::renderFrame() {
     return true;
 }
 
-void SceneView::updatePlayerCar() {
+void SceneView::updatePlayerCar(float deltaTime) {
     // Todo: Move to separate view
     Rally::Model::Car& playerCar = world.getPlayerCar();
     Rally::Vector3 position = playerCar.getPosition();
     playerCarNode->setPosition(position);
     playerCarNode->setOrientation(playerCar.getOrientation());
 
-    Rally::Vector3 displacementBase = playerCar.getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_Z;
-    Rally::Vector3 displacement(12.0f * displacementBase.x, 3.0f, 12.0f*displacementBase.z);
-    Rally::Vector3 cameraPosition = position + displacement;//Ogre::Vector3(0.0f, 0.2f*35.0f, 0.2f*-50.0f);
+	Rally::Vector3 currentCameraPosition = camera->getPosition();
+
+	Rally::Vector3 displacementBase = playerCar.getOrientation() * Ogre::Vector3::UNIT_Z;
+
+	// TOOD: Fix so that the camera looks backwards when going backwards
+	displacementBase *= -1;
+	
+	Rally::Vector3 displacement(12.0f * displacementBase.x, 20.0f, 30.0f*displacementBase.z);
+    Rally::Vector3 endPosition = position + displacement;
+
+	const float lerpAdjust = 2;
+
+	// Lerp towards the new camera position to get a smoother pan
+	float lerpX = Ogre::Math::lerp(camera->getPosition().x, endPosition.x, lerpAdjust*deltaTime);
+	float lerpY = Ogre::Math::lerp(camera->getPosition().y, endPosition.y, lerpAdjust*deltaTime);
+	float lerpZ = Ogre::Math::lerp(camera->getPosition().z, endPosition.z, lerpAdjust*deltaTime);
+
+	Rally::Vector3 newPos(lerpX, lerpY, lerpZ);
+	Rally::Vector3 cameraPosition = newPos;
+
     camera->setPosition(cameraPosition);
     sceneManager->getLight("MainLight")->setPosition(cameraPosition);
-    camera->lookAt(position);
+	camera->lookAt(position);
+
 }
 
 void SceneView::remoteCarUpdated(int carId, const Rally::Model::RemoteCar& remoteCar) {
@@ -181,6 +198,3 @@ void SceneView::remoteCarRemoved(int carId, const Rally::Model::RemoteCar& remot
     sceneManager->destroySceneNode(baseString + "_Node");
     sceneManager->destroyEntity(baseString + "_Entity");
 }
-
-
-

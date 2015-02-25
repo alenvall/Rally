@@ -19,7 +19,7 @@ namespace Rally { namespace Controller {
 
         sceneView.initialize(resourceConfigPath, pluginConfigPath);
 
-        netView.initialize(std::string("127.0.0.1"), 1337, &world.getPlayerCar());
+        //netView.initialize(std::string("127.0.0.1"), 1337, &world.getPlayerCar());
 
         inputInit.setup();
     }
@@ -45,14 +45,14 @@ namespace Rally { namespace Controller {
 
             // ADD ANYTHING THAT'S NOT FRAME-TIMING CODE BELOW THIS LINE!
 
-            netView.pullRemoteChanges();
+           // netView.pullRemoteChanges();
 
             world.update(deltaTime);
 
-            netView.pushLocalChanges();
+            //netView.pushLocalChanges();
 
             // TODO: Investigate in which order we'll do things (buffer up graphics commands, do some CPU, flip render buffers)
-            if(!sceneView.renderFrame()) {
+            if(!sceneView.renderFrame(deltaTime)) {
                 return;
             }
         }

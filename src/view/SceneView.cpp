@@ -66,7 +66,6 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 	Ogre::Entity* playerCarEntity = sceneManager->createEntity("PlayerCar", "car.mesh");
 	playerCarNode = sceneManager->getRootSceneNode()->createChildSceneNode();
 	playerCarNode->attachObject(playerCarEntity);
-    playerCarNode->scale(Ogre::Vector3(2.0f, 1.0f, 4.0f) / playerCarEntity->getBoundingBox().getSize()); // Force scale to 2, 1, 4. Might be buggy...
 
     // Debug draw Bullet
     bulletDebugDrawer = new Rally::Util::BulletDebugDrawer(sceneManager);
@@ -118,7 +117,7 @@ bool SceneView::renderFrame() {
         return false;
     } else {
         updatePlayerCar();
-       
+
     if(debugDrawEnabled){
         world.getPhysicsWorld().getDynamicsWorld()->debugDrawWorld();
     }
@@ -135,8 +134,9 @@ void SceneView::updatePlayerCar() {
     // Todo: Move to separate view
     Rally::Model::Car& playerCar = world.getPlayerCar();
     Rally::Vector3 position = playerCar.getPosition();
-    playerCarNode->setPosition(position);
-    playerCarNode->setOrientation(playerCar.getOrientation());
+    Rally::Quaternion orientation = playerCar.getOrientation();
+    playerCarNode->setPosition(position + orientation*Rally::Vector3(0, 0, -2.0f));
+    playerCarNode->setOrientation(orientation);
 
     Rally::Vector3 displacementBase = playerCar.getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_Z;
     Rally::Vector3 displacement(12.0f * displacementBase.x, 3.0f, 12.0f*displacementBase.z);
@@ -161,11 +161,11 @@ void SceneView::remoteCarUpdated(int carId, const Rally::Model::RemoteCar& remot
         Ogre::Entity* remoteCarEntity = sceneManager->createEntity(baseString + "_Entity", "car.mesh");
         remoteCarNode = sceneManager->getRootSceneNode()->createChildSceneNode(nodeName);
         remoteCarNode->attachObject(remoteCarEntity);
-        remoteCarNode->scale(Ogre::Vector3(2.0f, 1.0f, 4.0f) / remoteCarEntity->getBoundingBox().getSize()); // Force scale to 2, 1, 4. Might be buggy...
     }
 
-    remoteCarNode->setPosition(remoteCar.getPosition());
-    remoteCarNode->setOrientation(remoteCar.getOrientation());
+    Rally::Quaternion orientation = remoteCar.getOrientation();
+    remoteCarNode->setPosition(remoteCar.getPosition() + orientation*Rally::Vector3(0, 0, -2.0f));
+    remoteCarNode->setOrientation(orientation);
 
     /*std::map<const Rally::Model::RemoteCar&, TheViewType::iterator found = remoteCarViews.find(remoteCar);
 

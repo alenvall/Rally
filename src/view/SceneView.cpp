@@ -19,6 +19,7 @@ SceneView::SceneView(Rally::Model::World& world) :
         camera(NULL),
         sceneManager(NULL),
         renderWindow(NULL){
+        debugDrawEnabled = false;
 }
 
 SceneView::~SceneView() {
@@ -117,7 +118,10 @@ bool SceneView::renderFrame() {
         return false;
     } else {
         updatePlayerCar();
+       
+    if(debugDrawEnabled){
         world.getPhysicsWorld().getDynamicsWorld()->debugDrawWorld();
+    }
 
         Ogre::Root& root = Ogre::Root::getSingleton();
         if(!root.renderOneFrame()) {
@@ -182,5 +186,6 @@ void SceneView::remoteCarRemoved(int carId, const Rally::Model::RemoteCar& remot
     sceneManager->destroyEntity(baseString + "_Entity");
 }
 
-
-
+void SceneView::setDebugDrawEnabled(bool enabled){
+    debugDrawEnabled = enabled;
+}

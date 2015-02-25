@@ -22,13 +22,14 @@ class SceneView {
         bool renderFrame();
         void remoteCarUpdated(int carId, const Rally::Model::RemoteCar& remoteCar);
         void remoteCarRemoved(int carId, const Rally::Model::RemoteCar& remoteCar);
+        void setDebugDrawEnabled(bool enabled);
 
     private:
         Ogre::Viewport* addViewport(Ogre::Camera* followedCamera);
         Ogre::Camera* addCamera(Ogre::String cameraName);
         void loadResourceConfig(Ogre::String resourceConfigPath);
-
         void updatePlayerCar();
+        bool debugDrawEnabled;
 
         Rally::Model::World& world;
 

@@ -76,6 +76,13 @@ namespace Rally { namespace Controller {
             // neither left nor right, or left and right
             car.setSteeringRequested(0);
         }
+
+        if(inputInit.isKeyPressed("d")){
+		    sceneView.setDebugDrawEnabled(true);
+        }
+        if (inputInit.isKeyPressed("f")){
+		    sceneView.setDebugDrawEnabled(false);
+        }
     }
 
     void MainController_RemoteCarListener::carUpdated(unsigned short carId,

@@ -11,6 +11,7 @@ namespace Rally { namespace Model {
 
     namespace {
         const btVector3 CAR_DIMENSIONS(2.0f, 1.0f, 4.0f);
+        const float MAX_CORRECTION_DISTANCE = 10.0f;
     }
 
     PhysicsRemoteCar::PhysicsRemoteCar() :
@@ -50,6 +51,9 @@ namespace Rally { namespace Model {
         bodyRigidBody->setCollisionFlags(bodyRigidBody->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
         bodyRigidBody->setActivationState(DISABLE_DEACTIVATION); // So that our motion stte is queried every simulation stop
         dynamicsWorld->addRigidBody(bodyRigidBody);
+
+        // Register for physics world updates
+        physicsWorld.registerStepCallback(this);
     }
 
     void PhysicsRemoteCar::setTargetTransform(const Rally::Vector3& targetPosition,
@@ -73,9 +77,38 @@ namespace Rally { namespace Model {
     void PhysicsRemoteCar_BodyMotionState::setTargetTransform(const Rally::Vector3& targetPosition,
             const Rally::Vector3& incomingVelocity,
             const Rally::Quaternion& targetOrientation) {
-        //bodyRigidBody->setLinearVelocity(incomingVelocity);
-        currentTransform.setOrigin(btVector3(targetPosition.x, targetPosition.y, targetPosition.z));
+        btVector3 currentPosition = currentTransform.getOrigin();
+        Rally::Vector3 correctionDistance = targetPosition - Rally::Vector3(currentPosition.x(), currentPosition.y(), currentPosition.z());
+        if(correctionDistance.length() <= MAX_CORRECTION_DISTANCE) {
+            // Correction velocity is the velocity we need to go to where the physics car will be in one second,
+            // in one second. It is then scaled by the length of the incoming velocity to not create jitter.
+            // It effectively means that the velocity vector is steered to the correct position, interpolating it.
+            Rally::Vector3 correctionVelocity = incomingVelocity + correctionDistance;
+            float correctionVelocityLength = correctionVelocity.length();
+            if(correctionVelocityLength > 0.001f) {
+                correctionVelocity = (correctionVelocity / correctionVelocityLength) * incomingVelocity.length();
+            }
+
+            interpolationVelocity = btVector3(correctionVelocity.x, correctionVelocity.y, correctionVelocity.z);
+        } else {
+            // If the correction distance is to high, we just teleport instead. Probably happens:
+            //  * When the simulation has just started and there is no valid position set already.
+            //  * When there is a lot of network drop/lag.
+            interpolationVelocity = btVector3(incomingVelocity.x, incomingVelocity.y, incomingVelocity.z);
+            currentTransform.setOrigin(btVector3(targetPosition.x, targetPosition.y, targetPosition.z));
+        }
+
+        // Todo: Interpolate here
         currentTransform.setRotation(btQuaternion(targetOrientation.x, targetOrientation.y, targetOrientation.z, targetOrientation.w));
+    }
+
+    void PhysicsRemoteCar::willStep(float deltaTime) {
+        // setLinearVelocity() is used by the solver for other colliding objects.
+        bodyRigidBody->setLinearVelocity(bodyMotionState.interpolationVelocity);
+
+        // Interpolate the position by integrating the velocity.
+        btVector3 currentPosition = bodyMotionState.currentTransform.getOrigin();
+        bodyMotionState.currentTransform.setOrigin(currentPosition + bodyMotionState.interpolationVelocity*deltaTime);
     }
 
     void PhysicsRemoteCar_BodyMotionState::getWorldTransform(btTransform& worldTransform) const {

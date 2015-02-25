@@ -2,6 +2,7 @@
 #define RALLY_MODEL_PHYSICSREMOTECAR_H_
 
 #include "Rally.h"
+#include "model/PhysicsWorld.h"
 
 #include <btBulletDynamicsCommon.h>
 
@@ -11,7 +12,8 @@ namespace Rally { namespace Model {
 
     class PhysicsRemoteCar_BodyMotionState : public btMotionState {
         public:
-            PhysicsRemoteCar_BodyMotionState() {
+            PhysicsRemoteCar_BodyMotionState() :
+                    interpolationVelocity(0, 0, 0) {
                 currentTransform.setIdentity();
             }
 
@@ -27,12 +29,16 @@ namespace Rally { namespace Model {
             virtual void setWorldTransform(const btTransform& worldTransform);
 
             btTransform currentTransform;
+            btVector3 interpolationVelocity;
     };
 
-    class PhysicsRemoteCar {
+    class PhysicsRemoteCar : public Rally::Model::PhysicsWorld_StepCallback {
         public:
             PhysicsRemoteCar();
             virtual ~PhysicsRemoteCar();
+
+            virtual void willStep(float deltaTime);
+
             void attachTo(PhysicsWorld& physicsWorld);
 
             void setTargetTransform(const Rally::Vector3& targetPosition,

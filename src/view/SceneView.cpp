@@ -13,6 +13,8 @@
 #include <sstream>
 #include <string>
 
+#include <btBulletDynamicsCommon.h>
+
 SceneView::SceneView(Rally::Model::World& world) :
         world(world),
         camera(NULL),
@@ -58,7 +60,7 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 
 	// Load the scene.
 	DotSceneLoader loader;
-	loader.parseDotScene("world.scene", "General", sceneManager, sceneNode);
+	loader.parseDotScene("world.scene", "General", sceneManager, sceneNode); 
 
 	// Todo: Move to appropriate view
 	Ogre::Entity* playerCarEntity = sceneManager->createEntity("PlayerCar", "car.mesh");
@@ -85,7 +87,7 @@ Ogre::Viewport* SceneView::addViewport(Ogre::Camera* followedCamera) {
 Ogre::Camera* SceneView::addCamera(Ogre::String cameraName) {
     // Setup camera to match viewport
     Ogre::Camera* camera = sceneManager->createCamera(cameraName);
-    camera->setNearClipDistance(5);
+	camera->setNearClipDistance(Ogre::Real(0.1));
 
     return camera;
 }
@@ -144,23 +146,62 @@ void SceneView::updatePlayerCar(float deltaTime) {
 	// TOOD: Fix so that the camera looks backwards when going backwards
 	displacementBase *= -1;
 	
-	Rally::Vector3 displacement(12.0f * displacementBase.x, 20.0f, 30.0f*displacementBase.z);
+	Rally::Vector3 displacement(10.0f * displacementBase.x, 10.0f, 10.0f * displacementBase.z);
     Rally::Vector3 endPosition = position + displacement;
 
-	const float lerpAdjust = 2;
+	float lerpAdjust = (playerCar.getVelocity().length())/5;
+	//std::cout << lerpAdjust << std::endl;
 
 	// Lerp towards the new camera position to get a smoother pan
-	float lerpX = Ogre::Math::lerp(camera->getPosition().x, endPosition.x, lerpAdjust*deltaTime);
-	float lerpY = Ogre::Math::lerp(camera->getPosition().y, endPosition.y, lerpAdjust*deltaTime);
-	float lerpZ = Ogre::Math::lerp(camera->getPosition().z, endPosition.z, lerpAdjust*deltaTime);
+	float lerpX = Ogre::Math::lerp(currentCameraPosition.x, endPosition.x, lerpAdjust*deltaTime);
+	float lerpY = Ogre::Math::lerp(currentCameraPosition.y, endPosition.y, lerpAdjust*deltaTime);
+	float lerpZ = Ogre::Math::lerp(currentCameraPosition.z, endPosition.z, lerpAdjust*deltaTime);
 
 	Rally::Vector3 newPos(lerpX, lerpY, lerpZ);
 	Rally::Vector3 cameraPosition = newPos;
 
+	/*
+	Shoot a ray from the car (with an offset to prevent collision with itself) to the camera.
+	If anyting is intersected the camera is adjusted to prevent that the camera is blocked.
+	*/
+	btVector3 start(position.x, position.y + 2.0f, position.z);
+	btVector3 end(newPos.x, newPos.y, newPos.z);
+
+	btCollisionWorld::ClosestRayResultCallback ClosestRayResultCallBack(start, end);
+
+	// Perform raycast
+	world.getPhysicsWorld().getDynamicsWorld()->getCollisionWorld()->rayTest(start, end, ClosestRayResultCallBack);
+
+	if(ClosestRayResultCallBack.hasHit()) {
+		btVector3 hitLoc = ClosestRayResultCallBack.m_hitPointWorld;
+
+		//If the camera is blocked, the new camera is set to where the collison
+		//happened with a tiny offset.
+		cameraPosition = Rally::Vector3(hitLoc.getX(), hitLoc.getY(), hitLoc.getZ());
+		
+		float camOffset = 0.5f;
+
+		//Adjust for X
+		if(hitLoc.getX() > cameraPosition.x)
+			cameraPosition += Rally::Vector3(-camOffset, 0.0f, 0.0f);
+		else if(hitLoc.getX() < cameraPosition.x)
+			cameraPosition += Rally::Vector3(camOffset, 0.0f, 0.0f);
+		
+		//Adjust for Y
+		if(hitLoc.getY() > cameraPosition.y)
+			cameraPosition += Rally::Vector3(0.0f, -camOffset, 0.0f);
+
+		//Adjust for Z
+		if(hitLoc.getZ() > cameraPosition.z)
+			cameraPosition += Rally::Vector3(0.0f, 0.0f, -camOffset);
+		else if(hitLoc.getZ() < cameraPosition.z)
+			cameraPosition += Rally::Vector3(0.0f, 0.0f, camOffset);
+
+	}
+
     camera->setPosition(cameraPosition);
     sceneManager->getLight("MainLight")->setPosition(cameraPosition);
 	camera->lookAt(position);
-
 }
 
 void SceneView::remoteCarUpdated(int carId, const Rally::Model::RemoteCar& remoteCar) {

@@ -77,7 +77,7 @@ namespace Rally { namespace Model {
 
     Rally::Quaternion PhysicsRemoteCar::getOrientation() const {
         const btQuaternion orientation = bodyMotionState.currentTransform.getRotation();
-        return Rally::Quaternion(orientation.x(), orientation.y(), orientation.z(), orientation.w());
+        return Rally::Quaternion(orientation.w(), orientation.x(), orientation.y(), orientation.z());
     }
 
     void PhysicsRemoteCar_BodyMotionState::setTargetTransform(const Rally::Vector3& targetPosition,

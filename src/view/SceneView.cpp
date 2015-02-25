@@ -69,6 +69,10 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     // Debug draw Bullet
     //bulletDebugDrawer = new Rally::Util::BulletDebugDrawer(sceneManager);
     //world.getPhysicsWorld().getDynamicsWorld()->setDebugDrawer(bulletDebugDrawer);
+
+	// Sky dome
+	//sceneManager->setSkyDome(true, "Rally/CloudySky", 5, 8, 1000, true);
+	sceneManager->setSkyDome(true, "Rally/CloudySky", 5, 8);
 }
 
 Ogre::Viewport* SceneView::addViewport(Ogre::Camera* followedCamera) {

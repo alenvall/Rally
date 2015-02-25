@@ -51,6 +51,8 @@ namespace Rally { namespace Model {
 
         private:
             void initializeConstructionInfo();
+
+            Rally::Model::PhysicsWorld* physicsWorld;
             btDynamicsWorld* dynamicsWorld;
 
             btCollisionShape* bodyShape;

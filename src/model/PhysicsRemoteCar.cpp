@@ -15,6 +15,7 @@ namespace Rally { namespace Model {
     }
 
     PhysicsRemoteCar::PhysicsRemoteCar() :
+            physicsWorld(NULL),
             dynamicsWorld(NULL),
             bodyShape(NULL),
             bodyConstructionInfo(NULL),
@@ -22,6 +23,10 @@ namespace Rally { namespace Model {
     }
 
     PhysicsRemoteCar::~PhysicsRemoteCar() {
+        if(physicsWorld != NULL) {
+            physicsWorld->unregisterStepCallback(this);
+        }
+
         if(dynamicsWorld != NULL && bodyRigidBody != NULL) {
             dynamicsWorld->removeRigidBody(bodyRigidBody);
             delete bodyRigidBody;
@@ -43,6 +48,7 @@ namespace Rally { namespace Model {
     }
 
     void PhysicsRemoteCar::attachTo(PhysicsWorld& physicsWorld) {
+        this->physicsWorld = &physicsWorld;
         this->dynamicsWorld = physicsWorld.getDynamicsWorld();
 
         // Create car body

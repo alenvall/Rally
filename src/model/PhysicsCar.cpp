@@ -174,7 +174,11 @@ namespace Rally { namespace Model {
         // std::cout << getLeftFrontWheelTraction() << " " << getRightFrontWheelTraction() << std::endl;
         const btTransform& graphicsTransform = bodyMotionState.m_graphicsWorldTrans;
         const btVector3& position = graphicsTransform.getOrigin();
-        return Rally::Vector3(position.x(), position.y() + MASS_OFFSET, position.z());
+
+        // Move it upwards as to compensate for the center-of-mass offset.
+        Rally::Vector3 moveUp = getOrientation() * Rally::Vector3(0, MASS_OFFSET, 0);
+
+        return Rally::Vector3(position.x(), position.y(), position.z()) + moveUp;
     }
 
     Rally::Quaternion PhysicsCar::getOrientation() const {

@@ -250,7 +250,7 @@ int main(int argc, char** argv) {
                         // We need to splice in the sender's playerId (it's server based)
                         unsigned short playerId = htons(clientData.getPlayerId());
                         packetSize += 2;
-                        memmove(packet + 6, packet + 4, 36);
+                        memmove(packet + 6, packet + 4, 40);
                         memcpy(packet + 4, &playerId, 2);
 
                         broadcastPacket(socket, packet, packetSize, clientIdentifier, clients);

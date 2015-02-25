@@ -81,7 +81,7 @@ class ClientData {
             playerId(NEXT_AVAILABLE_PLAYER_ID++) {
         }
 
-        bool processPositionPacket(short packetId) {
+        bool processPositionPacket(unsigned short packetId) {
             totalPackagesReceived++;
 
             unsigned short lastPacketIdShort = static_cast<unsigned short>(lastPositionPacketId);

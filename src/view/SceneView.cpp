@@ -62,10 +62,7 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 	DotSceneLoader loader;
 	loader.parseDotScene("world.scene", "General", sceneManager, sceneNode);
 
-	// Todo: Move to appropriate view
-	Ogre::Entity* playerCarEntity = sceneManager->createEntity("PlayerCar", "car.mesh");
-	playerCarNode = sceneManager->getRootSceneNode()->createChildSceneNode();
-	playerCarNode->attachObject(playerCarEntity);
+	playerCarView.attachTo(sceneManager, "PlayerCar");
 
     // Debug draw Bullet
     bulletDebugDrawer = new Rally::Util::BulletDebugDrawer(sceneManager);
@@ -131,19 +128,16 @@ bool SceneView::renderFrame() {
 }
 
 void SceneView::updatePlayerCar() {
-    // Todo: Move to separate view
     Rally::Model::Car& playerCar = world.getPlayerCar();
-    Rally::Vector3 position = playerCar.getPosition();
-    Rally::Quaternion orientation = playerCar.getOrientation();
-    playerCarNode->setPosition(position + orientation*Rally::Vector3(0, 0, -2.0f));
-    playerCarNode->setOrientation(orientation);
+    playerCarView.updateBody(playerCar.getPosition(), playerCar.getOrientation());
 
+    // Temporary hack to move camera after car
     Rally::Vector3 displacementBase = playerCar.getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_Z;
     Rally::Vector3 displacement(12.0f * displacementBase.x, 3.0f, 12.0f*displacementBase.z);
-    Rally::Vector3 cameraPosition = position + displacement;//Ogre::Vector3(0.0f, 0.2f*35.0f, 0.2f*-50.0f);
+    Rally::Vector3 cameraPosition = playerCar.getPosition() + displacement;
     camera->setPosition(cameraPosition);
     sceneManager->getLight("MainLight")->setPosition(cameraPosition);
-    camera->lookAt(position);
+    camera->lookAt(playerCar.getPosition());
 }
 
 void SceneView::remoteCarUpdated(int carId, const Rally::Model::RemoteCar& remoteCar) {

@@ -1,16 +1,15 @@
-// material.025 genrated by blender2ogre 0.6.0
+// horisont genrated by blender2ogre 0.6.0
 
-material material.025 
+material horisont 
 {
     receive_shadows on 
 
     technique
     {
-        pass material.025
+        pass horisont
         {
             ambient 0.5 0.5 0.5 0.5
-            diffuse 1.0 1.0 1.0 1.0
-            specular 0.5 0.5 0.5 1.0 12.5
+            diffuse 1.0 1.0 1.0 1.0            specular 0.0 0.0 0.0 1.0 12.5
             emissive 0.0 0.0 0.0 1.0
 
             alpha_to_coverage off

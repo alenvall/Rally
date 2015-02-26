@@ -29,6 +29,7 @@ SceneView::~SceneView() {
     delete root;
 }
 
+
 void SceneView::initialize(std::string resourceConfigPath, std::string pluginConfigPath) {
     Ogre::Root* root = new Ogre::Root(pluginConfigPath);
 
@@ -46,7 +47,9 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     sceneManager = root->createSceneManager("OctreeSceneManager"); // Todo: Research a good scene manager
 
     // This should be done after creating a scene manager, so that there is a render context (GL/D3D)
-    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();    
+
+    sceneManager->setSkyDome(true, "Rally/CloudySky", 5, 8);
 
     camera = this->addCamera("MainCamera");
     Ogre::Viewport* viewport = this->addViewport(camera);
@@ -55,12 +58,21 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     Ogre::SceneNode* sceneNode = sceneManager->getRootSceneNode()->createChildSceneNode();
     sceneNode->setPosition(Ogre::Vector3(0, 110.0f, 0));
 
-	sceneManager->setAmbientLight(Ogre::ColourValue(1, 1, 1));
-	Ogre::Light* light = sceneManager->createLight("MainLight");
-
-	// Load the scene.
-	DotSceneLoader loader;
-	loader.parseDotScene("world.scene", "General", sceneManager, sceneNode);
+    // Load the scene.
+    DotSceneLoader loader;
+    loader.parseDotScene("world.scene", "General", sceneManager, sceneNode);
+    
+    sceneManager->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
+    sceneManager->setShadowColour(Ogre::ColourValue(0.5, 0.5, 0.5) );
+    sceneManager->setAmbientLight(Ogre::ColourValue(1, 1, 1));
+ 
+    Ogre::Light* sunLight = sceneManager->createLight("sunLight");
+    sunLight->setType(Ogre::Light::LT_DIRECTIONAL);
+    sunLight->setCastShadows(true);
+    sunLight->setDirection(Ogre::Vector3( 1, -2, 1 ));
+    sunLight->setDiffuseColour(Ogre::ColourValue(1, 1, 1));
+    sunLight->setSpecularColour(Ogre::ColourValue(1, 1, 1));
+    sceneNode->attachObject(sunLight);
 
 	playerCarView.attachTo(sceneManager, "PlayerCar");
 
@@ -68,6 +80,7 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     bulletDebugDrawer = new Rally::Util::BulletDebugDrawer(sceneManager);
     world.getPhysicsWorld().getDynamicsWorld()->setDebugDrawer(bulletDebugDrawer);
 }
+
 
 Ogre::Viewport* SceneView::addViewport(Ogre::Camera* followedCamera) {
     Ogre::Viewport* viewport = renderWindow->addViewport(camera);
@@ -141,7 +154,6 @@ void SceneView::updatePlayerCar() {
     Rally::Vector3 displacement(12.0f * displacementBase.x, 3.0f, 12.0f*displacementBase.z);
     Rally::Vector3 cameraPosition = playerCar.getPosition() + displacement;
     camera->setPosition(cameraPosition);
-    sceneManager->getLight("MainLight")->setPosition(cameraPosition);
     camera->lookAt(playerCar.getPosition());
 }
 

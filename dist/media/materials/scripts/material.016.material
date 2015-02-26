@@ -8,10 +8,10 @@ material material.016
     {
         pass material.016
         {
-            ambient 1.0 1.0 1.0 1.0
-            diffuse 1.0 1.0 1.0 1.0
-            specular 0.5 0.5 0.5 1.0 12.5
-            emissive 0.0 0.0 0.0 1.0
+            ambient 0.3 0.3 0.3 0.3
+            diffuse 0.6 0.6 0.6 0.6
+            specular 0.0 0.0 0.0 0.0 0.0
+            emissive 0.0 0.0 0.0 0.0
 
             alpha_to_coverage off
             colour_write on
@@ -27,7 +27,7 @@ material material.016
             polygon_mode solid
             scene_blend one zero
             scene_blend_op add
-            shading gouraud
+            shading phong
             transparent_sorting on
 
             texture_unit 

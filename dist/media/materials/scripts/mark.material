@@ -1,16 +1,16 @@
-// material.025 genrated by blender2ogre 0.6.0
+// mark genrated by blender2ogre 0.6.0
 
-material material.025 
+material mark 
 {
     receive_shadows on 
 
     technique
     {
-        pass material.025
+        pass mark
         {
-            ambient 0.5 0.5 0.5 0.5
-            diffuse 1.0 1.0 1.0 1.0
-            specular 0.5 0.5 0.5 1.0 12.5
+            ambient 0.3 0.3 0.3 0.3
+            diffuse 0.3 0.3 0.3 0.3
+            specular 0.0 0.0 0.0 1.0 12.5
             emissive 0.0 0.0 0.0 1.0
 
             alpha_to_coverage off
@@ -22,7 +22,7 @@ material material.025
             illumination_stage 
             light_clip_planes off
             light_scissor off
-            lighting off
+            lighting on
             normalise_normals off
             polygon_mode solid
             scene_blend one zero
@@ -32,7 +32,7 @@ material material.025
 
             texture_unit 
             {
-                texture horisont.png
+                texture mark.png
                 tex_address_mode wrap
                 scale 1.0 1.0
                 colour_op modulate

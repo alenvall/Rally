@@ -680,6 +680,8 @@ void DotSceneLoader::processEntity(rapidxml::xml_node<>* XMLNode, Ogre::SceneNod
     {
         Ogre::MeshManager::getSingleton().load(meshFile, m_sGroupName);
         pEntity = mSceneMgr->createEntity(name, meshFile);
+        std:: cout << name << std::endl;
+
         pEntity->setCastShadows(castShadows);
         pParent->attachObject(pEntity);
  

@@ -29,8 +29,6 @@ namespace Rally { namespace Controller {
 
         frameTimer.reset();
         while(true) {
-            updateInput();
-
             float deltaTime = frameTimer.getElapsedSeconds();
 
             // Allow max 1000 FPS for precision/stability reasons.
@@ -44,6 +42,8 @@ namespace Rally { namespace Controller {
             frameTimer.reset();
 
             // ADD ANYTHING THAT'S NOT FRAME-TIMING CODE BELOW THIS LINE!
+
+            updateInput();
 
             netView.pullRemoteChanges();
 

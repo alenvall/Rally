@@ -142,11 +142,9 @@ void SceneView::updatePlayerCar(float deltaTime) {
 	Rally::Vector3 currentCameraPosition = camera->getPosition();
 
 	Rally::Vector3 displacementBase = playerCar.getOrientation() * Ogre::Vector3::UNIT_Z;
-
-	// TOOD: Fix so that the camera looks backwards when going backwards
 	displacementBase *= -1;
 	
-	Rally::Vector3 displacement(10.0f * displacementBase.x, 10.0f, 10.0f * displacementBase.z);
+	Rally::Vector3 displacement(12.0f * displacementBase.x, 6.0f, 12.0f * displacementBase.z);
     Rally::Vector3 endPosition = position + displacement;
 
 	float lerpAdjust = (playerCar.getVelocity().length())/5;

@@ -25,6 +25,7 @@ SceneView::SceneView(Rally::Model::World& world) :
 
 SceneView::~SceneView() {
     //delete bulletDebugDrawer;
+    tunnelPortalView.detach();
 
     Ogre::Root* root = Ogre::Root::getSingletonPtr();
     delete root;
@@ -48,7 +49,7 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     sceneManager = root->createSceneManager("OctreeSceneManager"); // Todo: Research a good scene manager
 
     // This should be done after creating a scene manager, so that there is a render context (GL/D3D)
-    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();    
+    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
     sceneManager->setSkyDome(true, "Rally/CloudySky", 5, 8);
 
@@ -62,11 +63,11 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     // Load the scene.
     DotSceneLoader loader;
     loader.parseDotScene("world.scene", "General", sceneManager, sceneNode);
-    
+
     sceneManager->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
     sceneManager->setShadowColour(Ogre::ColourValue(0.5, 0.5, 0.5) );
     sceneManager->setAmbientLight(Ogre::ColourValue(1, 1, 1));
- 
+
     Ogre::Light* sunLight = sceneManager->createLight("sunLight");
     sunLight->setType(Ogre::Light::LT_DIRECTIONAL);
     sunLight->setCastShadows(true);
@@ -83,7 +84,20 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 
 	// Sky dome
 	//sceneManager->setSkyDome(true, "Rally/CloudySky", 5, 8, 1000, true);
+
 	sceneManager->setSkyDome(true, "Rally/CloudySky", 5, 8);
+
+	// Place the magic surface at the end of the tunnel.
+	tunnelPortalView.attachTo(sceneManager, "TunnelPortal");
+	tunnelPortalView.setScale(15.0f, 5.0f);
+    tunnelPortalView.setPosition(Rally::Vector3(86.0f, 12.0f, -134.0f));
+    tunnelPortalView.setOrientation(Rally::Quaternion(Ogre::Math::Sqrt(0.5f), 0, -Ogre::Math::Sqrt(0.5f), 0));
+
+    // Snap a picture for the magic surface at Kopparbunken.
+	tunnelPortalView.moveCamera(
+        Rally::Vector3(255.0f, 12.0f, 240.0f), // position
+        Rally::Vector3(255.0f, 12.0f, 239.0f)); // look at
+    tunnelPortalView.takeSnapshot();
 }
 
 
@@ -162,7 +176,7 @@ void SceneView::updatePlayerCar(float deltaTime) {
 
 	Rally::Vector3 displacementBase = playerCar.getOrientation() * Ogre::Vector3::UNIT_Z;
 	displacementBase *= -1;
-	
+
 	Rally::Vector3 displacement(8.0f * displacementBase.x, 5.0f, 8.0f * displacementBase.z);
     Rally::Vector3 endPosition = position + displacement;
 
@@ -195,7 +209,7 @@ void SceneView::updatePlayerCar(float deltaTime) {
 		//If the camera is blocked, the new camera is set to where the collison
 		//happened with a tiny offset.
 		cameraPosition = Rally::Vector3(hitLoc.getX(), hitLoc.getY(), hitLoc.getZ());
-		
+
 		float camOffset = 0.5f;
 
 		//Adjust for X
@@ -203,7 +217,7 @@ void SceneView::updatePlayerCar(float deltaTime) {
 			cameraPosition += Rally::Vector3(-camOffset, 0.0f, 0.0f);
 		else if(hitLoc.getX() < cameraPosition.x)
 			cameraPosition += Rally::Vector3(camOffset, 0.0f, 0.0f);
-		
+
 		//Adjust for Y
 		if(hitLoc.getY() > cameraPosition.y)
 			cameraPosition += Rally::Vector3(0.0f, -camOffset, 0.0f);
@@ -218,6 +232,14 @@ void SceneView::updatePlayerCar(float deltaTime) {
 
     camera->setPosition(cameraPosition);
 	camera->lookAt(position);
+
+    // This is a bit of a temporary hack... It is laggy though...
+    /*Rally::Vector3 lookVector = (Rally::Vector3(255.0f, 12.0f, 240.0f) - Rally::Vector3(255.0f, 12.0f, 239.0f))*
+        (cameraPosition - Rally::Vector3(86.0f, 12.0f, -134.0f)).length();
+	tunnelPortalView.moveCamera(
+        Rally::Vector3(255.0f, 12.0f, 240.0f) + lookVector, // position
+        Rally::Vector3(255.0f, 12.0f, 239.0f) + lookVector); // look at
+    tunnelPortalView.takeSnapshot();*/
 }
 
 void SceneView::updateRemoteCars() {

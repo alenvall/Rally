@@ -3,6 +3,7 @@
 
 #include "view/RemoteCarView.h"
 #include "view/CarView.h"
+#include "view/PortalView.h"
 #include "model/World.h"
 
 #include <OgreCamera.h>
@@ -43,6 +44,8 @@ class SceneView {
 
         Rally::View::CarView playerCarView;
         std::map<int, Rally::View::RemoteCarView> remoteCarViews;
+
+        Rally::View::PortalView tunnelPortalView;
 
         //std::map<const Rally::Model::RemoteCar&, TheViewType&> remoteCarViews;
 

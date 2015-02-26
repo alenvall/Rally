@@ -114,6 +114,7 @@ bool SceneView::renderFrame() {
         return false;
     } else {
         updatePlayerCar();
+        updateRemoteCars();
 
     if(debugDrawEnabled){
         world.getPhysicsWorld().getDynamicsWorld()->debugDrawWorld();
@@ -145,13 +146,21 @@ void SceneView::updatePlayerCar() {
     camera->lookAt(playerCar.getPosition());
 }
 
+void SceneView::updateRemoteCars() {
+    for(std::map<int, Rally::View::RemoteCarView>::iterator carViewIterator = remoteCarViews.begin();
+            carViewIterator != remoteCarViews.end();
+            ++carViewIterator) {
+        carViewIterator->second.updateWithRemoteCar();
+    }
+}
+
 void SceneView::remoteCarUpdated(int carId, const Rally::Model::RemoteCar& remoteCar) {
-    std::map<int, Rally::View::CarView>::iterator found = remoteCarViews.find(carId);
+    std::map<int, Rally::View::RemoteCarView>::iterator found = remoteCarViews.find(carId);
 
     // Lazily construct if not found
     if(found == remoteCarViews.end()) {
-        found = remoteCarViews.insert(std::map<int, Rally::View::CarView>::value_type(carId,
-            Rally::View::CarView(/*remoteCar*/))).first;
+        found = remoteCarViews.insert(std::map<int, Rally::View::RemoteCarView>::value_type(carId,
+            Rally::View::RemoteCarView(remoteCar))).first;
         std::ostringstream carNameStream;
         carNameStream << "RemoteCar_" << carId;
         std::string carName = carNameStream.str();
@@ -159,8 +168,7 @@ void SceneView::remoteCarUpdated(int carId, const Rally::Model::RemoteCar& remot
         found->second.attachTo(sceneManager, carName);
     }
 
-    found->second.updateBody(remoteCar.getPosition(), remoteCar.getOrientation());
-    // found->second.updateWheels();
+    // We don't really update the car here, as it has to be done every frame for the interpolation.
 }
 
 void SceneView::remoteCarRemoved(int carId, const Rally::Model::RemoteCar& remoteCar) {

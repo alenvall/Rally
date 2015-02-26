@@ -144,13 +144,13 @@ if(WIN32 AND MSVC)
 		set_source_files_properties(
 			${src_file}
 			PROPERTIES
-			COMPILE_FLAGS "/Yustdafx.h /Zm189 /FIstdafx.h"
+			COMPILE_FLAGS "/Yustdafx.h /Zm239 /FIstdafx.h"
 		)
 	endforeach( src_file ${GAME_SOURCES} )
 	
 	set_source_files_properties(src/stdafx.cpp
 		PROPERTIES
-		COMPILE_FLAGS "/Ycstdafx.h /Zm189"
+		COMPILE_FLAGS "/Ycstdafx.h /Zm239"
 	)
     list(APPEND GAME_SOURCES stdafx.cpp)
 else()

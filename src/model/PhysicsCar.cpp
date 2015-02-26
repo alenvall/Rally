@@ -203,21 +203,25 @@ namespace Rally { namespace Model {
     }
 
     Rally::Quaternion PhysicsCar::getRightFrontWheelOrientation() const {
+        raycastVehicle->updateWheelTransform(0, true);
         btQuaternion orientation = rightFrontWheel->m_worldTransform.getRotation();
         return Rally::Quaternion(orientation.w(), orientation.x(), orientation.y(), orientation.z());
     }
 
     Rally::Quaternion PhysicsCar::getLeftFrontWheelOrientation() const {
+        raycastVehicle->updateWheelTransform(1, true);
         btQuaternion orientation = leftFrontWheel->m_worldTransform.getRotation();
         return Rally::Quaternion(orientation.w(), orientation.x(), orientation.y(), orientation.z());
     }
 
     Rally::Quaternion PhysicsCar::getRightBackWheelOrientation() const {
+        raycastVehicle->updateWheelTransform(2, true);
         btQuaternion orientation = rightBackWheel->m_worldTransform.getRotation();
         return Rally::Quaternion(orientation.w(), orientation.x(), orientation.y(), orientation.z());
     }
 
     Rally::Quaternion PhysicsCar::getLeftBackWheelOrientation() const {
+        raycastVehicle->updateWheelTransform(3, true);
         btQuaternion orientation = leftBackWheel->m_worldTransform.getRotation();
         return Rally::Quaternion(orientation.w(), orientation.x(), orientation.y(), orientation.z());
     }

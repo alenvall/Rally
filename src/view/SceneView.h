@@ -39,6 +39,7 @@ class SceneView {
         Ogre::RenderWindow* renderWindow;
 
         Rally::View::CarView playerCarView;
+        std::map<int, Rally::View::CarView> remoteCarViews;
 
         //std::map<const Rally::Model::RemoteCar&, TheViewType&> remoteCarViews;
 

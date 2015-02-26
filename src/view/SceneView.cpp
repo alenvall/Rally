@@ -146,43 +146,25 @@ void SceneView::updatePlayerCar() {
 }
 
 void SceneView::remoteCarUpdated(int carId, const Rally::Model::RemoteCar& remoteCar) {
-    // Todo: Move to separate view
-    std::ostringstream baseNameStream;
-    baseNameStream << "RemoteCar_" << carId;
-    std::string baseString = baseNameStream.str();
-    std::string nodeName = baseString + "_Node";
-
-    Ogre::SceneNode* remoteCarNode;
-    if(sceneManager->hasSceneNode(nodeName)) {
-        remoteCarNode = sceneManager->getSceneNode(nodeName);// Throws if nodeName not found.
-    } else {
-        // Lazily construct if not found
-        Ogre::Entity* remoteCarEntity = sceneManager->createEntity(baseString + "_Entity", "car.mesh");
-        remoteCarNode = sceneManager->getRootSceneNode()->createChildSceneNode(nodeName);
-        remoteCarNode->attachObject(remoteCarEntity);
-    }
-
-    Rally::Quaternion orientation = remoteCar.getOrientation();
-    remoteCarNode->setPosition(remoteCar.getPosition() + orientation*Rally::Vector3(0, 0, -2.0f));
-    remoteCarNode->setOrientation(orientation);
-
-    /*std::map<const Rally::Model::RemoteCar&, TheViewType::iterator found = remoteCarViews.find(remoteCar);
+    std::map<int, Rally::View::CarView>::iterator found = remoteCarViews.find(carId);
 
     // Lazily construct if not found
     if(found == remoteCarViews.end()) {
-        found = remoteCarViews.insert(std::map<const Rally::Model::RemoteCar&, TheViewType>::value_type(remoteCar,
-            TheViewType(remoteCar))).first;
-    }*/
+        found = remoteCarViews.insert(std::map<int, Rally::View::CarView>::value_type(carId,
+            Rally::View::CarView(/*remoteCar*/))).first;
+        std::ostringstream carNameStream;
+        carNameStream << "RemoteCar_" << carId;
+        std::string carName = carNameStream.str();
+
+        found->second.attachTo(sceneManager, carName);
+    }
+
+    found->second.updateBody(remoteCar.getPosition(), remoteCar.getOrientation());
+    // found->second.updateWheels();
 }
 
 void SceneView::remoteCarRemoved(int carId, const Rally::Model::RemoteCar& remoteCar) {
-    // Todo: Move to separate view
-    std::ostringstream baseNameStream;
-    baseNameStream << "RemoteCar_" << carId;
-    std::string baseString = baseNameStream.str();
-
-    sceneManager->destroySceneNode(baseString + "_Node");
-    sceneManager->destroyEntity(baseString + "_Entity");
+    remoteCarViews.erase(carId);
 }
 
 void SceneView::setDebugDrawEnabled(bool enabled){

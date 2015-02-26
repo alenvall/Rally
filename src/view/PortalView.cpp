@@ -19,14 +19,21 @@ namespace Rally { namespace View {
     }
 
     PortalView::~PortalView() {
+    }
+
+    void PortalView::detach() {
         if(sceneManager != NULL) {
-            sceneManager->destroySceneNode(displaySurfaceNode);
-            sceneManager->destroyEntity(displaySurfaceEntity);
+            if(displaySurfaceNode) sceneManager->destroySceneNode(displaySurfaceNode);
+            if(displaySurfaceEntity) sceneManager->destroyEntity(displaySurfaceEntity);
             // Todo: How to destroy mesh?
             // Todo: How to unlink camera so that it can be destroyed?
-            Ogre::MaterialManager::getSingleton().remove(material->getHandle());
-            Ogre::TextureManager::getSingleton().remove(magicTexture->getHandle());
+            if(!material.isNull()) Ogre::MaterialManager::getSingleton().remove(material->getHandle());
+            if(!magicTexture.isNull()) Ogre::TextureManager::getSingleton().remove(magicTexture->getHandle());
         }
+
+        displaySurfaceMesh.setNull();
+        material.setNull();
+        magicTexture.setNull();
     }
 
     void PortalView::attachTo(Ogre::SceneManager* sceneManager, const std::string& portalName) {

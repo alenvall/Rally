@@ -21,6 +21,7 @@ class PortalView {
     public:
         PortalView();
         virtual ~PortalView();
+        void detach();
         void attachTo(Ogre::SceneManager* sceneManager, const std::string& portalName);
         void moveCamera(const Rally::Vector3& position, const Rally::Vector3& lookAt);
         void setPosition(const Rally::Vector3& position);

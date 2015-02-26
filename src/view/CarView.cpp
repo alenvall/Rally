@@ -24,7 +24,7 @@ namespace Rally { namespace View {
 
     CarView::~CarView() {
         if(sceneManager != NULL) {
-            sceneManager->destroySceneNode(rightFrontWheelNode);
+/*            sceneManager->destroySceneNode(rightFrontWheelNode);
             sceneManager->destroySceneNode(leftFrontWheelNode);
             sceneManager->destroySceneNode(rightBackWheelNode);
             sceneManager->destroySceneNode(leftBackWheelNode);
@@ -35,7 +35,7 @@ namespace Rally { namespace View {
             sceneManager->destroyEntity(leftBackWheelEntity);
 
             sceneManager->destroySceneNode(carNode);
-            sceneManager->destroyEntity(carEntity);
+            sceneManager->destroyEntity(carEntity);*/
         }
     }
 
@@ -46,10 +46,10 @@ namespace Rally { namespace View {
         carNode = sceneManager->getRootSceneNode()->createChildSceneNode();
         carNode->attachObject(carEntity);
 
-        rightFrontWheelNode = carNode->createChildSceneNode(Ogre::Vector3(0.7f, -0.5f, -0.8f), Ogre::Quaternion::IDENTITY);
-        leftFrontWheelNode = carNode->createChildSceneNode(Ogre::Vector3(-0.7f, -0.5f, -0.8f), Ogre::Quaternion::IDENTITY);
-        rightBackWheelNode = carNode->createChildSceneNode(Ogre::Vector3(0.7f, -0.5f, 2.0f), Ogre::Quaternion::IDENTITY);
-        leftBackWheelNode = carNode->createChildSceneNode(Ogre::Vector3(-0.7f, -0.5f, 2.0f), Ogre::Quaternion::IDENTITY);
+        rightFrontWheelNode = carNode->createChildSceneNode(Ogre::Vector3(0.7f, -0.5f, 1.50f), Ogre::Quaternion::IDENTITY);
+        leftFrontWheelNode = carNode->createChildSceneNode(Ogre::Vector3(-0.7f, -0.5f, 1.50f), Ogre::Quaternion::IDENTITY);
+        rightBackWheelNode = carNode->createChildSceneNode(Ogre::Vector3(0.7f, -0.5f, -1.25f), Ogre::Quaternion::IDENTITY);
+        leftBackWheelNode = carNode->createChildSceneNode(Ogre::Vector3(-0.7f, -0.5f, -1.25f), Ogre::Quaternion::IDENTITY);
 
         rightFrontWheelEntity = sceneManager->createEntity(carName + "_RightFrontWheel", "hjul.mesh");
         leftFrontWheelEntity = sceneManager->createEntity(carName + "_LeftFrontWheel", "hjul.mesh");

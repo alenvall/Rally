@@ -43,7 +43,7 @@ namespace Rally { namespace View {
         magicTexture = Ogre::TextureManager::getSingleton().createManual(portalName + "_Texture",
             Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
             Ogre::TEX_TYPE_2D,
-            256, 256, // width, height
+            1024, 1024, // width, height
             0, // # of mipmaps (0 = none), this and filter type needs to be set on the texture unit below too
             Ogre::PF_R8G8B8,
             Ogre::TU_RENDERTARGET, // Makes it a RTT texture with a render target
@@ -79,16 +79,16 @@ namespace Rally { namespace View {
 
         displaySurfaceManual->begin("BaseWhiteNoLighting",  Ogre::RenderOperation::OT_TRIANGLE_LIST);
         displaySurfaceManual->position(Ogre::Vector3(-1.0f, 1.0f, 0));
-        displaySurfaceManual->textureCoord(0, 0);
+        displaySurfaceManual->textureCoord(0.0f, 0.0f);
 
         displaySurfaceManual->position(Ogre::Vector3(1.0f, 1.0f, 0));
-        displaySurfaceManual->textureCoord(0, 0);
+        displaySurfaceManual->textureCoord(1.0f, 0.0f);
 
         displaySurfaceManual->position(Ogre::Vector3(1.0f, -1.0f, 0));
-        displaySurfaceManual->textureCoord(0, 0);
+        displaySurfaceManual->textureCoord(1.0f, 1.0f);
 
         displaySurfaceManual->position(Ogre::Vector3(-1.0f, -1.0f, 0));
-        displaySurfaceManual->textureCoord(0, 0);
+        displaySurfaceManual->textureCoord(0.0f, 1.0f);
 
         displaySurfaceManual->triangle(2, 1, 0);
         displaySurfaceManual->triangle(0, 3, 2);
@@ -99,6 +99,7 @@ namespace Rally { namespace View {
 
         // Instantiate an entity with the surface mesh and place it in the world.
         displaySurfaceEntity = sceneManager->createEntity(portalName + "_Entity", displaySurfaceMesh);
+        displaySurfaceEntity->setMaterial(material);
         displaySurfaceNode = sceneManager->getRootSceneNode()->createChildSceneNode();
         displaySurfaceNode->attachObject(displaySurfaceEntity);
     }
@@ -117,6 +118,7 @@ namespace Rally { namespace View {
     }
 
     void PortalView::setScale(float x, float y) {
+        camera->setAspectRatio(x / y);
         displaySurfaceNode->scale(x, y, 0);
     }
 

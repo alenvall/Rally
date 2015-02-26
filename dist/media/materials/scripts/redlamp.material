@@ -1,0 +1,35 @@
+// redlamp genrated by blender2ogre 0.6.0
+
+material redlamp 
+{
+    receive_shadows on 
+
+    technique
+    {
+        pass redlamp
+        {
+            ambient 1.0 0.006546418182551861 0.000857864273712039 1.0
+            diffuse 0.800000011920929 0.005237134624080875 0.0006862914291961703 1.0
+            specular 0.5 0.5 0.5 1.0 12.5
+            emissive 2.0 0.013092836365103722 0.001715728547424078 1.0
+
+            alpha_to_coverage off
+            colour_write on
+            cull_hardware clockwise
+            depth_check on
+            depth_func less_equal
+            depth_write on
+            illumination_stage 
+            light_clip_planes off
+            light_scissor off
+            lighting on
+            normalise_normals off
+            polygon_mode solid
+            scene_blend one zero
+            scene_blend_op add
+            shading gouraud
+            transparent_sorting on
+
+        }
+    }
+}

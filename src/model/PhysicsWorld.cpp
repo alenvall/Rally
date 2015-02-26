@@ -10,9 +10,14 @@
 namespace Rally { namespace Model {
 
     namespace {
-        void stepCallbackProxy(btDynamicsWorld* dynamicsWorld, btScalar deltaTime) {
+        void preStepCallbackProxy(btDynamicsWorld* dynamicsWorld, btScalar deltaTime) {
             PhysicsWorld* physicsWorld = static_cast<PhysicsWorld*>(dynamicsWorld->getWorldUserInfo());
-            physicsWorld->invokeStepCallbacks(deltaTime);
+            physicsWorld->invokeStepCallbacks(deltaTime, true);
+        }
+
+        void postStepCallbackProxy(btDynamicsWorld* dynamicsWorld, btScalar deltaTime) {
+            PhysicsWorld* physicsWorld = static_cast<PhysicsWorld*>(dynamicsWorld->getWorldUserInfo());
+            physicsWorld->invokeStepCallbacks(deltaTime, false);
         }
     }
 
@@ -62,7 +67,8 @@ namespace Rally { namespace Model {
         }
         // std::cout << "Number of rigid bodied: " << bodyCount << std::endl;*/
 
-        dynamicsWorld->setInternalTickCallback(stepCallbackProxy, static_cast<void*>(this));
+        dynamicsWorld->setInternalTickCallback(preStepCallbackProxy, static_cast<void*>(this), true);
+        dynamicsWorld->setInternalTickCallback(postStepCallbackProxy, static_cast<void*>(this), false);
     }
 
     void PhysicsWorld::update(float deltaTime) {
@@ -84,11 +90,15 @@ namespace Rally { namespace Model {
         }
     }
 
-    void PhysicsWorld::invokeStepCallbacks(float deltaTime) {
+    void PhysicsWorld::invokeStepCallbacks(float deltaTime, bool isPre) {
         for(std::vector<PhysicsWorld_StepCallback*>::iterator callbackIterator = stepCallbacks.begin();
                 callbackIterator != stepCallbacks.end();
                 ++callbackIterator) {
-            (*callbackIterator)->stepped(deltaTime);
+            if(isPre) {
+                (*callbackIterator)->willStep(deltaTime);
+            } else {
+                (*callbackIterator)->stepped(deltaTime);
+            }
         }
     }
 

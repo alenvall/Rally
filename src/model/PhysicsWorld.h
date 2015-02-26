@@ -18,7 +18,10 @@ namespace Rally { namespace Model {
         public:
             virtual ~PhysicsWorld_StepCallback() {
             }
-            virtual void stepped(float deltaTime) = 0;
+            virtual void willStep(float deltaTime) {
+            }
+            virtual void stepped(float deltaTime) {
+            }
     };
 
     class PhysicsWorld {
@@ -34,7 +37,7 @@ namespace Rally { namespace Model {
 
             void registerStepCallback(PhysicsWorld_StepCallback* stepCallback);
             void unregisterStepCallback(PhysicsWorld_StepCallback* stepCallback);
-            void invokeStepCallbacks(float deltaTime);
+            void invokeStepCallbacks(float deltaTime, bool isPre);
 
         private:
             btBroadphaseInterface* broadphase;

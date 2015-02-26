@@ -41,11 +41,11 @@ namespace Rally { namespace View {
 
         // Some ugly code to fill in a vector3 to a packet. Should endian-convert from
         // host to network byte order if necessary. (Usually it isn't necessary for float.)
-        void writeQuaternionToPacket(char* packet, const Rally::Quaternion& vector) {
-            memcpy(packet + 0*4, &vector.x, 4);
-            memcpy(packet + 1*4, &vector.y, 4);
-            memcpy(packet + 2*4, &vector.z, 4);
-            memcpy(packet + 3*4, &vector.w, 4);
+        void writeQuaternionToPacket(char* packet, const Rally::Quaternion& quaternion) {
+            memcpy(packet + 0*4, &quaternion.w, 4);
+            memcpy(packet + 1*4, &quaternion.x, 4);
+            memcpy(packet + 2*4, &quaternion.y, 4);
+            memcpy(packet + 3*4, &quaternion.z, 4);
         }
 
         // Takes a packet with offset pre-added and returns a Vector3. This should
@@ -61,12 +61,12 @@ namespace Rally { namespace View {
         // Takes a packet with offset pre-added and returns a Vector3. This should
         // convert from network to host byte order if necessary (usually not for float).
         Rally::Quaternion packetToQuaternion(char* packet) {
-            float* a = reinterpret_cast<float*>(packet + 0*4);
-            float* b = reinterpret_cast<float*>(packet + 1*4);
-            float* c = reinterpret_cast<float*>(packet + 2*4);
-            float* d = reinterpret_cast<float*>(packet + 3*4);
+            float* w = reinterpret_cast<float*>(packet + 0*4);
+            float* x = reinterpret_cast<float*>(packet + 1*4);
+            float* y = reinterpret_cast<float*>(packet + 2*4);
+            float* z = reinterpret_cast<float*>(packet + 3*4);
 
-            return Rally::Quaternion(*a, *b, *c, *d);
+            return Rally::Quaternion(*w, *x, *y, *z);
         }
 
         // Windows does it another way. Actually a better way too...

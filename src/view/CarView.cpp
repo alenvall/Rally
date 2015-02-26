@@ -11,11 +11,29 @@ namespace Rally { namespace View {
     CarView::CarView() :
             sceneManager(NULL),
             carEntity(NULL),
-            carNode(NULL) {
+            carNode(NULL),
+            rightFrontWheelEntity(NULL),
+            leftFrontWheelEntity(NULL),
+            rightBackWheelEntity(NULL),
+            leftBackWheelEntity(NULL),
+            rightFrontWheelNode(NULL),
+            leftFrontWheelNode(NULL),
+            rightBackWheelNode(NULL),
+            leftBackWheelNode(NULL) {
     }
 
     CarView::~CarView() {
         if(sceneManager != NULL) {
+            sceneManager->destroySceneNode(rightFrontWheelNode);
+            sceneManager->destroySceneNode(leftFrontWheelNode);
+            sceneManager->destroySceneNode(rightBackWheelNode);
+            sceneManager->destroySceneNode(leftBackWheelNode);
+
+            sceneManager->destroyEntity(rightFrontWheelEntity);
+            sceneManager->destroyEntity(leftFrontWheelEntity);
+            sceneManager->destroyEntity(rightBackWheelEntity);
+            sceneManager->destroyEntity(leftBackWheelEntity);
+
             sceneManager->destroySceneNode(carNode);
             sceneManager->destroyEntity(carEntity);
         }
@@ -27,11 +45,37 @@ namespace Rally { namespace View {
         carEntity = sceneManager->createEntity(carName, "car.mesh");
         carNode = sceneManager->getRootSceneNode()->createChildSceneNode();
         carNode->attachObject(carEntity);
+
+        rightFrontWheelNode = carNode->createChildSceneNode(Ogre::Vector3(0.7f, -0.5f, -0.8f + 2.0f), Ogre::Quaternion::IDENTITY);
+        leftFrontWheelNode = carNode->createChildSceneNode(Ogre::Vector3(-0.7f, -0.5f, -0.8f + 2.0f), Ogre::Quaternion::IDENTITY);
+        rightBackWheelNode = carNode->createChildSceneNode(Ogre::Vector3(0.7f, -0.5f, 2.0f + 2.0f), Ogre::Quaternion::IDENTITY);
+        leftBackWheelNode = carNode->createChildSceneNode(Ogre::Vector3(-0.7f, -0.5f, 2.0f + 2.0f), Ogre::Quaternion::IDENTITY);
+
+        rightFrontWheelEntity = sceneManager->createEntity(carName + "_RightFrontWheel", "hjul.mesh");
+        leftFrontWheelEntity = sceneManager->createEntity(carName + "_LeftFrontWheel", "hjul.mesh");
+        rightBackWheelEntity = sceneManager->createEntity(carName + "_RightBackWheel", "hjul.mesh");
+        leftBackWheelEntity = sceneManager->createEntity(carName + "_LeftBackWheel", "hjul.mesh");
+
+        rightFrontWheelNode->attachObject(rightFrontWheelEntity);
+        leftFrontWheelNode->attachObject(leftFrontWheelEntity);
+        rightBackWheelNode->attachObject(rightBackWheelEntity);
+        leftBackWheelNode->attachObject(leftBackWheelEntity);
     }
 
     void CarView::updateBody(Rally::Vector3 position, Rally::Quaternion orientation) {
         carNode->setPosition(position + orientation*Rally::Vector3(0, 0, -2.0f));
         carNode->setOrientation(orientation);
+    }
+
+    void CarView::updateWheels(
+            const Rally::Quaternion& rightFrontWheelOrientation,
+            const Rally::Quaternion& leftFrontWheelOrientation,
+            const Rally::Quaternion& rightBackWheelOrientation,
+            const Rally::Quaternion& leftBackWheelOrientation) {
+        rightFrontWheelNode->setOrientation(rightFrontWheelOrientation);
+        leftFrontWheelNode->setOrientation(leftFrontWheelOrientation);
+        rightBackWheelNode->setOrientation(rightBackWheelOrientation);
+        leftBackWheelNode->setOrientation(leftBackWheelOrientation);
     }
 
 } }

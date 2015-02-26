@@ -130,6 +130,11 @@ bool SceneView::renderFrame() {
 void SceneView::updatePlayerCar() {
     Rally::Model::Car& playerCar = world.getPlayerCar();
     playerCarView.updateBody(playerCar.getPosition(), playerCar.getOrientation());
+    playerCarView.updateWheels(
+        playerCar.getRightFrontWheelOrientation(),
+        playerCar.getLeftFrontWheelOrientation(),
+        playerCar.getRightBackWheelOrientation(),
+        playerCar.getLeftBackWheelOrientation());
 
     // Temporary hack to move camera after car
     Rally::Vector3 displacementBase = playerCar.getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_Z;

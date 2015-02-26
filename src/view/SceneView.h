@@ -1,6 +1,7 @@
 #ifndef RALLY_VIEW_SCENEVIEW_H_
 #define RALLY_VIEW_SCENEVIEW_H_
 
+#include "view/RemoteCarView.h"
 #include "view/CarView.h"
 #include "model/World.h"
 
@@ -20,7 +21,7 @@ class SceneView {
         SceneView(Rally::Model::World& world);
         virtual ~SceneView();
         void initialize(std::string resourceConfigPath, std::string pluginConfigPath);
-        bool renderFrame();
+        bool renderFrame(float deltaTime);
         void remoteCarUpdated(int carId, const Rally::Model::RemoteCar& remoteCar);
         void remoteCarRemoved(int carId, const Rally::Model::RemoteCar& remoteCar);
         void setDebugDrawEnabled(bool enabled);
@@ -29,7 +30,9 @@ class SceneView {
         Ogre::Viewport* addViewport(Ogre::Camera* followedCamera);
         Ogre::Camera* addCamera(Ogre::String cameraName);
         void loadResourceConfig(Ogre::String resourceConfigPath);
-        void updatePlayerCar();
+        void updatePlayerCar(float deltaTime);
+        void updateRemoteCars();
+
         bool debugDrawEnabled;
 
         Rally::Model::World& world;
@@ -39,7 +42,7 @@ class SceneView {
         Ogre::RenderWindow* renderWindow;
 
         Rally::View::CarView playerCarView;
-        std::map<int, Rally::View::CarView> remoteCarViews;
+        std::map<int, Rally::View::RemoteCarView> remoteCarViews;
 
         //std::map<const Rally::Model::RemoteCar&, TheViewType&> remoteCarViews;
 

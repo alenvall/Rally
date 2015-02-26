@@ -8,7 +8,7 @@ material material.025
     {
         pass material.025
         {
-            ambient 1.0 1.0 1.0 1.0
+            ambient 0.5 0.5 0.5 0.5
             diffuse 1.0 1.0 1.0 1.0
             specular 0.5 0.5 0.5 1.0 12.5
             emissive 0.0 0.0 0.0 1.0
@@ -22,7 +22,7 @@ material material.025
             illumination_stage 
             light_clip_planes off
             light_scissor off
-            lighting on
+            lighting off
             normalise_normals off
             polygon_mode solid
             scene_blend one zero

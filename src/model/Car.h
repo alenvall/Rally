@@ -20,6 +20,22 @@ namespace Rally { namespace Model {
             Rally::Quaternion getOrientation() const;
             Rally::Vector3 getVelocity() const;
 
+            Rally::Quaternion getRightFrontWheelOrientation() const {
+                return physicsCar.getRightFrontWheelOrientation();
+            }
+
+            Rally::Quaternion getLeftFrontWheelOrientation() const {
+                return physicsCar.getLeftFrontWheelOrientation();
+            }
+
+            Rally::Quaternion getRightBackWheelOrientation() const {
+                return physicsCar.getRightBackWheelOrientation();
+            }
+
+            Rally::Quaternion getLeftBackWheelOrientation() const {
+                return physicsCar.getLeftBackWheelOrientation();
+            }
+
             void setAccelerationRequested(bool accelerationRequested) {
                 physicsCar.setAccelerationRequested(accelerationRequested);
             }

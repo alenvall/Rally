@@ -20,6 +20,11 @@ namespace Rally { namespace Model {
             Rally::Quaternion getOrientation() const;
             Rally::Vector3 getVelocity() const;
 
+            Rally::Quaternion getRightFrontWheelOrientation() const;
+            Rally::Quaternion getLeftFrontWheelOrientation() const;
+            Rally::Quaternion getRightBackWheelOrientation() const;
+            Rally::Quaternion getLeftBackWheelOrientation() const;
+
             float getRightFrontWheelTraction() const;
             float getLeftFrontWheelTraction() const;
             float getRightBackWheelTraction() const;
@@ -61,6 +66,9 @@ namespace Rally { namespace Model {
             bool accelerationRequested;
             bool breakingRequested;
             int steeringRequested; // steeringRequested is -1, 0 or 1
+
+            float engineForce;
+            float breakingForce;
     };
 
 } }

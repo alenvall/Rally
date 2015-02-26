@@ -62,11 +62,7 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 	DotSceneLoader loader;
 	loader.parseDotScene("world.scene", "General", sceneManager, sceneNode);
 
-	// Todo: Move to appropriate view
-	Ogre::Entity* playerCarEntity = sceneManager->createEntity("PlayerCar", "car.mesh");
-	playerCarNode = sceneManager->getRootSceneNode()->createChildSceneNode();
-	playerCarNode->attachObject(playerCarEntity);
-    playerCarNode->scale(Ogre::Vector3(2.0f, 1.0f, 4.0f) / playerCarEntity->getBoundingBox().getSize()); // Force scale to 2, 1, 4. Might be buggy...
+	playerCarView.attachTo(sceneManager, "PlayerCar");
 
     // Debug draw Bullet
     bulletDebugDrawer = new Rally::Util::BulletDebugDrawer(sceneManager);
@@ -118,7 +114,7 @@ bool SceneView::renderFrame() {
         return false;
     } else {
         updatePlayerCar();
-       
+
     if(debugDrawEnabled){
         world.getPhysicsWorld().getDynamicsWorld()->debugDrawWorld();
     }
@@ -132,58 +128,43 @@ bool SceneView::renderFrame() {
 }
 
 void SceneView::updatePlayerCar() {
-    // Todo: Move to separate view
     Rally::Model::Car& playerCar = world.getPlayerCar();
-    Rally::Vector3 position = playerCar.getPosition();
-    playerCarNode->setPosition(position);
-    playerCarNode->setOrientation(playerCar.getOrientation());
+    playerCarView.updateBody(playerCar.getPosition(), playerCar.getOrientation());
+    playerCarView.updateWheels(
+        playerCar.getRightFrontWheelOrientation(),
+        playerCar.getLeftFrontWheelOrientation(),
+        playerCar.getRightBackWheelOrientation(),
+        playerCar.getLeftBackWheelOrientation());
 
+    // Temporary hack to move camera after car
     Rally::Vector3 displacementBase = playerCar.getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_Z;
     Rally::Vector3 displacement(12.0f * displacementBase.x, 3.0f, 12.0f*displacementBase.z);
-    Rally::Vector3 cameraPosition = position + displacement;//Ogre::Vector3(0.0f, 0.2f*35.0f, 0.2f*-50.0f);
+    Rally::Vector3 cameraPosition = playerCar.getPosition() + displacement;
     camera->setPosition(cameraPosition);
     sceneManager->getLight("MainLight")->setPosition(cameraPosition);
-    camera->lookAt(position);
+    camera->lookAt(playerCar.getPosition());
 }
 
 void SceneView::remoteCarUpdated(int carId, const Rally::Model::RemoteCar& remoteCar) {
-    // Todo: Move to separate view
-    std::ostringstream baseNameStream;
-    baseNameStream << "RemoteCar_" << carId;
-    std::string baseString = baseNameStream.str();
-    std::string nodeName = baseString + "_Node";
-
-    Ogre::SceneNode* remoteCarNode;
-    if(sceneManager->hasSceneNode(nodeName)) {
-        remoteCarNode = sceneManager->getSceneNode(nodeName);// Throws if nodeName not found.
-    } else {
-        // Lazily construct if not found
-        Ogre::Entity* remoteCarEntity = sceneManager->createEntity(baseString + "_Entity", "car.mesh");
-        remoteCarNode = sceneManager->getRootSceneNode()->createChildSceneNode(nodeName);
-        remoteCarNode->attachObject(remoteCarEntity);
-        remoteCarNode->scale(Ogre::Vector3(2.0f, 1.0f, 4.0f) / remoteCarEntity->getBoundingBox().getSize()); // Force scale to 2, 1, 4. Might be buggy...
-    }
-
-    remoteCarNode->setPosition(remoteCar.getPosition());
-    remoteCarNode->setOrientation(remoteCar.getOrientation());
-
-    /*std::map<const Rally::Model::RemoteCar&, TheViewType::iterator found = remoteCarViews.find(remoteCar);
+    std::map<int, Rally::View::CarView>::iterator found = remoteCarViews.find(carId);
 
     // Lazily construct if not found
     if(found == remoteCarViews.end()) {
-        found = remoteCarViews.insert(std::map<const Rally::Model::RemoteCar&, TheViewType>::value_type(remoteCar,
-            TheViewType(remoteCar))).first;
-    }*/
+        found = remoteCarViews.insert(std::map<int, Rally::View::CarView>::value_type(carId,
+            Rally::View::CarView(/*remoteCar*/))).first;
+        std::ostringstream carNameStream;
+        carNameStream << "RemoteCar_" << carId;
+        std::string carName = carNameStream.str();
+
+        found->second.attachTo(sceneManager, carName);
+    }
+
+    found->second.updateBody(remoteCar.getPosition(), remoteCar.getOrientation());
+    // found->second.updateWheels();
 }
 
 void SceneView::remoteCarRemoved(int carId, const Rally::Model::RemoteCar& remoteCar) {
-    // Todo: Move to separate view
-    std::ostringstream baseNameStream;
-    baseNameStream << "RemoteCar_" << carId;
-    std::string baseString = baseNameStream.str();
-
-    sceneManager->destroySceneNode(baseString + "_Node");
-    sceneManager->destroyEntity(baseString + "_Entity");
+    remoteCarViews.erase(carId);
 }
 
 void SceneView::setDebugDrawEnabled(bool enabled){

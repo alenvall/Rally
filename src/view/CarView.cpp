@@ -72,10 +72,11 @@ namespace Rally { namespace View {
             const Rally::Quaternion& leftFrontWheelOrientation,
             const Rally::Quaternion& rightBackWheelOrientation,
             const Rally::Quaternion& leftBackWheelOrientation) {
-        rightFrontWheelNode->setOrientation(rightFrontWheelOrientation);
-        leftFrontWheelNode->setOrientation(leftFrontWheelOrientation);
-        rightBackWheelNode->setOrientation(rightBackWheelOrientation);
-        leftBackWheelNode->setOrientation(leftBackWheelOrientation);
+        Rally::Quaternion localCompensation = carNode->getOrientation().Inverse();
+        rightFrontWheelNode->setOrientation(localCompensation*rightFrontWheelOrientation);
+        leftFrontWheelNode->setOrientation(localCompensation*leftFrontWheelOrientation);
+        rightBackWheelNode->setOrientation(localCompensation*rightBackWheelOrientation);
+        leftBackWheelNode->setOrientation(localCompensation*leftBackWheelOrientation);
     }
 
 } }

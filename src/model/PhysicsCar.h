@@ -57,10 +57,6 @@ namespace Rally { namespace Model {
 
             btVehicleRaycaster* vehicleRaycaster;
             btRaycastVehicle* raycastVehicle;
-            btWheelInfo* rightFrontWheel;
-            btWheelInfo* leftFrontWheel;
-            btWheelInfo* rightBackWheel;
-            btWheelInfo* leftBackWheel;
 
             float steering;
             bool accelerationRequested;

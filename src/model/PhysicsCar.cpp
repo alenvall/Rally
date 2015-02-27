@@ -49,10 +49,6 @@ namespace Rally { namespace Model {
             bodyRigidBody(NULL),
             vehicleRaycaster(NULL),
             raycastVehicle(NULL),
-            leftFrontWheel(NULL),
-            rightFrontWheel(NULL),
-            leftBackWheel(NULL),
-            rightBackWheel(NULL),
             steering(0),
             accelerationRequested(false),
             breakingRequested(false),
@@ -109,6 +105,8 @@ namespace Rally { namespace Model {
         const btVector3 wheelDirection(0, -1.0f, 0); // This is the direction of the raycast.
         const btVector3 wheelAxle(-1.0f, 0, 0); // This is spinning direction (using right hand rule).
 
+        // NOTE: DO NOT CACHE THE WHEELS FROM getWheelInfo! Strange memory corruption results...
+
         // Right front wheel.
         raycastVehicle->addWheel(
             FRONT_WHEEL_DISTANCE, // connection point
@@ -119,9 +117,9 @@ namespace Rally { namespace Model {
             tuning,
             true // isFrontWheel
         );
-        rightFrontWheel = &raycastVehicle->getWheelInfo(0);
-        rightFrontWheel->m_rollInfluence = ROLL_INFLUENCE;
-        rightFrontWheel->m_frictionSlip = FRONT_WHEEL_FRICTION;
+        btWheelInfo& rightFrontWheel = raycastVehicle->getWheelInfo(0);
+        rightFrontWheel.m_rollInfluence = ROLL_INFLUENCE;
+        rightFrontWheel.m_frictionSlip = FRONT_WHEEL_FRICTION;
 
         // Left front wheel.
         raycastVehicle->addWheel(
@@ -133,9 +131,9 @@ namespace Rally { namespace Model {
             tuning,
             true // isFrontWheel
         );
-        leftFrontWheel = &raycastVehicle->getWheelInfo(1);
-        leftFrontWheel->m_rollInfluence = ROLL_INFLUENCE;
-        leftFrontWheel->m_frictionSlip = FRONT_WHEEL_FRICTION;
+        btWheelInfo& leftFrontWheel = raycastVehicle->getWheelInfo(1);
+        leftFrontWheel.m_rollInfluence = ROLL_INFLUENCE;
+        leftFrontWheel.m_frictionSlip = FRONT_WHEEL_FRICTION;
 
         // Right back wheel.
         raycastVehicle->addWheel(
@@ -147,9 +145,9 @@ namespace Rally { namespace Model {
             tuning,
             false // isFrontWheel
         );
-        rightBackWheel = &raycastVehicle->getWheelInfo(2);
-        rightBackWheel->m_rollInfluence = ROLL_INFLUENCE;
-        rightBackWheel->m_frictionSlip = BACK_WHEEL_FRICTION;
+        btWheelInfo& rightBackWheel = raycastVehicle->getWheelInfo(2);
+        rightBackWheel.m_rollInfluence = ROLL_INFLUENCE;
+        rightBackWheel.m_frictionSlip = BACK_WHEEL_FRICTION;
 
         // Left back wheel.
         raycastVehicle->addWheel(
@@ -161,9 +159,9 @@ namespace Rally { namespace Model {
             tuning,
             false // isFrontWheel
         );
-        leftBackWheel = &raycastVehicle->getWheelInfo(3);
-        leftBackWheel->m_rollInfluence = ROLL_INFLUENCE;
-        leftBackWheel->m_frictionSlip = BACK_WHEEL_FRICTION;
+        btWheelInfo& leftBackWheel = raycastVehicle->getWheelInfo(3);
+        leftBackWheel.m_rollInfluence = ROLL_INFLUENCE;
+        leftBackWheel.m_frictionSlip = BACK_WHEEL_FRICTION;
 
         physicsWorld.registerStepCallback(this);
     }
@@ -204,42 +202,42 @@ namespace Rally { namespace Model {
 
     Rally::Quaternion PhysicsCar::getRightFrontWheelOrientation() const {
         raycastVehicle->updateWheelTransform(0, true);
-        btQuaternion orientation = rightFrontWheel->m_worldTransform.getRotation();
+        btQuaternion orientation = raycastVehicle->getWheelInfo(0).m_worldTransform.getRotation();
         return Rally::Quaternion(orientation.w(), orientation.x(), orientation.y(), orientation.z());
     }
 
     Rally::Quaternion PhysicsCar::getLeftFrontWheelOrientation() const {
         raycastVehicle->updateWheelTransform(1, true);
-        btQuaternion orientation = leftFrontWheel->m_worldTransform.getRotation();
+        btQuaternion orientation = raycastVehicle->getWheelInfo(1).m_worldTransform.getRotation();
         return Rally::Quaternion(orientation.w(), orientation.x(), orientation.y(), orientation.z());
     }
 
     Rally::Quaternion PhysicsCar::getRightBackWheelOrientation() const {
         raycastVehicle->updateWheelTransform(2, true);
-        btQuaternion orientation = rightBackWheel->m_worldTransform.getRotation();
+        btQuaternion orientation = raycastVehicle->getWheelInfo(2).m_worldTransform.getRotation();
         return Rally::Quaternion(orientation.w(), orientation.x(), orientation.y(), orientation.z());
     }
 
     Rally::Quaternion PhysicsCar::getLeftBackWheelOrientation() const {
         raycastVehicle->updateWheelTransform(3, true);
-        btQuaternion orientation = leftBackWheel->m_worldTransform.getRotation();
+        btQuaternion orientation = raycastVehicle->getWheelInfo(3).m_worldTransform.getRotation();
         return Rally::Quaternion(orientation.w(), orientation.x(), orientation.y(), orientation.z());
     }
 
     float PhysicsCar::getRightFrontWheelTraction() const {
-        return rightFrontWheel->m_skidInfo;
+        return raycastVehicle->getWheelInfo(0).m_skidInfo;
     }
 
     float PhysicsCar::getLeftFrontWheelTraction() const {
-        return leftFrontWheel->m_skidInfo;
+        return raycastVehicle->getWheelInfo(1).m_skidInfo;
     }
 
     float PhysicsCar::getRightBackWheelTraction() const {
-        return rightBackWheel->m_skidInfo;
+        return raycastVehicle->getWheelInfo(2).m_skidInfo;
     }
 
     float PhysicsCar::getLeftBackWheelTraction() const {
-        return leftBackWheel->m_skidInfo;
+        return raycastVehicle->getWheelInfo(3).m_skidInfo;
     }
 
     void PhysicsCar::stepped(float deltaTime) {

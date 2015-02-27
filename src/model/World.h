@@ -4,6 +4,7 @@
 #include "model/PhysicsWorld.h"
 #include "model/Car.h"
 #include "model/RemoteCar.h"
+#include "model/Goal.h"
 #include <map>
 
 namespace Rally { namespace Model {
@@ -47,6 +48,7 @@ namespace Rally { namespace Model {
         private:
             Rally::Model::PhysicsWorld physicsWorld;
             Rally::Model::Car playerCar;
+			Rally::Model::Goal goal;
             std::map<int, Rally::Model::RemoteCar> remoteCars;
     };
 

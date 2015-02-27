@@ -59,6 +59,7 @@ namespace Rally { namespace Model {
             btRaycastVehicle* raycastVehicle;
 
             float steering;
+            float lastCompensatedSteering;
             bool accelerationRequested;
             bool breakingRequested;
             int steeringRequested; // steeringRequested is -1, 0 or 1

@@ -69,6 +69,7 @@ void InputInit::keyInit() {
     keyMap["escape"] = false;
     keyMap["d"] = false;
     keyMap["f"] = false;
+    keyMap["x"] = false;
 }
 
 bool InputInit::frameRenderingQueued(const Ogre::FrameEvent& evt)
@@ -121,6 +122,10 @@ bool InputInit::keyPressed(const OIS::KeyEvent& arg) {
     {
         keyMap.at("f") = true;
     }
+    if (arg.key == OIS::KC_X)
+    {
+        keyMap.at("x") = true;
+    }
     return true;
 }
 
@@ -153,6 +158,10 @@ bool InputInit::keyReleased(const OIS::KeyEvent& arg) {
     if (arg.key == OIS::KC_F)
     {
         keyMap.at("f") = false;
+    }
+    if (arg.key == OIS::KC_X)
+    {
+        keyMap.at("x") = false;
     }
     return true;
 }

@@ -37,6 +37,7 @@ class SceneView {
         Ogre::RenderWindow* renderWindow;
 
         Ogre::SceneNode* playerCarNode;
+        Ogre::SceneNode* goalNode;
 
         //std::map<const Rally::Model::RemoteCar&, TheViewType&> remoteCarViews;
 

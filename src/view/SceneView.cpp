@@ -68,6 +68,12 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 	playerCarNode->attachObject(playerCarEntity);
     playerCarNode->scale(Ogre::Vector3(2.0f, 1.0f, 4.0f) / playerCarEntity->getBoundingBox().getSize()); // Force scale to 2, 1, 4. Might be buggy...
 
+	Ogre::Entity* goalEntity = sceneManager->createEntity("Finish", "car.mesh");
+	goalNode = sceneManager->getRootSceneNode()->createChildSceneNode();
+	goalNode->attachObject(goalEntity);
+	goalNode->setPosition(Ogre::Vector3(-50.0f, 0.0f, 60.0f));
+    //goalNode->scale(Ogre::Vector3(5.0f, 5.0f, 5.0f) / goalEntity->getBoundingBox().getSize());
+
     // Debug draw Bullet
     //bulletDebugDrawer = new Rally::Util::BulletDebugDrawer(sceneManager);
     //world.getPhysicsWorld().getDynamicsWorld()->setDebugDrawer(bulletDebugDrawer);

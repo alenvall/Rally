@@ -26,7 +26,7 @@ class PortalView {
         void moveCamera(const Rally::Vector3& position, const Rally::Vector3& lookAt);
         void setPosition(const Rally::Vector3& position);
         void setOrientation(const Rally::Quaternion& orientation);
-        void setScale(float x, float y);
+        void setScale(float x, float y, bool scaleViewport);
         void takeSnapshot();
 
     private:

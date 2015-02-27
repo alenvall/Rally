@@ -89,7 +89,7 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 
 	// Place the magic surface at the end of the tunnel.
 	tunnelPortalView.attachTo(sceneManager, "TunnelPortal");
-	tunnelPortalView.setScale(15.0f, 5.0f);
+	tunnelPortalView.setScale(15.0f, 5.0f, true);
     tunnelPortalView.setPosition(Rally::Vector3(86.0f, 12.0f, -134.0f));
     tunnelPortalView.setOrientation(Rally::Quaternion(Ogre::Math::Sqrt(0.5f), 0, -Ogre::Math::Sqrt(0.5f), 0));
 

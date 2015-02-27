@@ -117,9 +117,40 @@ namespace Rally { namespace View {
         displaySurfaceNode->setOrientation(orientation);
     }
 
-    void PortalView::setScale(float x, float y) {
-        camera->setAspectRatio(x / y);
-        displaySurfaceNode->scale(x, y, 0);
+    void PortalView::setScale(float x, float y, bool scaleViewport) {
+        float aspectRatio = x / y;
+        if(scaleViewport) {
+            float maxCoord = (x > y) ? x : y;
+            displaySurfaceNode->scale(maxCoord, maxCoord, 0);
+
+            // Maximize the area in the square texture
+            if(aspectRatio == 1.0f) {
+                renderTarget->getViewport(0)->setDimensions(
+                    1.0f, // left
+                    aspectRatio / 2.0f, // top
+                    1.0f, // width
+                    1.0f - aspectRatio // height
+                );
+            } else if(aspectRatio > 1.0f) {
+                float invertedAspectRatio = 1.0f / aspectRatio;
+                renderTarget->getViewport(0)->setDimensions(
+                    0.0f, // left
+                    (1.0f - invertedAspectRatio) / 2.0f, // top
+                    1.0f, // width
+                    invertedAspectRatio // height
+                );
+            } else {
+                renderTarget->getViewport(0)->setDimensions(
+                    (1.0f - aspectRatio) / 2.0f, // left
+                    0.0f, // top
+                    aspectRatio, // width
+                    1.0f // height
+                );
+            }
+        } else {
+            camera->setAspectRatio(aspectRatio);
+            displaySurfaceNode->scale(x, y, 0);
+        }
     }
 
     void PortalView::takeSnapshot() {

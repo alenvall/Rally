@@ -47,6 +47,8 @@ namespace Rally { namespace Model {
 
         private:
             void initializeConstructionInfo();
+            bool isAllWheelsOnGround();
+
             btDynamicsWorld* dynamicsWorld;
 
             btBoxShape* bodyShape;

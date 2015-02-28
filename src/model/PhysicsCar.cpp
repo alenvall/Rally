@@ -293,7 +293,7 @@ namespace Rally { namespace Model {
 
         // Compensate steering with the angle between the forward and velocity vector.
         float compensatedSteering = steering;
-        if(directionInfo != 1.0f) {
+        if(directionInfo != 1.0f && isAllWheelsOnGround()) {
             // The SIGNED angle between the forward and velocity vector, in the xz-plane
             btVector3 forwardXZ = btVector3(forwardVector.x(), 0, forwardVector.z());
             btVector3 velocityXZ = btVector3(velocity.x() / speed, 0, velocity.z() / speed);
@@ -334,6 +334,13 @@ namespace Rally { namespace Model {
         // Apply equally on both front wheels.
         raycastVehicle->setSteeringValue(compensatedSteering, 0);
         raycastVehicle->setSteeringValue(compensatedSteering, 1);
+    }
+
+    bool PhysicsCar::isAllWheelsOnGround() {
+        return raycastVehicle->getWheelInfo(0).m_raycastInfo.m_isInContact &&
+            raycastVehicle->getWheelInfo(1).m_raycastInfo.m_isInContact &&
+            raycastVehicle->getWheelInfo(2).m_raycastInfo.m_isInContact &&
+            raycastVehicle->getWheelInfo(3).m_raycastInfo.m_isInContact;
     }
 
 } }

@@ -83,6 +83,10 @@ namespace Rally { namespace Controller {
         if (inputInit.isKeyPressed("f")){
 		    sceneView.setDebugDrawEnabled(false);
         }
+
+        if (inputInit.isKeyPressedDebounced("r")){
+		    sceneView.toggleReflections();
+        }
     }
 
     void MainController_RemoteCarListener::carUpdated(unsigned short carId,

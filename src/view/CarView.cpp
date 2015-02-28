@@ -23,8 +23,11 @@ namespace Rally { namespace View {
     }
 
     CarView::~CarView() {
+    }
+
+    void CarView::detach() {
         if(sceneManager != NULL) {
-/*            sceneManager->destroySceneNode(rightFrontWheelNode);
+            sceneManager->destroySceneNode(rightFrontWheelNode);
             sceneManager->destroySceneNode(leftFrontWheelNode);
             sceneManager->destroySceneNode(rightBackWheelNode);
             sceneManager->destroySceneNode(leftBackWheelNode);
@@ -35,7 +38,7 @@ namespace Rally { namespace View {
             sceneManager->destroyEntity(leftBackWheelEntity);
 
             sceneManager->destroySceneNode(carNode);
-            sceneManager->destroyEntity(carEntity);*/
+            sceneManager->destroyEntity(carEntity);
         }
     }
 
@@ -62,7 +65,7 @@ namespace Rally { namespace View {
         leftBackWheelNode->attachObject(leftBackWheelEntity);
     }
 
-    void CarView::updateBody(Rally::Vector3 position, Rally::Quaternion orientation) {
+    void CarView::updateBody(const Rally::Vector3& position, const Rally::Quaternion& orientation) {
         carNode->setPosition(position);
         carNode->setOrientation(orientation);
     }
@@ -78,5 +81,4 @@ namespace Rally { namespace View {
         rightBackWheelNode->setOrientation(localCompensation*rightBackWheelOrientation);
         leftBackWheelNode->setOrientation(localCompensation*leftBackWheelOrientation);
     }
-
 } }

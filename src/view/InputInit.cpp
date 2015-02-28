@@ -26,6 +26,7 @@ InputInit::~InputInit() {
 }
 
 void InputInit::setup() {
+    debouncer.reset();
     renderWindow = (Ogre::RenderWindow*)(Ogre::Root::getSingletonPtr()->getRenderTarget("Rally Sport Racing Game"));
     keyInit();
     createFrameListener();
@@ -70,6 +71,7 @@ void InputInit::keyInit() {
     keyMap["d"] = false;
     keyMap["f"] = false;
     keyMap["x"] = false;
+    keyMap["r"] = false;
 }
 
 bool InputInit::frameRenderingQueued(const Ogre::FrameEvent& evt)
@@ -90,6 +92,14 @@ bool InputInit::frameRenderingQueued(const Ogre::FrameEvent& evt)
 
 bool InputInit::isKeyPressed(const std::string& s) {
     return keyMap.at(s);
+}
+
+bool InputInit::isKeyPressedDebounced(const std::string& s) {
+    if(debouncer.getElapsedSeconds() > 0.5f) {
+        debouncer.reset();
+        return isKeyPressed(s);
+    }
+    return false;
 }
 
 bool InputInit::keyPressed(const OIS::KeyEvent& arg) {
@@ -125,6 +135,10 @@ bool InputInit::keyPressed(const OIS::KeyEvent& arg) {
     if (arg.key == OIS::KC_X)
     {
         keyMap.at("x") = true;
+    }
+    if (arg.key == OIS::KC_R)
+    {
+        keyMap.at("r") = true;
     }
     return true;
 }
@@ -162,6 +176,10 @@ bool InputInit::keyReleased(const OIS::KeyEvent& arg) {
     if (arg.key == OIS::KC_X)
     {
         keyMap.at("x") = false;
+    }
+    if (arg.key == OIS::KC_R)
+    {
+        keyMap.at("r") = false;
     }
     return true;
 }

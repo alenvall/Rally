@@ -27,6 +27,8 @@ SceneView::~SceneView() {
     //delete bulletDebugDrawer;
     tunnelPortalView.detach();
 
+    playerCarView.detach();
+
     Ogre::Root* root = Ogre::Root::getSingletonPtr();
     delete root;
 }
@@ -76,7 +78,7 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     sunLight->setSpecularColour(Ogre::ColourValue(1, 1, 1));
     sceneNode->attachObject(sunLight);
 
-	playerCarView.attachTo(sceneManager, "PlayerCar");
+	playerCarView.attachTo(sceneManager);
 
     // Debug draw Bullet
     bulletDebugDrawer = new Rally::Util::BulletDebugDrawer(sceneManager);
@@ -273,4 +275,8 @@ void SceneView::remoteCarRemoved(int carId, const Rally::Model::RemoteCar& remot
 
 void SceneView::setDebugDrawEnabled(bool enabled){
     debugDrawEnabled = enabled;
+}
+
+void SceneView::toggleReflections() {
+    playerCarView.setReflectionsOn(!playerCarView.isReflectionsOn());
 }

@@ -30,8 +30,8 @@ namespace Rally { namespace Model {
         const float MAX_STEERING = 0.4f;
         const float STEERING_INCREASE = 0.8f; // [same unit as steering] per second
         const float STEERING_MAX_COMPENSATION = 1.0f; // automatic counter-steer when drifting
-        const float STEERING_COMPENSATION_FACTOR = 0.9f;
-        const float STEERING_COMPENSATION_TEMPORAL_DAMPING = 0.95f;
+        const float STEERING_COMPENSATION_FACTOR = .90f;
+        const float STEERING_COMPENSATION_TEMPORAL_DAMPING = 0.9f;
 
         // The wheel distance is calculated from the origin = center of the car.
         // The wheel (including radius) should be located inside the car body:
@@ -312,11 +312,18 @@ namespace Rally { namespace Model {
                 angle = -STEERING_MAX_COMPENSATION;
             }
 
-            float traction = 0.5f*getLeftBackWheelTraction() + 0.5*getRightBackWheelTraction();
+            float traction = btPow(0.5f*getLeftBackWheelTraction() + 0.5*getRightBackWheelTraction(), 2.0f); // pow(base, exponent)
 
             // If we ever get a spoiler, we could smooth out with velocity here aswell.
 
-            compensatedSteering += STEERING_COMPENSATION_FACTOR*angle*(1.0f - traction);
+            float compensation = STEERING_COMPENSATION_FACTOR*angle*(1.0f - traction);
+
+            // If we are returning back, reduce drifting in the other direction
+            if((lastCompensatedSteering < -0.15f && compensation > 0.15f) || (lastCompensatedSteering > 0.15f && compensation < -0.15f)) {
+                compensatedSteering = (steering*compensation < 0) ? 0.1f*steering : 0.01f*steering; // Damp the different signs differently
+                compensation *= 2.0f;
+            }
+            compensatedSteering += compensation;
         }
 
         // Apply some temporal damping (low pass filter)

@@ -80,6 +80,7 @@ namespace Rally { namespace Model {
         lowerMassCenterShape->calculateLocalInertia(CAR_MASS, inertia); // TODO: We might want to lower/move center of gravity...
 
         bodyConstructionInfo = new btRigidBody::btRigidBodyConstructionInfo(CAR_MASS, &bodyMotionState, lowerMassCenterShape, inertia);
+        bodyConstructionInfo->m_restitution = 0.5f;
     }
 
     void PhysicsCar::attachTo(PhysicsWorld& physicsWorld) {

@@ -23,12 +23,12 @@ namespace Rally { namespace View {
         // 3 GL_TEXTURE_CUBE_MAP_NEGATIVE_Y
         // 4 GL_TEXTURE_CUBE_MAP_POSITIVE_Z
         // 5 GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
-        cameraOrientations[0] = Ogre::Vector3::NEGATIVE_UNIT_Z.getRotationTo(Ogre::Vector3::NEGATIVE_UNIT_X);
-        cameraOrientations[1] = Ogre::Vector3::NEGATIVE_UNIT_Z.getRotationTo(Ogre::Vector3::UNIT_X);
-        cameraOrientations[3] = Ogre::Vector3::NEGATIVE_UNIT_Z.getRotationTo(Ogre::Vector3::NEGATIVE_UNIT_Y);
-        cameraOrientations[2] = Ogre::Vector3::NEGATIVE_UNIT_Z.getRotationTo(Ogre::Vector3::UNIT_Y);
-        cameraOrientations[6] = Ogre::Vector3::NEGATIVE_UNIT_Z.getRotationTo(Ogre::Vector3::NEGATIVE_UNIT_Z);
-        cameraOrientations[5] = Ogre::Vector3::NEGATIVE_UNIT_Z.getRotationTo(Ogre::Vector3::UNIT_Z);
+        cameraOrientations[0] = Ogre::Quaternion(Ogre::Degree(-90.0f), Ogre::Vector3::UNIT_Y);
+        cameraOrientations[1] = Ogre::Quaternion(Ogre::Degree(90.0f), Ogre::Vector3::UNIT_Y);
+        cameraOrientations[2] = Ogre::Quaternion(Ogre::Degree(90.0f), Ogre::Vector3::UNIT_X);
+        cameraOrientations[3] = Ogre::Quaternion(Ogre::Degree(-90.0f), Ogre::Vector3::UNIT_X);
+        cameraOrientations[5] = Ogre::Quaternion(Ogre::Degree(180.0f), Ogre::Vector3::UNIT_Y);
+        cameraOrientations[4] = Ogre::Quaternion::IDENTITY;
     }
 
     ReflectionView::~ReflectionView() {
@@ -114,6 +114,9 @@ namespace Rally { namespace View {
 
             if(reflectionReceivers.count(oldMaterial->getName()) > 0) {
                 Ogre::MaterialPtr newMaterial = oldMaterial->clone(oldMaterial->getName() + "__" + reflectionName + "_Reflection");
+                //Ogre::MaterialPtr newMaterial = Ogre::MaterialManager::getSingleton().create(
+                //    oldMaterial->getName() + "__" + reflectionName + "_Reflection",
+                //    Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
                 Ogre::TextureUnitState* textureUnitState = newMaterial->getTechnique(0)->getPass(0)->createTextureUnitState();
                 textureUnitState->setCubicTexture(&reflectionTexture, true);

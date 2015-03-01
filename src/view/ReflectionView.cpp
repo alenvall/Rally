@@ -23,12 +23,12 @@ namespace Rally { namespace View {
         // 3 GL_TEXTURE_CUBE_MAP_NEGATIVE_Y
         // 4 GL_TEXTURE_CUBE_MAP_POSITIVE_Z
         // 5 GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
-        cameraOrientations[0] = Ogre::Vector3::NEGATIVE_UNIT_Z.getRotationTo(Ogre::Vector3::UNIT_X);
-        cameraOrientations[1] = Ogre::Vector3::NEGATIVE_UNIT_Z.getRotationTo(Ogre::Vector3::NEGATIVE_UNIT_X);
-        cameraOrientations[2] = Ogre::Vector3::NEGATIVE_UNIT_Z.getRotationTo(Ogre::Vector3::UNIT_Y);
+        cameraOrientations[0] = Ogre::Vector3::NEGATIVE_UNIT_Z.getRotationTo(Ogre::Vector3::NEGATIVE_UNIT_X);
+        cameraOrientations[1] = Ogre::Vector3::NEGATIVE_UNIT_Z.getRotationTo(Ogre::Vector3::UNIT_X);
         cameraOrientations[3] = Ogre::Vector3::NEGATIVE_UNIT_Z.getRotationTo(Ogre::Vector3::NEGATIVE_UNIT_Y);
-        cameraOrientations[4] = Ogre::Vector3::NEGATIVE_UNIT_Z.getRotationTo(Ogre::Vector3::UNIT_Z);
-        cameraOrientations[5] = Ogre::Vector3::NEGATIVE_UNIT_Z.getRotationTo(Ogre::Vector3::NEGATIVE_UNIT_Z);
+        cameraOrientations[2] = Ogre::Vector3::NEGATIVE_UNIT_Z.getRotationTo(Ogre::Vector3::UNIT_Y);
+        cameraOrientations[6] = Ogre::Vector3::NEGATIVE_UNIT_Z.getRotationTo(Ogre::Vector3::NEGATIVE_UNIT_Z);
+        cameraOrientations[5] = Ogre::Vector3::NEGATIVE_UNIT_Z.getRotationTo(Ogre::Vector3::UNIT_Z);
     }
 
     ReflectionView::~ReflectionView() {

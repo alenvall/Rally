@@ -19,7 +19,7 @@ namespace Rally { namespace Controller {
 
         sceneView.initialize(resourceConfigPath, pluginConfigPath);
 
-        //netView.initialize(std::string("127.0.0.1"), 1337, &world.getPlayerCar());
+        netView.initialize(std::string("127.0.0.1"), 1337, &world.getPlayerCar());
 
         inputInit.setup();
     }
@@ -29,8 +29,6 @@ namespace Rally { namespace Controller {
 
         frameTimer.reset();
         while(true) {
-            updateInput();
-
             float deltaTime = frameTimer.getElapsedSeconds();
 
             // Allow max 1000 FPS for precision/stability reasons.
@@ -45,11 +43,13 @@ namespace Rally { namespace Controller {
 
             // ADD ANYTHING THAT'S NOT FRAME-TIMING CODE BELOW THIS LINE!
 
-           // netView.pullRemoteChanges();
+            netView.pullRemoteChanges();
+
+		    updateInput();
 
             world.update(deltaTime);
 
-            //netView.pushLocalChanges();
+            netView.pushLocalChanges();
 
             // TODO: Investigate in which order we'll do things (buffer up graphics commands, do some CPU, flip render buffers)
             if(!sceneView.renderFrame(deltaTime)) {
@@ -75,6 +75,13 @@ namespace Rally { namespace Controller {
         } else {
             // neither left nor right, or left and right
             car.setSteeringRequested(0);
+        }
+
+        if(inputInit.isKeyPressed("d")){
+		    sceneView.setDebugDrawEnabled(true);
+        }
+        if (inputInit.isKeyPressed("f")){
+		    sceneView.setDebugDrawEnabled(false);
         }
     }
 

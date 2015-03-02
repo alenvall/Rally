@@ -22,6 +22,5 @@ namespace Rally { namespace Model {
 
     void World::update(float deltaTime) {
         physicsWorld.update(deltaTime);
-		goal.checkCollision();
     }
 } }

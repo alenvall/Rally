@@ -7,18 +7,18 @@ namespace Rally { namespace Model {
 	}
 
 	Checkpoint::~Checkpoint(){
+		delete ghostObject->getCollisionShape();
+		delete ghostObject;
 	}
 
 	void Checkpoint::init(){
 		ghostObject = new btPairCachingGhostObject();
-		btCollisionShape* shape = new btBoxShape(btVector3(btScalar(2.),btScalar(2.),btScalar(2.)));
+		btCollisionShape* shape = new btBoxShape(btVector3(btScalar(3.),btScalar(3.),btScalar(3.)));
 		ghostObject->setCollisionShape(shape);
-		ghostObject->setWorldTransform(btTransform(btQuaternion(0,0,0,1),btVector3(0,5,0)));
+		ghostObject->setWorldTransform(btTransform(btQuaternion(0,0,0,1), btVector3(-50.f,1.5f,60.f)));
 		ghostObject->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
-
-		ghostObject->setWorldTransform(btTransform(btQuaternion(0.0f, 0.0f, 0.0f, 1.0f), btVector3(-50.0f, 2.f, 60.0f)));
-
-		// Todo: move this
+		
+		// Enable ghost objects
 		physicsWorld.getDynamicsWorld()->getPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
 	}
 
@@ -26,25 +26,33 @@ namespace Rally { namespace Model {
 		init();
 
 		physicsWorld.getDynamicsWorld()->addCollisionObject(ghostObject);
+
+		//physicsWorld.getDynamicsWorld()->addCollisionObject(ghostObject, );
+
+        physicsWorld.registerStepCallback(this);
 	}
 
-	void Checkpoint::processCollision(btCollisionObject* colObj){
-		std::cout << "COLLISION" << std::endl;
+	Rally::Vector3 Checkpoint::getPosition() const{
+		btVector3 vec = ghostObject->getWorldTransform().getOrigin();
+		return Rally::Vector3(vec.getX(), vec.getY(), vec.getZ());
+	}
 
-		btRigidBody* b = btRigidBody::upcast(colObj);
-		if(b)
-			b->applyCentralImpulse(btVector3(0, 50, 0));
+	Rally::Quaternion Checkpoint::getOrientation() const{
+        const btQuaternion orientation = ghostObject->getWorldTransform().getRotation();
+        return Rally::Quaternion(orientation.w(), orientation.x(), orientation.y(), orientation.z());
+    }
+		
+	void Checkpoint::processCollision(btCollisionObject* colObj){
+		// do stuff
 	}
 
 	void Checkpoint::checkCollision(){
 		btBroadphasePairArray& collisionPairs = ghostObject->getOverlappingPairCache()->getOverlappingPairArray();
-		const int	numObjects=collisionPairs.size();	
+		const int	numObjects = collisionPairs.size();	
 		static btManifoldArray	m_manifoldArray;
 
 		btCollisionObject* colObj = NULL;
 
-		// TODO: restructure to only check for one object.
-		// TODO(2): check so that the collisionObject is the car.
 		for(int i=0;i<numObjects;i++)	{
 			m_manifoldArray.resize(0);
 			const btBroadphasePair& cPair = collisionPairs[i];
@@ -70,5 +78,8 @@ namespace Rally { namespace Model {
 			processCollision(colObj);
 		}
 	}
-
+	
+	void Checkpoint::stepped(float deltaTime) {
+		checkCollision();
+	}
 } }

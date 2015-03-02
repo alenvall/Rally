@@ -13,8 +13,6 @@ namespace Rally { namespace Model {
 		Goal(Rally::Model::PhysicsWorld& physicsWorld) : Checkpoint(physicsWorld){};
 
 		virtual void processCollision(btCollisionObject* colObj);
-
-		//private:
 	};
 
 } }

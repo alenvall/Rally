@@ -9,8 +9,7 @@
 
 namespace Rally { namespace Model {
 
-
-	class Checkpoint {
+	class Checkpoint : public PhysicsWorld_StepCallback {
 
 	public:
 		Checkpoint(Rally::Model::PhysicsWorld& physicsWorld);
@@ -19,6 +18,13 @@ namespace Rally { namespace Model {
 
 		void checkCollision();
 		virtual void processCollision(btCollisionObject* colObj);
+
+        // @Override
+        virtual void stepped(float deltaTime);
+		
+		
+        Rally::Vector3 getPosition() const;
+        Rally::Quaternion getOrientation() const;
 
 	private:
 		void Checkpoint::init();

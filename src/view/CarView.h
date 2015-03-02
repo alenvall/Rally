@@ -15,16 +15,17 @@ class CarView {
     public:
         CarView();
         virtual ~CarView();
-        void attachTo(Ogre::SceneManager* sceneManager, const std::string& carName);
+        virtual void attachTo(Ogre::SceneManager* sceneManager, const std::string& carName);
+        virtual void detach();
 
-        void updateBody(Rally::Vector3 position, Rally::Quaternion orientation);
+        virtual void updateBody(const Rally::Vector3& position, const Rally::Quaternion& orientation);
         void updateWheels(
             const Rally::Quaternion& rightFrontWheelOrientation,
             const Rally::Quaternion& leftFrontWheelOrientation,
             const Rally::Quaternion& rightBackWheelOrientation,
             const Rally::Quaternion& leftBackWheelOrientation);
 
-    private:
+    protected:
         Ogre::SceneManager* sceneManager;
         Ogre::Entity* carEntity;
         Ogre::SceneNode* carNode;

@@ -23,6 +23,9 @@ namespace Rally { namespace View {
     }
 
     CarView::~CarView() {
+    }
+
+    void CarView::detach() {
         if(sceneManager != NULL) {
             sceneManager->destroySceneNode(rightFrontWheelNode);
             sceneManager->destroySceneNode(leftFrontWheelNode);
@@ -46,10 +49,10 @@ namespace Rally { namespace View {
         carNode = sceneManager->getRootSceneNode()->createChildSceneNode();
         carNode->attachObject(carEntity);
 
-        rightFrontWheelNode = carNode->createChildSceneNode(Ogre::Vector3(0.7f, -0.5f, -0.8f + 2.0f), Ogre::Quaternion::IDENTITY);
-        leftFrontWheelNode = carNode->createChildSceneNode(Ogre::Vector3(-0.7f, -0.5f, -0.8f + 2.0f), Ogre::Quaternion::IDENTITY);
-        rightBackWheelNode = carNode->createChildSceneNode(Ogre::Vector3(0.7f, -0.5f, 2.0f + 2.0f), Ogre::Quaternion::IDENTITY);
-        leftBackWheelNode = carNode->createChildSceneNode(Ogre::Vector3(-0.7f, -0.5f, 2.0f + 2.0f), Ogre::Quaternion::IDENTITY);
+        rightFrontWheelNode = carNode->createChildSceneNode(Ogre::Vector3(0.7f, -0.5f, 1.50f), Ogre::Quaternion::IDENTITY);
+        leftFrontWheelNode = carNode->createChildSceneNode(Ogre::Vector3(-0.7f, -0.5f, 1.50f), Ogre::Quaternion::IDENTITY);
+        rightBackWheelNode = carNode->createChildSceneNode(Ogre::Vector3(0.7f, -0.5f, -1.25f), Ogre::Quaternion::IDENTITY);
+        leftBackWheelNode = carNode->createChildSceneNode(Ogre::Vector3(-0.7f, -0.5f, -1.25f), Ogre::Quaternion::IDENTITY);
 
         rightFrontWheelEntity = sceneManager->createEntity(carName + "_RightFrontWheel", "hjul.mesh");
         leftFrontWheelEntity = sceneManager->createEntity(carName + "_LeftFrontWheel", "hjul.mesh");
@@ -62,8 +65,8 @@ namespace Rally { namespace View {
         leftBackWheelNode->attachObject(leftBackWheelEntity);
     }
 
-    void CarView::updateBody(Rally::Vector3 position, Rally::Quaternion orientation) {
-        carNode->setPosition(position + orientation*Rally::Vector3(0, 0, -2.0f));
+    void CarView::updateBody(const Rally::Vector3& position, const Rally::Quaternion& orientation) {
+        carNode->setPosition(position);
         carNode->setOrientation(orientation);
     }
 
@@ -72,10 +75,10 @@ namespace Rally { namespace View {
             const Rally::Quaternion& leftFrontWheelOrientation,
             const Rally::Quaternion& rightBackWheelOrientation,
             const Rally::Quaternion& leftBackWheelOrientation) {
-        rightFrontWheelNode->setOrientation(rightFrontWheelOrientation);
-        leftFrontWheelNode->setOrientation(leftFrontWheelOrientation);
-        rightBackWheelNode->setOrientation(rightBackWheelOrientation);
-        leftBackWheelNode->setOrientation(leftBackWheelOrientation);
+        Rally::Quaternion localCompensation = carNode->getOrientation().Inverse();
+        rightFrontWheelNode->setOrientation(localCompensation*rightFrontWheelOrientation);
+        leftFrontWheelNode->setOrientation(localCompensation*leftFrontWheelOrientation);
+        rightBackWheelNode->setOrientation(localCompensation*rightBackWheelOrientation);
+        leftBackWheelNode->setOrientation(localCompensation*leftBackWheelOrientation);
     }
-
 } }

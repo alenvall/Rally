@@ -2,8 +2,13 @@
 #define RALLY_VIEW_SCENEVIEW_H_
 
 #include "view/RemoteCarView.h"
+<<<<<<< HEAD
 #include "view/CarView.h"
 #include "view/CheckpointView.h"
+=======
+#include "view/PlayerCarView.h"
+#include "view/PortalView.h"
+>>>>>>> master
 #include "model/World.h"
 
 #include <OgreCamera.h>
@@ -26,6 +31,7 @@ class SceneView {
         void remoteCarUpdated(int carId, const Rally::Model::RemoteCar& remoteCar);
         void remoteCarRemoved(int carId, const Rally::Model::RemoteCar& remoteCar);
         void setDebugDrawEnabled(bool enabled);
+        void toggleReflections();
 
     private:
         Ogre::Viewport* addViewport(Ogre::Camera* followedCamera);
@@ -44,12 +50,13 @@ class SceneView {
         Ogre::SceneManager* sceneManager;
         Ogre::RenderWindow* renderWindow;
 
-		
         Rally::View::CheckpointView goalView;
         std::list<Rally::View::CheckpointView> checkPointViews;
 
         Rally::View::CarView playerCarView;
         std::map<int, Rally::View::RemoteCarView> remoteCarViews;
+
+        Rally::View::PortalView tunnelPortalView;
 
         //std::map<const Rally::Model::RemoteCar&, TheViewType&> remoteCarViews;
 

@@ -1,6 +1,8 @@
 #ifndef RALLY_VIEW_INPUTINIT_H_
 #define RALLY_VIEW_INPUTINIT_H_
 
+#include "util/Timer.h"
+
 //#include <OISEvents.h>
 #include <OISKeyboard.h>
 #include <OISMouse.h>
@@ -17,6 +19,7 @@ class InputInit : public Ogre::FrameListener, public OIS::KeyListener, public OI
         virtual ~InputInit();
         void setup();
         bool isKeyPressed(const std::string &s);
+        bool isKeyPressedDebounced(const std::string &s);
 
     private:
         typedef std::map<std::string, bool> Map;
@@ -51,6 +54,8 @@ class InputInit : public Ogre::FrameListener, public OIS::KeyListener, public OI
         OIS::InputManager* mInputManager;
         OIS::Mouse*    mMouse;
         OIS::Keyboard* mKeyboard;
+
+        Rally::Util::Timer debouncer;
 
 };
 

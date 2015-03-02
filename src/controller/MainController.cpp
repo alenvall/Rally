@@ -63,7 +63,7 @@ namespace Rally { namespace Controller {
 
         // Accelerate and break
         car.setAccelerationRequested(inputInit.isKeyPressed("up"));
-        car.setBreakingRequested(inputInit.isKeyPressed("down"));
+        car.setBreakingRequested(inputInit.isKeyPressed("down") || inputInit.isKeyPressed("x"));
 
         // Steering
         bool left = inputInit.isKeyPressed("left");
@@ -82,6 +82,10 @@ namespace Rally { namespace Controller {
         }
         if (inputInit.isKeyPressed("f")){
 		    sceneView.setDebugDrawEnabled(false);
+        }
+
+        if (inputInit.isKeyPressedDebounced("r")){
+		    sceneView.toggleReflections();
         }
     }
 

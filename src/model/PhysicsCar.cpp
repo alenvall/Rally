@@ -21,7 +21,7 @@ namespace Rally { namespace Model {
         const float SUSPENSION_REST_LENGTH = 0.6f; // (see also maxSuspensionTravelCm)
         const float WHEEL_RADIUS = 0.5f;
         const float FRONT_WHEEL_FRICTION = 2.0f;
-        const float BACK_WHEEL_FRICTION = 1.999f;
+        const float BACK_WHEEL_FRICTION = 1.9f;
 
         const float ENGINE_FORCE = 3500.0f;
         const float ENGINE_REVERSE_FORCE = -2800.0f;
@@ -29,6 +29,9 @@ namespace Rally { namespace Model {
 
         const float MAX_STEERING = 0.4f;
         const float STEERING_INCREASE = 0.8f; // [same unit as steering] per second
+        const float STEERING_MAX_COMPENSATION = 1.0f; // automatic counter-steer when drifting
+        const float STEERING_COMPENSATION_FACTOR = .90f;
+        const float STEERING_COMPENSATION_TEMPORAL_DAMPING = 0.9f;
 
         // The wheel distance is calculated from the origin = center of the car.
         // The wheel (including radius) should be located inside the car body:
@@ -49,11 +52,8 @@ namespace Rally { namespace Model {
             bodyRigidBody(NULL),
             vehicleRaycaster(NULL),
             raycastVehicle(NULL),
-            leftFrontWheel(NULL),
-            rightFrontWheel(NULL),
-            leftBackWheel(NULL),
-            rightBackWheel(NULL),
             steering(0),
+            lastCompensatedSteering(0),
             accelerationRequested(false),
             breakingRequested(false),
             steeringRequested(0),
@@ -80,6 +80,7 @@ namespace Rally { namespace Model {
         lowerMassCenterShape->calculateLocalInertia(CAR_MASS, inertia); // TODO: We might want to lower/move center of gravity...
 
         bodyConstructionInfo = new btRigidBody::btRigidBodyConstructionInfo(CAR_MASS, &bodyMotionState, lowerMassCenterShape, inertia);
+        bodyConstructionInfo->m_restitution = 0.5f;
     }
 
     void PhysicsCar::attachTo(PhysicsWorld& physicsWorld) {
@@ -109,6 +110,8 @@ namespace Rally { namespace Model {
         const btVector3 wheelDirection(0, -1.0f, 0); // This is the direction of the raycast.
         const btVector3 wheelAxle(-1.0f, 0, 0); // This is spinning direction (using right hand rule).
 
+        // NOTE: DO NOT CACHE THE WHEELS FROM getWheelInfo! Strange memory corruption results...
+
         // Right front wheel.
         raycastVehicle->addWheel(
             FRONT_WHEEL_DISTANCE, // connection point
@@ -119,9 +122,9 @@ namespace Rally { namespace Model {
             tuning,
             true // isFrontWheel
         );
-        rightFrontWheel = &raycastVehicle->getWheelInfo(0);
-        rightFrontWheel->m_rollInfluence = ROLL_INFLUENCE;
-        rightFrontWheel->m_frictionSlip = FRONT_WHEEL_FRICTION;
+        btWheelInfo& rightFrontWheel = raycastVehicle->getWheelInfo(0);
+        rightFrontWheel.m_rollInfluence = ROLL_INFLUENCE;
+        rightFrontWheel.m_frictionSlip = FRONT_WHEEL_FRICTION;
 
         // Left front wheel.
         raycastVehicle->addWheel(
@@ -133,9 +136,9 @@ namespace Rally { namespace Model {
             tuning,
             true // isFrontWheel
         );
-        leftFrontWheel = &raycastVehicle->getWheelInfo(1);
-        leftFrontWheel->m_rollInfluence = ROLL_INFLUENCE;
-        leftFrontWheel->m_frictionSlip = FRONT_WHEEL_FRICTION;
+        btWheelInfo& leftFrontWheel = raycastVehicle->getWheelInfo(1);
+        leftFrontWheel.m_rollInfluence = ROLL_INFLUENCE;
+        leftFrontWheel.m_frictionSlip = FRONT_WHEEL_FRICTION;
 
         // Right back wheel.
         raycastVehicle->addWheel(
@@ -147,9 +150,9 @@ namespace Rally { namespace Model {
             tuning,
             false // isFrontWheel
         );
-        rightBackWheel = &raycastVehicle->getWheelInfo(2);
-        rightBackWheel->m_rollInfluence = ROLL_INFLUENCE;
-        rightBackWheel->m_frictionSlip = BACK_WHEEL_FRICTION;
+        btWheelInfo& rightBackWheel = raycastVehicle->getWheelInfo(2);
+        rightBackWheel.m_rollInfluence = ROLL_INFLUENCE;
+        rightBackWheel.m_frictionSlip = BACK_WHEEL_FRICTION;
 
         // Left back wheel.
         raycastVehicle->addWheel(
@@ -161,9 +164,9 @@ namespace Rally { namespace Model {
             tuning,
             false // isFrontWheel
         );
-        leftBackWheel = &raycastVehicle->getWheelInfo(3);
-        leftBackWheel->m_rollInfluence = ROLL_INFLUENCE;
-        leftBackWheel->m_frictionSlip = BACK_WHEEL_FRICTION;
+        btWheelInfo& leftBackWheel = raycastVehicle->getWheelInfo(3);
+        leftBackWheel.m_rollInfluence = ROLL_INFLUENCE;
+        leftBackWheel.m_frictionSlip = BACK_WHEEL_FRICTION;
 
         physicsWorld.registerStepCallback(this);
     }
@@ -203,42 +206,53 @@ namespace Rally { namespace Model {
     }
 
     Rally::Quaternion PhysicsCar::getRightFrontWheelOrientation() const {
-        btQuaternion orientation = rightFrontWheel->m_worldTransform.getRotation();
+        raycastVehicle->updateWheelTransform(0, true);
+        btQuaternion orientation = raycastVehicle->getWheelInfo(0).m_worldTransform.getRotation();
         return Rally::Quaternion(orientation.w(), orientation.x(), orientation.y(), orientation.z());
     }
 
     Rally::Quaternion PhysicsCar::getLeftFrontWheelOrientation() const {
-        btQuaternion orientation = leftFrontWheel->m_worldTransform.getRotation();
+        raycastVehicle->updateWheelTransform(1, true);
+        btQuaternion orientation = raycastVehicle->getWheelInfo(1).m_worldTransform.getRotation();
         return Rally::Quaternion(orientation.w(), orientation.x(), orientation.y(), orientation.z());
     }
 
     Rally::Quaternion PhysicsCar::getRightBackWheelOrientation() const {
-        btQuaternion orientation = rightBackWheel->m_worldTransform.getRotation();
+        raycastVehicle->updateWheelTransform(2, true);
+        btQuaternion orientation = raycastVehicle->getWheelInfo(2).m_worldTransform.getRotation();
         return Rally::Quaternion(orientation.w(), orientation.x(), orientation.y(), orientation.z());
     }
 
     Rally::Quaternion PhysicsCar::getLeftBackWheelOrientation() const {
-        btQuaternion orientation = leftBackWheel->m_worldTransform.getRotation();
+        raycastVehicle->updateWheelTransform(3, true);
+        btQuaternion orientation = raycastVehicle->getWheelInfo(3).m_worldTransform.getRotation();
         return Rally::Quaternion(orientation.w(), orientation.x(), orientation.y(), orientation.z());
     }
 
     float PhysicsCar::getRightFrontWheelTraction() const {
-        return rightFrontWheel->m_skidInfo;
+        return raycastVehicle->getWheelInfo(0).m_skidInfo;
     }
 
     float PhysicsCar::getLeftFrontWheelTraction() const {
-        return leftFrontWheel->m_skidInfo;
+        return raycastVehicle->getWheelInfo(1).m_skidInfo;
     }
 
     float PhysicsCar::getRightBackWheelTraction() const {
-        return rightBackWheel->m_skidInfo;
+        return raycastVehicle->getWheelInfo(2).m_skidInfo;
     }
 
     float PhysicsCar::getLeftBackWheelTraction() const {
-        return leftBackWheel->m_skidInfo;
+        return raycastVehicle->getWheelInfo(3).m_skidInfo;
     }
 
     void PhysicsCar::stepped(float deltaTime) {
+        // Some values used several times below.
+        btVector3 velocity = bodyRigidBody->getLinearVelocity();
+        btVector3 forwardVector = raycastVehicle->getForwardVector();
+        float speed = velocity.length();
+        float directionInfo = (speed > 0.001f) ? forwardVector.dot(velocity / speed) : 1.0f; // cos(shortest angle)
+
+        // Some initial guess for how we should proceed.
         breakingForce = 0;
         if(breakingRequested) {
             // Breaking actually means reverse
@@ -251,16 +265,15 @@ namespace Rally { namespace Model {
         }
 
         // In case someone tries to go in the other direction, we break to a halt first.
-        btVector3 velocity = bodyRigidBody->getLinearVelocity();
-        if(velocity.length() > 0.5f) {
-            float directionInfo = raycastVehicle->getForwardVector().dot(velocity); // ||v||*cos(shortest angle)
+        if(speed > 0.5f) {
             bool isActuallyReversing = directionInfo < 0; // If we actually go backwards in the simulation
             if((engineForce > 0 && isActuallyReversing) || (engineForce < 0 && !isActuallyReversing)) {
                 engineForce = 0;
                 breakingForce = BREAKING_FORCE;
             }
         }
-        // Apply equally to both back wheels.
+
+        // Apply forces equally to both back wheels.
         raycastVehicle->applyEngineForce(engineForce, 2);
         raycastVehicle->applyEngineForce(engineForce, 3);
         raycastVehicle->setBrake(breakingForce, 2);
@@ -279,9 +292,56 @@ namespace Rally { namespace Model {
             steering = -MAX_STEERING;
         }
 
+        // Compensate steering with the angle between the forward and velocity vector.
+        float compensatedSteering = steering;
+        if(directionInfo != 1.0f && isAllWheelsOnGround()) {
+            // The SIGNED angle between the forward and velocity vector, in the xz-plane
+            btVector3 forwardXZ = btVector3(forwardVector.x(), 0, forwardVector.z());
+            btVector3 velocityXZ = btVector3(velocity.x() / speed, 0, velocity.z() / speed);
+
+            float angleSign = 0;
+            if(forwardXZ.length() > 0.001f && velocityXZ.length() > 0.001f) {
+                btVector3 signVector = forwardXZ.cross(velocityXZ);
+                angleSign = signVector.y();
+            }
+
+            float angle = btAcos(directionInfo) * angleSign;
+
+            if(angle > STEERING_MAX_COMPENSATION) {
+                angle = STEERING_MAX_COMPENSATION;
+            } else if (angle < -STEERING_MAX_COMPENSATION) {
+                angle = -STEERING_MAX_COMPENSATION;
+            }
+
+            float traction = btPow(0.5f*getLeftBackWheelTraction() + 0.5*getRightBackWheelTraction(), 2.0f); // pow(base, exponent)
+
+            // If we ever get a spoiler, we could smooth out with velocity here aswell.
+
+            float compensation = STEERING_COMPENSATION_FACTOR*angle*(1.0f - traction);
+
+            // If we are returning back, reduce drifting in the other direction
+            if((lastCompensatedSteering < -0.15f && compensation > 0.15f) || (lastCompensatedSteering > 0.15f && compensation < -0.15f)) {
+                compensatedSteering = (steering*compensation < 0) ? 0.1f*steering : 0.01f*steering; // Damp the different signs differently
+                compensation *= 2.0f;
+            }
+            compensatedSteering += compensation;
+        }
+
+        // Apply some temporal damping (low pass filter)
+        compensatedSteering = (1.0f - STEERING_COMPENSATION_TEMPORAL_DAMPING)*lastCompensatedSteering +
+            STEERING_COMPENSATION_TEMPORAL_DAMPING*compensatedSteering;
+        lastCompensatedSteering = compensatedSteering;
+
         // Apply equally on both front wheels.
-        raycastVehicle->setSteeringValue(steering, 0);
-        raycastVehicle->setSteeringValue(steering, 1);
+        raycastVehicle->setSteeringValue(compensatedSteering, 0);
+        raycastVehicle->setSteeringValue(compensatedSteering, 1);
+    }
+
+    bool PhysicsCar::isAllWheelsOnGround() {
+        return raycastVehicle->getWheelInfo(0).m_raycastInfo.m_isInContact &&
+            raycastVehicle->getWheelInfo(1).m_raycastInfo.m_isInContact &&
+            raycastVehicle->getWheelInfo(2).m_raycastInfo.m_isInContact &&
+            raycastVehicle->getWheelInfo(3).m_raycastInfo.m_isInContact;
     }
 
 } }

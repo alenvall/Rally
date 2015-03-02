@@ -47,6 +47,8 @@ namespace Rally { namespace Model {
 
         private:
             void initializeConstructionInfo();
+            bool isAllWheelsOnGround();
+
             btDynamicsWorld* dynamicsWorld;
 
             btBoxShape* bodyShape;
@@ -57,12 +59,9 @@ namespace Rally { namespace Model {
 
             btVehicleRaycaster* vehicleRaycaster;
             btRaycastVehicle* raycastVehicle;
-            btWheelInfo* rightFrontWheel;
-            btWheelInfo* leftFrontWheel;
-            btWheelInfo* rightBackWheel;
-            btWheelInfo* leftBackWheel;
 
             float steering;
+            float lastCompensatedSteering;
             bool accelerationRequested;
             bool breakingRequested;
             int steeringRequested; // steeringRequested is -1, 0 or 1

@@ -122,7 +122,7 @@ bool SceneView::renderFrame(float deltaTime) {
     } else {
         updatePlayerCar(deltaTime);
         updateRemoteCars();
-		updateCheckPoints();
+		//updateCheckPoints();
 
     if(debugDrawEnabled){
         world.getPhysicsWorld().getDynamicsWorld()->debugDrawWorld();
@@ -219,17 +219,8 @@ void SceneView::updateRemoteCars() {
     }
 }
 
-//Not needed at the moment, all checkpoints are static
-
-// Update to work for all checkpoints
 void SceneView::updateCheckPoints() {
-	//checkPointView.update();
-	/*
-    for(std::list<Rally::View::CheckpointView>::iterator checkPointViewIterator = checkPointViews.begin();
-            checkPointViewIterator != checkPointViews.end();
-            ++checkPointViewIterator) {
-		checkPointViewIterator->second.update(world.getCheckPoint().getPosition(), world.getCheckPoint().getOrientation());
-    }*/
+	//goalView.update();
 }
 
 

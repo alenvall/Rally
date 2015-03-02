@@ -16,10 +16,10 @@ namespace Rally { namespace View {
     }
 
     CheckpointView::~CheckpointView() {
-        if(sceneManager != NULL) {
+        /*if(sceneManager != NULL) {
             sceneManager->destroySceneNode(checkPointNode);
             sceneManager->destroyEntity(checkPointEntity);
-        }
+        }*/
     }
 
     void CheckpointView::attachTo(Ogre::SceneManager* sceneManager, const std::string& checkPointName, 

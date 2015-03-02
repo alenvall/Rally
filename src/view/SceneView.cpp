@@ -65,11 +65,7 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 
 	playerCarView.attachTo(sceneManager, "PlayerCar");
 
-	Ogre::Entity* goalEntity = sceneManager->createEntity("Finish", "car.mesh");
-	goalNode = sceneManager->getRootSceneNode()->createChildSceneNode();
-	goalNode->attachObject(goalEntity);
-	goalNode->setPosition(Ogre::Vector3(-50.0f, 0.0f, 60.0f));
-    //goalNode->scale(Ogre::Vector3(5.0f, 5.0f, 5.0f) / goalEntity->getBoundingBox().getSize());
+	goalView.attachTo(sceneManager, "Goal", "car.mesh", world.getGoal());
 
     // Debug draw Bullet
     bulletDebugDrawer = new Rally::Util::BulletDebugDrawer(sceneManager);
@@ -126,6 +122,7 @@ bool SceneView::renderFrame(float deltaTime) {
     } else {
         updatePlayerCar(deltaTime);
         updateRemoteCars();
+		updateCheckPoints();
 
     if(debugDrawEnabled){
         world.getPhysicsWorld().getDynamicsWorld()->debugDrawWorld();
@@ -160,7 +157,7 @@ void SceneView::updatePlayerCar(float deltaTime) {
     Rally::Vector3 endPosition = position + displacement;
 
 	float velocityAdjust = playerCar.getVelocity().length()/6;
-	float lerpAdjust = Ogre::Math::Clamp(velocityAdjust*deltaTime, 0.005f, 0.025f);
+	float lerpAdjust = Ogre::Math::Clamp(velocityAdjust*deltaTime, 0.01f, 0.25f);
 
 	// Lerp towards the new camera position to get a smoother pan
 	float lerpX = Ogre::Math::lerp(currentCameraPosition.x, endPosition.x, lerpAdjust);
@@ -221,6 +218,21 @@ void SceneView::updateRemoteCars() {
         carViewIterator->second.updateWithRemoteCar();
     }
 }
+
+//Not needed at the moment, all checkpoints are static
+
+// Update to work for all checkpoints
+void SceneView::updateCheckPoints() {
+	//checkPointView.update();
+	/*
+    for(std::list<Rally::View::CheckpointView>::iterator checkPointViewIterator = checkPointViews.begin();
+            checkPointViewIterator != checkPointViews.end();
+            ++checkPointViewIterator) {
+		checkPointViewIterator->second.update(world.getCheckPoint().getPosition(), world.getCheckPoint().getOrientation());
+    }*/
+}
+
+
 
 void SceneView::remoteCarUpdated(int carId, const Rally::Model::RemoteCar& remoteCar) {
     std::map<int, Rally::View::RemoteCarView>::iterator found = remoteCarViews.find(carId);

@@ -40,15 +40,24 @@ namespace Rally { namespace Model {
             bool removeRemoteCar(int carId) {
                 return remoteCars.erase(carId) > 0;
             }
-
+			
             const std::map<int, Rally::Model::RemoteCar>& getRemoteCars() const {
                 return remoteCars;
             }
+
+			Rally::Model::Checkpoint& getGoal() {
+                return goal;
+            }
+
+			/*const std::map<int, Rally::Model::Checkpoint>& getCheckPoints() const {
+                return checkPoints;
+            }*/
 
         private:
             Rally::Model::PhysicsWorld physicsWorld;
             Rally::Model::Car playerCar;
 			Rally::Model::Goal goal;
+            //std::map<int, Rally::Model::Checkpoint> checkPoints;
             std::map<int, Rally::Model::RemoteCar> remoteCars;
     };
 

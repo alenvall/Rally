@@ -3,6 +3,7 @@
 
 #include "view/RemoteCarView.h"
 #include "view/CarView.h"
+#include "view/CheckpointView.h"
 #include "model/World.h"
 
 #include <OgreCamera.h>
@@ -32,6 +33,8 @@ class SceneView {
         void loadResourceConfig(Ogre::String resourceConfigPath);
         void updatePlayerCar(float deltaTime);
         void updateRemoteCars();
+		
+        void updateCheckPoints();
 
         bool debugDrawEnabled;
 
@@ -41,7 +44,10 @@ class SceneView {
         Ogre::SceneManager* sceneManager;
         Ogre::RenderWindow* renderWindow;
 
-        Ogre::SceneNode* goalNode;
+		
+        Rally::View::CheckpointView goalView;
+        std::list<Rally::View::CheckpointView> checkPointViews;
+
         Rally::View::CarView playerCarView;
         std::map<int, Rally::View::RemoteCarView> remoteCarViews;
 

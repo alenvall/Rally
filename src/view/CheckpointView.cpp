@@ -22,7 +22,8 @@ namespace Rally { namespace View {
         }
     }
 
-    void CheckpointView::attachTo(Ogre::SceneManager* sceneManager, const std::string& checkPointName, const std::string& meshName, Rally::Model::Checkpoint& checkPoint) {
+    void CheckpointView::attachTo(Ogre::SceneManager* sceneManager, const std::string& checkPointName, 
+		const std::string& meshName, const Rally::Model::Checkpoint& checkPoint) {
         this->sceneManager = sceneManager;
 		this->checkPoint = &checkPoint;
 		

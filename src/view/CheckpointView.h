@@ -13,7 +13,8 @@ class CheckpointView {
     public:
 		CheckpointView();
         virtual ~CheckpointView();
-        void attachTo(Ogre::SceneManager* sceneManager, const std::string& checkPointName, const std::string& meshName, Rally::Model::Checkpoint& checkPoint);
+        void attachTo(Ogre::SceneManager* sceneManager, const std::string& checkPointName, 
+			const std::string& meshName, const Rally::Model::Checkpoint& checkPoint);
 
         void update();
 
@@ -22,7 +23,7 @@ class CheckpointView {
         Ogre::Entity* checkPointEntity;
         Ogre::SceneNode* checkPointNode;
 
-		Rally::Model::Checkpoint* checkPoint;
+		const Rally::Model::Checkpoint* checkPoint;
 };
 
 } }

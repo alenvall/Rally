@@ -153,7 +153,12 @@ void SceneView::updatePlayerCar(float deltaTime) {
 	Rally::Vector3 displacementBase = playerCar.getOrientation() * Ogre::Vector3::UNIT_Z;
 	displacementBase *= -1;
 	
-	Rally::Vector3 displacement(8.0f * displacementBase.x, 5.0f, 8.0f * displacementBase.z);
+	float xzdisplacement = 6.5f;
+	float ydisplacement = 3.0f;
+
+	Rally::Vector3 displacement(xzdisplacement * displacementBase.x, 
+		ydisplacement, 
+		xzdisplacement * displacementBase.z);
     Rally::Vector3 endPosition = position + displacement;
 
 	float velocityAdjust = playerCar.getVelocity().length()/6;

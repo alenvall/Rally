@@ -2,13 +2,9 @@
 #define RALLY_VIEW_SCENEVIEW_H_
 
 #include "view/RemoteCarView.h"
-<<<<<<< HEAD
-#include "view/CarView.h"
 #include "view/CheckpointView.h"
-=======
 #include "view/PlayerCarView.h"
 #include "view/PortalView.h"
->>>>>>> master
 #include "model/World.h"
 
 #include <OgreCamera.h>
@@ -53,7 +49,7 @@ class SceneView {
         Rally::View::CheckpointView goalView;
         std::list<Rally::View::CheckpointView> checkPointViews;
 
-        Rally::View::CarView playerCarView;
+        Rally::View::PlayerCarView playerCarView;
         std::map<int, Rally::View::RemoteCarView> remoteCarViews;
 
         Rally::View::PortalView tunnelPortalView;

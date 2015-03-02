@@ -27,8 +27,6 @@ namespace Rally { namespace Model {
 
 		physicsWorld.getDynamicsWorld()->addCollisionObject(ghostObject);
 
-		//physicsWorld.getDynamicsWorld()->addCollisionObject(ghostObject, );
-
         physicsWorld.registerStepCallback(this);
 	}
 

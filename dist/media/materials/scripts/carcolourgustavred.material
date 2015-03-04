@@ -1,16 +1,16 @@
-// horisont genrated by blender2ogre 0.6.0
+// carcolour genrated by blender2ogre 0.6.0
 
-material horisont 
+material carcolourgustavred 
 {
     receive_shadows on 
 
     technique
     {
-        pass horisont
+        pass carcolourgustavred
         {
-            ambient 1.0 1.0 1.0 1.0
-            diffuse 1.0 1.0 1.0 1.0
-            specular 0.0 0.0 0.0 1.0 12.5
+            ambient 0.6 0.16 0.0 1.0
+            diffuse 0.8 0.22 0.0 1.0
+            specular 1.0 1.0 1.0 1.0 100
             emissive 0.0 0.0 0.0 1.0
 
             alpha_to_coverage off
@@ -30,13 +30,6 @@ material horisont
             shading gouraud
             transparent_sorting on
 
-            texture_unit 
-            {
-                texture horisont.png
-                tex_address_mode wrap
-                scale 1.0 1.0
-                colour_op modulate
-            }
         }
     }
 }

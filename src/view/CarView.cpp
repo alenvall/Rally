@@ -2,6 +2,7 @@
 
 #include <OgreRoot.h>
 #include <OgreEntity.h>
+#include <OgreSubEntity.h>
 
 #include <sstream>
 #include <string>
@@ -46,6 +47,7 @@ namespace Rally { namespace View {
         this->sceneManager = sceneManager;
 
         carEntity = sceneManager->createEntity(carName, "car.mesh");
+		carEntity->getSubEntity(4)->setMaterialName("carcolourhotpink");
         carNode = sceneManager->getRootSceneNode()->createChildSceneNode();
         carNode->attachObject(carEntity);
 

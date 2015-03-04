@@ -87,6 +87,10 @@ namespace Rally { namespace Controller {
         if (inputInit.isKeyPressedDebounced("r")){
 		    sceneView.toggleReflections();
         }
+
+        if (inputInit.isKeyPressed("p")){
+            std::cout << car.getPosition() << std::endl;
+        }
     }
 
     void MainController_RemoteCarListener::carUpdated(unsigned short carId,

@@ -10,7 +10,7 @@ material lack
         {
             ambient 0.2 0.2 0.2 1.0
             diffuse 0.3 0.3 0.3 0.3
-            specular 1.0 1.0 1.0 1.0 100
+            specular 1.0 1.0 1.0 1.0 1000
             emissive 0.0 0.0 0.0 0.0
 
             alpha_to_coverage off

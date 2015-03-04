@@ -1,15 +1,15 @@
-// horisont genrated by blender2ogre 0.6.0
+// lov2 genrated by blender2ogre 0.6.0
 
-material horisont 
+material lov2 
 {
     receive_shadows on 
 
     technique
     {
-        pass horisont
+        pass lov2
         {
-            ambient 1.0 1.0 1.0 1.0
-            diffuse 1.0 1.0 1.0 1.0
+            ambient 0.002008708892390132 0.1733550876379013 0.0 1.0
+            diffuse 0.0016069671378577816 0.13868407217687473 0.0 1.0
             specular 0.0 0.0 0.0 1.0 12.5
             emissive 0.0 0.0 0.0 1.0
 
@@ -30,13 +30,6 @@ material horisont
             shading gouraud
             transparent_sorting on
 
-            texture_unit 
-            {
-                texture horisont.png
-                tex_address_mode wrap
-                scale 1.0 1.0
-                colour_op modulate
-            }
         }
     }
 }

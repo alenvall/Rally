@@ -344,14 +344,14 @@ void SceneView::activateParticles(){
 		lb = false, 
 		lf = false;
 
-	 if(world.getPlayerCar().getPhysicsCar().getRightBackWheelTraction() < 0.3)
-		 rb = true;	 
-	 if(world.getPlayerCar().getPhysicsCar().getRightFrontWheelTraction() < 0.3)
-		 rf = true;	 
-	 if(world.getPlayerCar().getPhysicsCar().getLeftBackWheelTraction() < 0.3)
-		 lb = true;	 
-	 if(world.getPlayerCar().getPhysicsCar().getLeftFrontWheelTraction() < 0.3)
-		 lf = true;
+	if(world.getPlayerCar().getPhysicsCar().getRightBackWheelTraction() < 0.3)
+		rb = true;	 
+	if(world.getPlayerCar().getPhysicsCar().getRightFrontWheelTraction() < 0.3)
+		rf = true;	 
+	if(world.getPlayerCar().getPhysicsCar().getLeftBackWheelTraction() < 0.3)
+		lb = true;	 
+	if(world.getPlayerCar().getPhysicsCar().getLeftFrontWheelTraction() < 0.3)
+		lf = true;
 
-	 playerCarView.enableWheelParticles(rb, rf, lb, lf);
+	playerCarView.enableWheelParticles(rb, rf, lb, lf);
 }

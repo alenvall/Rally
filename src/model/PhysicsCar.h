@@ -44,6 +44,14 @@ namespace Rally { namespace Model {
             void setSteeringRequested(int steeringRequested) {
                 this->steeringRequested = steeringRequested;
             }
+			
+			std::list<Rally::Vector3> getParticlePositions(){
+				return particlePositions;
+			}
+
+			void clearParticlePositions(){
+				return particlePositions.clear();
+			}
 
         private:
             void initializeConstructionInfo();
@@ -68,6 +76,8 @@ namespace Rally { namespace Model {
 
             float engineForce;
             float breakingForce;
+
+			std::list<Rally::Vector3> particlePositions;
     };
 
 } }

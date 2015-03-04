@@ -58,7 +58,7 @@ namespace Rally { namespace Model {
             breakingRequested(false),
             steeringRequested(0),
             engineForce(0),
-            breakingForce(0) {
+            breakingForce(0){
     }
 
     PhysicsCar::~PhysicsCar() {
@@ -335,7 +335,40 @@ namespace Rally { namespace Model {
         // Apply equally on both front wheels.
         raycastVehicle->setSteeringValue(compensatedSteering, 0);
         raycastVehicle->setSteeringValue(compensatedSteering, 1);
-    }
+
+
+
+		//check Collision();
+		int numManifolds = dynamicsWorld->getDispatcher()->getNumManifolds();
+		for (int i=0;i<numManifolds;i++)
+		{
+			btPersistentManifold* contactManifold =  dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
+			btCollisionObject* obA = (btCollisionObject*)(contactManifold->getBody0());
+			btCollisionObject* obB = (btCollisionObject*)(contactManifold->getBody1());
+
+			if(contactManifold->getBody0() == bodyRigidBody || contactManifold->getBody1() == bodyRigidBody){
+
+				int numContacts = contactManifold->getNumContacts();
+				for (int j=0;j<numContacts;j++)
+				{
+					btManifoldPoint& pt = contactManifold->getContactPoint(j);
+					if (pt.getDistance()<0.f)
+					{
+						const btVector3& ptA = pt.getPositionWorldOnA();
+						const btVector3& ptB = pt.getPositionWorldOnB();
+						const btVector3& normalOnB = pt.m_normalWorldOnB;
+
+						if(pt.getAppliedImpulse() >= 50){
+							if(contactManifold->getBody0() == bodyRigidBody)
+								particlePositions.push_front(Rally::Vector3(ptA.getX(), ptA.getY(), ptA.getZ()));
+							//else
+								//particlePositions.push_front(Rally::Vector3(ptB.getX(), ptB.getY(), ptB.getZ()));
+						}
+					}
+				}
+			}
+		}
+	}
 
     bool PhysicsCar::isAllWheelsOnGround() {
         return raycastVehicle->getWheelInfo(0).m_raycastInfo.m_isInContact &&

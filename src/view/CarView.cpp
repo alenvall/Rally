@@ -63,6 +63,8 @@ namespace Rally { namespace View {
         leftFrontWheelNode->attachObject(leftFrontWheelEntity);
         rightBackWheelNode->attachObject(rightBackWheelEntity);
         leftBackWheelNode->attachObject(leftBackWheelEntity);
+
+		initParticleSystem();
     }
 
     void CarView::updateBody(const Rally::Vector3& position, const Rally::Quaternion& orientation) {
@@ -81,4 +83,46 @@ namespace Rally { namespace View {
         rightBackWheelNode->setOrientation(localCompensation*rightBackWheelOrientation);
         leftBackWheelNode->setOrientation(localCompensation*leftBackWheelOrientation);
     }
+
+	void CarView::initParticleSystem(){
+		bodyParticleNode = sceneManager->getRootSceneNode()->createChildSceneNode();
+		particleSystem = sceneManager->createParticleSystem("Sun", "Space/Sun");
+		bodyParticleNode->attachObject(particleSystem);
+		
+		rightBackSystem = sceneManager->createParticleSystem("Wheel_rightback", "Space/Sun");
+		leftBackSystem = sceneManager->createParticleSystem("Wheel_leftback", "Space/Sun");
+		rightFrontSystem = sceneManager->createParticleSystem("Wheel_rightfront", "Space/Sun");
+		leftFrontSystem = sceneManager->createParticleSystem("Wheel_leftfront", "Space/Sun");
+
+		rightBackWheelNode->attachObject(rightBackSystem);
+		leftBackWheelNode->attachObject(leftBackSystem);
+		rightFrontWheelNode->attachObject(rightFrontSystem);
+		leftFrontWheelNode->attachObject(leftFrontSystem);
+
+		rightBackSystem->getEmitter(0)->setEnabled(false);
+		leftBackSystem->getEmitter(0)->setEnabled(false);
+		rightFrontSystem->getEmitter(0)->setEnabled(false);
+		leftFrontSystem->getEmitter(0)->setEnabled(false);
+	}
+
+	void CarView::activateParticles(Rally::Vector3 position, int intensity){
+		//ugly removal of emitters to prevetn lag
+		/*
+		if(particleSystem->getNumEmitters() > 100)
+			for(int i = 0; i < particleSystem->getNumEmitters(); i++)
+				particleSystem->removeEmitter(0);
+		*/
+
+		particleSystem->addEmitter("Point")->setDuration(2);
+		particleSystem->getEmitter(particleSystem->getNumEmitters()-1)->setPosition(position);
+		std::cout << particleSystem->getEmitter(particleSystem->getNumEmitters()-1)->getPosition() << " : " << position << std::endl;
+	
+	}
+
+	void CarView::enableWheelParticles(bool rightBack, bool rightFront, bool leftBack, bool leftFront){
+		rightBackSystem->getEmitter(0)->setEnabled(rightBack);
+		rightFrontSystem->getEmitter(0)->setEnabled(rightFront);
+		leftBackSystem->getEmitter(0)->setEnabled(leftBack);
+		leftFrontSystem->getEmitter(0)->setEnabled(leftFront);
+	}
 } }

@@ -13,11 +13,12 @@ namespace Rally { namespace Model {
 
 	void Checkpoint::init(){
 		ghostObject = new btPairCachingGhostObject();
-		btCollisionShape* shape = new btBoxShape(btVector3(btScalar(3.),btScalar(3.),btScalar(3.)));
+		btCollisionShape* shape = new btBoxShape(btVector3(btScalar(3.), btScalar(3.), btScalar(3.)));
 		ghostObject->setCollisionShape(shape);
-		ghostObject->setWorldTransform(btTransform(btQuaternion(0,0,0,1), btVector3(-50.f,1.5f,60.f)));
 		ghostObject->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
 		
+		ghostObject->setWorldTransform(btTransform(btQuaternion(0.f, 0.f, 0.f, 1.f), btVector3(-50.f, 2.f, 80.f)));
+
 		// Enable ghost objects
 		physicsWorld.getDynamicsWorld()->getPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
 	}
@@ -41,7 +42,11 @@ namespace Rally { namespace Model {
     }
 		
 	void Checkpoint::processCollision(btCollisionObject* colObj){
-		// do stuff
+		/*btRigidBody* b = btRigidBody::upcast(colObj);
+		if (b) {
+			b->activate();
+			b->applyCentralImpulse(btVector3(0.f, 250.f, 0.f));
+		}*/
 	}
 
 	void Checkpoint::checkCollision(){

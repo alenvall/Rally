@@ -52,6 +52,8 @@ namespace Rally { namespace Model {
 			/*const std::map<int, Rally::Model::Checkpoint>& getCheckPoints() const {
                 return checkPoints;
             }*/
+			
+			std::list<Rally::Vector3> positions;
 
         private:
             Rally::Model::PhysicsWorld physicsWorld;

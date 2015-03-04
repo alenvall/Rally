@@ -47,6 +47,18 @@ namespace Rally { namespace Model {
             void setSteeringRequested(int steeringRequested) {
                 physicsCar.setSteeringRequested(steeringRequested);
             }
+			
+			std::list<Rally::Vector3> getParticlePositions(){
+				return physicsCar.getParticlePositions();
+			}
+
+			void clearParticlePositions(){
+				return physicsCar.clearParticlePositions();
+			}
+
+			Rally::Model::PhysicsCar getPhysicsCar(){
+				return physicsCar;
+			}
 
         private:
             Rally::Model::PhysicsWorld& physicsWorld;

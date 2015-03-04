@@ -29,6 +29,8 @@ class SceneView {
         void setDebugDrawEnabled(bool enabled);
         void toggleReflections();
 
+		void activateParticles();
+
     private:
         Ogre::Viewport* addViewport(Ogre::Camera* followedCamera);
         Ogre::Camera* addCamera(Ogre::String cameraName);
@@ -45,6 +47,7 @@ class SceneView {
         Ogre::Camera* camera;
         Ogre::SceneManager* sceneManager;
         Ogre::RenderWindow* renderWindow;
+		Ogre::ParticleSystemManager* particleManager;
 
         Rally::View::CheckpointView goalView;
         std::list<Rally::View::CheckpointView> checkPointViews;
@@ -57,6 +60,8 @@ class SceneView {
         //std::map<const Rally::Model::RemoteCar&, TheViewType&> remoteCarViews;
 
         Rally::Util::BulletDebugDrawer* bulletDebugDrawer;
+
+
 };
 
 #endif // RALLY_VIEW_SCENEVIEW_H_

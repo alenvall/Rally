@@ -25,6 +25,10 @@ class CarView {
             const Rally::Quaternion& rightBackWheelOrientation,
             const Rally::Quaternion& leftBackWheelOrientation);
 
+		void initParticleSystem();
+		void activateParticles(Rally::Vector3 position, int intensity);
+		void enableWheelParticles(bool rightBack, bool rightFront, bool leftBack, bool leftFront);
+
     protected:
         Ogre::SceneManager* sceneManager;
         Ogre::Entity* carEntity;
@@ -39,6 +43,13 @@ class CarView {
         Ogre::SceneNode* leftFrontWheelNode;
         Ogre::SceneNode* rightBackWheelNode;
         Ogre::SceneNode* leftBackWheelNode;
+
+		Ogre::ParticleSystem* particleSystem;
+		Ogre::ParticleSystem* rightBackSystem;
+		Ogre::ParticleSystem* rightFrontSystem;
+		Ogre::ParticleSystem* leftBackSystem;
+		Ogre::ParticleSystem* leftFrontSystem;
+		Ogre::SceneNode* bodyParticleNode;
 };
 
 } }

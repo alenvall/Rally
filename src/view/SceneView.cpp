@@ -86,11 +86,6 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     bulletDebugDrawer = new Rally::Util::BulletDebugDrawer(sceneManager);
     world.getPhysicsWorld().getDynamicsWorld()->setDebugDrawer(bulletDebugDrawer);
 
-	// Sky dome
-	//sceneManager->setSkyDome(true, "Rally/CloudySky", 5, 8, 1000, true);
-
-	sceneManager->setSkyDome(true, "Rally/CloudySky", 5, 8);
-
 	// Place the magic surface at the end of the tunnel.
 	tunnelPortalView.attachTo(sceneManager, "TunnelPortal");
 	tunnelPortalView.setScale(15.0f, 5.0f, true);
@@ -152,6 +147,7 @@ bool SceneView::renderFrame(float deltaTime) {
         updatePlayerCar(deltaTime);
         updateRemoteCars();
 		//updateCheckPoints();
+		activateParticles();
 
     if(debugDrawEnabled){
         world.getPhysicsWorld().getDynamicsWorld()->debugDrawWorld();
@@ -193,7 +189,7 @@ void SceneView::updatePlayerCar(float deltaTime) {
     Rally::Vector3 endPosition = position + displacement;
 
 	float velocityAdjust = playerCar.getVelocity().length()/6;
-	float lerpAdjust = Ogre::Math::Clamp(velocityAdjust*deltaTime, 0.01f, 0.25f);
+	float lerpAdjust = Ogre::Math::Clamp(velocityAdjust*deltaTime, 0.05f, 0.25f);
 
 	// Lerp towards the new camera position to get a smoother pan
 	float lerpX = Ogre::Math::lerp(currentCameraPosition.x, endPosition.x, lerpAdjust);
@@ -295,4 +291,37 @@ void SceneView::setDebugDrawEnabled(bool enabled){
 
 void SceneView::toggleReflections() {
     playerCarView.setReflectionsOn(!playerCarView.isReflectionsOn());
+}
+
+
+void SceneView::activateParticles(){
+	std::list<Rally::Vector3> positions = world.getPlayerCar().getParticlePositions();
+	
+	if(positions.size() > 0){
+		std::cout << std::to_string(positions.size()) << std::endl;
+
+		for(std::list<Rally::Vector3>::iterator iterator = positions.begin();
+			iterator != positions.end();
+			++iterator) {
+				playerCarView.activateParticles(*iterator, 0);
+		}
+		world.getPlayerCar().clearParticlePositions();
+	}
+
+	// wheel traction-effect
+	bool rb = false,
+		rf = false, 
+		lb = false, 
+		lf = false;
+
+	 if(world.getPlayerCar().getPhysicsCar().getRightBackWheelTraction() < 0.3)
+		 rb = true;	 
+	 if(world.getPlayerCar().getPhysicsCar().getRightFrontWheelTraction() < 0.3)
+		 rf = true;	 
+	 if(world.getPlayerCar().getPhysicsCar().getLeftBackWheelTraction() < 0.3)
+		 lb = true;	 
+	 if(world.getPlayerCar().getPhysicsCar().getLeftFrontWheelTraction() < 0.3)
+		 lf = true;
+
+	 playerCarView.enableWheelParticles(rb, rf, lb, lf);
 }

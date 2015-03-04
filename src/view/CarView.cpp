@@ -2,6 +2,7 @@
 
 #include <OgreRoot.h>
 #include <OgreEntity.h>
+#include <OgreSubEntity.h>
 
 #include <sstream>
 #include <string>

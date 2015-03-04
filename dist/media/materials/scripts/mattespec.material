@@ -8,12 +8,10 @@ material mattespec
     {
         pass mattespec
         {
-            ambient 0.3 0.3 0.3 0.3
-diffuse 0.6 0.6 0.6 0.6
-            
-specular 1.0 1.0 1.0 1.0 120.5
-            
-emissive 0.0 0.0 0.0 0.0
+            ambient 0.240000013113022 0.240000013113022 0.240000013113022 1.0
+            diffuse 0.480000026226044 0.480000026226044 0.480000026226044 1.0
+            specular 1.0 1.0 1.0 1.0 12.5
+            emissive 0.0 0.0 0.0 1.0
 
             alpha_to_coverage off
             colour_write on

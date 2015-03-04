@@ -60,11 +60,41 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     camera->setAspectRatio(Ogre::Real(viewport->getActualWidth()) / Ogre::Real(viewport->getActualHeight()));
 
     Ogre::SceneNode* sceneNode = sceneManager->getRootSceneNode()->createChildSceneNode();
-    sceneNode->setPosition(Ogre::Vector3(0, 110.0f, 0));
+    sceneNode->setPosition(Ogre::Vector3(0, 0, 0));
 
     // Load the scene.
     DotSceneLoader loader;
     loader.parseDotScene("world.scene", "General", sceneManager, sceneNode);
+	sceneManager->getEntity("leaves1")->setCastShadows(false);
+	sceneManager->getEntity("leaves2")->setCastShadows(false);
+	sceneManager->getEntity("leaves3")->setCastShadows(false);
+	sceneManager->getEntity("leaves4")->setCastShadows(false);
+	sceneManager->getEntity("leaves5")->setCastShadows(false);
+	sceneManager->getEntity("leaves6")->setCastShadows(false);
+	sceneManager->getEntity("leaves7")->setCastShadows(false);
+	sceneManager->getEntity("leaves8")->setCastShadows(false);
+	sceneManager->getEntity("leaves9")->setCastShadows(false);
+	sceneManager->getEntity("leaves10")->setCastShadows(false);
+	sceneManager->getEntity("leaves11")->setCastShadows(false);
+	sceneManager->getEntity("leaves12")->setCastShadows(false);
+	sceneManager->getEntity("leaves13")->setCastShadows(false);
+	sceneManager->getEntity("buske1")->setCastShadows(false);
+	sceneManager->getEntity("buske2")->setCastShadows(false);
+	sceneManager->getEntity("buske3")->setCastShadows(false);
+	sceneManager->getEntity("buske4")->setCastShadows(false);
+	sceneManager->getEntity("buske5")->setCastShadows(false);
+	sceneManager->getEntity("buske6")->setCastShadows(false);
+	sceneManager->getEntity("buske7")->setCastShadows(false);
+	sceneManager->getEntity("tree1")->setCastShadows(false);
+	sceneManager->getEntity("tree2")->setCastShadows(false);
+	sceneManager->getEntity("tree3")->setCastShadows(false);
+	sceneManager->getEntity("tree4")->setCastShadows(false);
+	sceneManager->getEntity("tree5")->setCastShadows(false);
+	sceneManager->getEntity("tree6")->setCastShadows(false);
+	sceneManager->getEntity("tree7")->setCastShadows(false);
+	sceneManager->getEntity("tree8")->setCastShadows(false);
+	sceneManager->getEntity("tree9")->setCastShadows(false);
+	sceneManager->getEntity("tree10")->setCastShadows(false);
 
     sceneManager->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
     sceneManager->setShadowColour(Ogre::ColourValue(0.5, 0.5, 0.5) );
@@ -92,7 +122,7 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 	// Place the magic surface at the end of the tunnel.
 	tunnelPortalView.attachTo(sceneManager, "TunnelPortal");
 	tunnelPortalView.setScale(15.0f, 5.0f, true);
-    tunnelPortalView.setPosition(Rally::Vector3(86.0f, 12.0f, -134.0f));
+    tunnelPortalView.setPosition(Rally::Vector3(86.0f, 5.0f, -134.0f));
     tunnelPortalView.setOrientation(Rally::Quaternion(Ogre::Math::Sqrt(0.5f), 0, -Ogre::Math::Sqrt(0.5f), 0));
 
     // Snap a picture for the magic surface at Kopparbunken.

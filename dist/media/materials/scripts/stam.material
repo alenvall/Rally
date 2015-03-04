@@ -1,16 +1,16 @@
-// horisont genrated by blender2ogre 0.6.0
+// stam genrated by blender2ogre 0.6.0
 
-material horisont 
+material stam 
 {
-    receive_shadows on 
+    receive_shadows off 
 
     technique
     {
-        pass horisont
+        pass stam
         {
-            ambient 1.0 1.0 1.0 1.0
-            diffuse 1.0 1.0 1.0 1.0
-            specular 0.0 0.0 0.0 1.0 12.5
+            ambient 0.060008712112903595 0.00988001935184002 0.0 1.0
+            diffuse 0.04800697040568247 0.007904015599251024 0.0 1.0
+            specular 0.5 0.5 0.5 1.0 12.5
             emissive 0.0 0.0 0.0 1.0
 
             alpha_to_coverage off
@@ -30,13 +30,6 @@ material horisont
             shading gouraud
             transparent_sorting on
 
-            texture_unit 
-            {
-                texture horisont.png
-                tex_address_mode wrap
-                scale 1.0 1.0
-                colour_op modulate
-            }
         }
     }
 }

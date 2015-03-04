@@ -177,7 +177,7 @@ bool SceneView::renderFrame(float deltaTime) {
         updatePlayerCar(deltaTime);
         updateRemoteCars();
 		//updateCheckPoints();
-		activateParticles();
+		updateParticles();
 
     if(debugDrawEnabled){
         world.getPhysicsWorld().getDynamicsWorld()->debugDrawWorld();
@@ -292,8 +292,6 @@ void SceneView::updateCheckPoints() {
 	//goalView.update();
 }
 
-
-
 void SceneView::remoteCarUpdated(int carId, const Rally::Model::RemoteCar& remoteCar) {
     std::map<int, Rally::View::RemoteCarView>::iterator found = remoteCarViews.find(carId);
 
@@ -324,17 +322,17 @@ void SceneView::toggleReflections() {
 }
 
 
-void SceneView::activateParticles(){
+void SceneView::updateParticles(){
 	std::list<Rally::Vector3> positions = world.getPlayerCar().getParticlePositions();
-	
+
 	if(positions.size() > 0){
-		std::cout << std::to_string(positions.size()) << std::endl;
 
 		for(std::list<Rally::Vector3>::iterator iterator = positions.begin();
 			iterator != positions.end();
 			++iterator) {
 				playerCarView.activateParticles(*iterator, 0);
 		}
+
 		world.getPlayerCar().clearParticlePositions();
 	}
 

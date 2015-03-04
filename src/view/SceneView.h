@@ -29,8 +29,6 @@ class SceneView {
         void setDebugDrawEnabled(bool enabled);
         void toggleReflections();
 
-		void activateParticles();
-
     private:
         Ogre::Viewport* addViewport(Ogre::Camera* followedCamera);
         Ogre::Camera* addCamera(Ogre::String cameraName);
@@ -40,7 +38,9 @@ class SceneView {
 		
         void updateCheckPoints();
 
-        bool debugDrawEnabled;
+		void updateParticles();
+        
+		bool debugDrawEnabled;
 
         Rally::Model::World& world;
 

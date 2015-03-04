@@ -11,10 +11,10 @@ particle_system Space/Sun
     // Area emitter
     emitter Point
     {
-        emission_rate 100
+        emission_rate 50
         direction 0 1 0
         velocity_min 10
-        velocity_max 15
+        velocity_max 25
         colour_range_start 1 0 0
         colour_range_end 0 0 1
     }

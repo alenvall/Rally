@@ -106,16 +106,14 @@ namespace Rally { namespace View {
 	}
 
 	void CarView::activateParticles(Rally::Vector3 position, int intensity){
-		//ugly removal of emitters to prevetn lag
-		/*
-		if(particleSystem->getNumEmitters() > 100)
+		int hello = particleSystem->getNumEmitters();
+		//ugly removal of emitters to prevent lag
+		if(particleSystem->getNumEmitters() > 50)
 			for(int i = 0; i < particleSystem->getNumEmitters(); i++)
-				particleSystem->removeEmitter(0);
-		*/
+				particleSystem->removeEmitter(i);
 
 		particleSystem->addEmitter("Point")->setDuration(2);
 		particleSystem->getEmitter(particleSystem->getNumEmitters()-1)->setPosition(position);
-		std::cout << particleSystem->getEmitter(particleSystem->getNumEmitters()-1)->getPosition() << " : " << position << std::endl;
 	
 	}
 

@@ -3,8 +3,9 @@
 
 #include "Rally.h"
 
-#include "OgreManualObject.h"
-#include "OgreRenderTargetListener.h"
+#include <OgreFrameListener.h>
+#include <OgreManualObject.h>
+#include <OgreRenderTargetListener.h>
 
 #include <string>
 #include <set>
@@ -21,10 +22,12 @@ namespace Ogre {
 
 namespace Rally { namespace View {
 
-class ReflectionView : public Ogre::RenderTargetListener {
+class ReflectionView : public Ogre::FrameListener, public Ogre::RenderTargetListener {
     public:
         ReflectionView(const std::set<std::string>& reflectionReceivers);
         virtual ~ReflectionView();
+
+        virtual bool frameStarted(const Ogre::FrameEvent& event);
 
         virtual void preRenderTargetUpdate(const Ogre::RenderTargetEvent& event);
         virtual void postRenderTargetUpdate(const Ogre::RenderTargetEvent& event);
@@ -41,6 +44,7 @@ class ReflectionView : public Ogre::RenderTargetListener {
 
         Ogre::TexturePtr reflectionTexture;
         Ogre::RenderTarget* renderTargets[6];
+        int renderRoundRobin;
         Ogre::Quaternion cameraOrientations[6];
         Ogre::Camera* camera;
 

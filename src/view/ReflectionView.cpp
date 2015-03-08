@@ -15,7 +15,8 @@ namespace Rally { namespace View {
             renderTargets(),
             camera(NULL),
             oldMaterialPtrs(NULL),
-            reflectionReceivers(reflectionReceivers) {
+            reflectionReceivers(reflectionReceivers),
+            renderRoundRobin(0) {
         // Ogre uses the same order as the OpenGL specification for cube maps:
         // 0 GL_TEXTURE_CUBE_MAP_POSITIVE_X
         // 1 GL_TEXTURE_CUBE_MAP_NEGATIVE_X
@@ -35,6 +36,8 @@ namespace Rally { namespace View {
     }
 
     void ReflectionView::detach() {
+        Ogre::Root::getSingleton().removeFrameListener(this);
+
         if(!reflectionTexture.isNull()) {
             // Set back the old materials and clean up the reflected ones.
             unsigned int subEntityCount = entity->getNumSubEntities();
@@ -128,6 +131,20 @@ namespace Rally { namespace View {
             } else {
                 oldMaterialPtrs[subEntityId].setNull();
             }
+        }
+
+        Ogre::Root::getSingleton().addFrameListener(this);
+    }
+
+    bool ReflectionView::frameStarted(const Ogre::FrameEvent& event) {
+        // Only opdate one side of the cube each frame (faster).
+        for(unsigned int i = 0; i < 6; i++) {
+            renderTargets[i]->setAutoUpdated(renderRoundRobin == i);
+        }
+
+        renderRoundRobin++;
+        if(renderRoundRobin > 5) {
+            renderRoundRobin = 0;
         }
     }
 

@@ -79,7 +79,7 @@ namespace Rally { namespace View {
         float pixelHeight = 1.0f / viewport->getActualHeight();
 
         float effectFactor = car->getEffectFactor();
-        float sigma = 1.0f + 20.0f*effectFactor;
+        float sigma = 1.0f + 10.0f*effectFactor;
 
         // This is an optimized version of the normal distribution.
         // It's not entirely accurate (up to the tail after the highest x.

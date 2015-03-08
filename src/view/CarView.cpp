@@ -47,7 +47,7 @@ namespace Rally { namespace View {
         this->sceneManager = sceneManager;
 
         carEntity = sceneManager->createEntity(carName, "car.mesh");
-		carEntity->getSubEntity(4)->setMaterialName("carcolourhotpink");
+		carEntity->getSubEntity(4)->setMaterialName("carcolourred");
         carNode = sceneManager->getRootSceneNode()->createChildSceneNode();
         carNode->attachObject(carEntity);
 

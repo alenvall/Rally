@@ -79,6 +79,8 @@ namespace Rally { namespace View {
         float pixelHeight = 1.0f / viewport->getActualHeight();
 
         float effectFactor = car->getEffectFactor();
+        //effectFactor = 1.0f;
+
         float sigma = 1.0f + 10.0f*effectFactor;
 
         // This is an optimized version of the normal distribution.
@@ -111,7 +113,7 @@ namespace Rally { namespace View {
             int blurIndex = x / 2;
 
             float factor = weights[x] + weights[x+1];
-            blurWeights[blurIndex] = factor + 0.02f*effectFactor; // Some extra effect factor ;)
+            blurWeights[blurIndex] = factor + 1.2f*factor*effectFactor; // Some extra effect factor ;)
 
             float normalizedOffset = (x + factor/weights[x]);
             blurHorizontalOffsets[blurIndex] = normalizedOffset*pixelWidth;

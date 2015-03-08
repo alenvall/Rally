@@ -4,6 +4,7 @@
 #include "view/RemoteCarView.h"
 #include "view/PlayerCarView.h"
 #include "view/PortalView.h"
+#include "view/BloomView.h"
 #include "model/World.h"
 
 #include <OgreCamera.h>
@@ -51,6 +52,8 @@ class SceneView {
         //std::map<const Rally::Model::RemoteCar&, TheViewType&> remoteCarViews;
 
         Rally::Util::BulletDebugDrawer* bulletDebugDrawer;
+
+        Rally::View::BloomView bloomView;
 };
 
 #endif // RALLY_VIEW_SCENEVIEW_H_

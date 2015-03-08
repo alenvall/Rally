@@ -18,6 +18,21 @@ namespace Rally { namespace Util {
     class BulletDebugDrawer;
 } }
 
+namespace Rally { namespace View {
+
+class SceneView_LogicListener : public Ogre::FrameListener {
+    public:
+        virtual ~SceneView_LogicListener() {
+        }
+        virtual void updateLogic(float deltaTime) = 0;
+        virtual bool frameRenderingQueued(const Ogre::FrameEvent& event) {
+            updateLogic(event.timeSinceLastFrame);
+            return true;
+        }
+};
+
+} }
+
 class SceneView {
     public:
         SceneView(Rally::Model::World& world);
@@ -28,6 +43,7 @@ class SceneView {
         void remoteCarRemoved(int carId, const Rally::Model::RemoteCar& remoteCar);
         void setDebugDrawEnabled(bool enabled);
         void toggleReflections();
+        void addLogicListener(Rally::View::SceneView_LogicListener& logicListener);
 
     private:
         Ogre::Viewport* addViewport(Ogre::Camera* followedCamera);

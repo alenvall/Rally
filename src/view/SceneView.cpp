@@ -176,6 +176,10 @@ void SceneView::loadResourceConfig(Ogre::String resourceConfigPath) {
     }
 }
 
+void SceneView::addLogicListener(Rally::View::SceneView_LogicListener& logicListener) {
+    Ogre::Root::getSingleton().addFrameListener(&logicListener);
+}
+
 bool SceneView::renderFrame(float deltaTime) {
     Ogre::WindowEventUtilities::messagePump();
 

@@ -27,6 +27,8 @@ namespace Rally { namespace Controller {
     void MainController::start() {
         Rally::Util::Timer frameTimer;
 
+        sceneView.addLogicListener(*this);
+
         frameTimer.reset();
         while(true) {
             float deltaTime = frameTimer.getElapsedSeconds();
@@ -43,19 +45,24 @@ namespace Rally { namespace Controller {
 
             // ADD ANYTHING THAT'S NOT FRAME-TIMING CODE BELOW THIS LINE!
 
-            netView.pullRemoteChanges();
-
-		    updateInput();
-
-            world.update(deltaTime);
-
-            netView.pushLocalChanges();
+            // PLEASE CONSIDER ADDING YOUR CODE TO updateLogic()!
+            // Performance penalty dragns lurk here.
 
             // TODO: Investigate in which order we'll do things (buffer up graphics commands, do some CPU, flip render buffers)
             if(!sceneView.renderFrame(deltaTime)) {
                 return;
             }
         }
+    }
+
+    void MainController::updateLogic(float deltaTime) {
+        netView.pullRemoteChanges();
+
+        updateInput();
+
+        world.update(deltaTime);
+
+        netView.pushLocalChanges();
     }
 
     void MainController::updateInput() {

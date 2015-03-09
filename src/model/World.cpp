@@ -8,7 +8,7 @@ namespace Rally { namespace Model {
     World::World() :
             physicsWorld(),
             playerCar(physicsWorld),
-			goal(physicsWorld){
+			finish(physicsWorld){
     }
 
     World::~World() {
@@ -17,7 +17,7 @@ namespace Rally { namespace Model {
     void World::initialize(const std::string & bulletFile) {
         physicsWorld.initialize(bulletFile);
         playerCar.attachToWorld();
-		goal.attachToWorld();
+		finish.attachToWorld();
     }
 
     void World::update(float deltaTime) {

@@ -7,12 +7,18 @@
 
 namespace Rally { namespace Model {
 
-	class Goal : public Checkpoint {
+	class Finish : public Checkpoint {
 
 	public:
-		Goal(Rally::Model::PhysicsWorld& physicsWorld) : Checkpoint(physicsWorld){};
+		Finish(Rally::Model::PhysicsWorld& physicsWorld) : Checkpoint(physicsWorld){};
 
 		virtual void processCollision(btCollisionObject* colObj);
+
+		bool finished;
+
+		bool hasFinished(){
+			return finished;
+		}
 	};
 
 } }

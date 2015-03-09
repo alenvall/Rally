@@ -4,7 +4,7 @@
 #include "model/PhysicsWorld.h"
 #include "model/Car.h"
 #include "model/RemoteCar.h"
-#include "model/Goal.h"
+#include "model/Finish.h"
 #include <map>
 
 namespace Rally { namespace Model {
@@ -45,8 +45,8 @@ namespace Rally { namespace Model {
                 return remoteCars;
             }
 
-			Rally::Model::Checkpoint& getGoal() {
-                return goal;
+			Rally::Model::Checkpoint& getFinish() {
+                return finish;
             }
 
 			/*const std::map<int, Rally::Model::Checkpoint>& getCheckPoints() const {
@@ -54,11 +54,11 @@ namespace Rally { namespace Model {
             }*/
 			
 			std::list<Rally::Vector3> positions;
-
+			
         private:
             Rally::Model::PhysicsWorld physicsWorld;
             Rally::Model::Car playerCar;
-			Rally::Model::Goal goal;
+			Rally::Model::Finish finish;
             //std::map<int, Rally::Model::Checkpoint> checkPoints;
             std::map<int, Rally::Model::RemoteCar> remoteCars;
     };

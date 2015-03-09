@@ -245,6 +245,29 @@ namespace Rally { namespace Model {
         return raycastVehicle->getWheelInfo(3).m_skidInfo;
     }
 
+	Rally::Vector3 PhysicsCar::getRightFrontWheelOrigin() const {
+        raycastVehicle->updateWheelTransform(0, true);
+		btVector3 orientation = raycastVehicle->getWheelInfo(0).m_worldTransform.getOrigin();
+        return Rally::Vector3(orientation.x(), orientation.y(), orientation.z());
+    }
+
+	Rally::Vector3 PhysicsCar::getLeftFrontWheelOrigin() const {
+        raycastVehicle->updateWheelTransform(1, true);
+		btVector3 orientation = raycastVehicle->getWheelInfo(1).m_worldTransform.getOrigin();
+        return Rally::Vector3(orientation.x(), orientation.y(), orientation.z());
+    }
+	
+	Rally::Vector3 PhysicsCar::getRightBackWheelOrigin() const {
+        raycastVehicle->updateWheelTransform(2, true);
+		btVector3 orientation = raycastVehicle->getWheelInfo(2).m_worldTransform.getOrigin();
+        return Rally::Vector3(orientation.x(), orientation.y(), orientation.z());
+    }
+	
+	Rally::Vector3 PhysicsCar::getLeftBackWheelOrigin() const {
+        raycastVehicle->updateWheelTransform(3, true);
+		btVector3 orientation = raycastVehicle->getWheelInfo(3).m_worldTransform.getOrigin();
+        return Rally::Vector3(orientation.x(), orientation.y(), orientation.z());
+    }
     void PhysicsCar::stepped(float deltaTime) {
         // Some values used several times below.
         btVector3 velocity = bodyRigidBody->getLinearVelocity();
@@ -335,34 +358,6 @@ namespace Rally { namespace Model {
         // Apply equally on both front wheels.
         raycastVehicle->setSteeringValue(compensatedSteering, 0);
         raycastVehicle->setSteeringValue(compensatedSteering, 1);
-
-		int numManifolds = dynamicsWorld->getDispatcher()->getNumManifolds();
-		for (int i=0;i<numManifolds;i++)
-		{
-			btPersistentManifold* contactManifold =  dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
-			btCollisionObject* obA = (btCollisionObject*)(contactManifold->getBody0());
-			btCollisionObject* obB = (btCollisionObject*)(contactManifold->getBody1());
-
-			if(contactManifold->getBody0() == bodyRigidBody || contactManifold->getBody1() == bodyRigidBody){
-
-				int numContacts = contactManifold->getNumContacts();
-				for (int j=0;j<numContacts;j++)
-				{
-					btManifoldPoint& pt = contactManifold->getContactPoint(j);
-					if (pt.getDistance()<0.f)
-					{
-						const btVector3& ptA = pt.getPositionWorldOnA();
-						const btVector3& ptB = pt.getPositionWorldOnB();
-						const btVector3& normalOnB = pt.m_normalWorldOnB;
-
-						if(pt.getAppliedImpulse() >= 50){
-							if(contactManifold->getBody0() == bodyRigidBody)
-								particlePositions.push_front(Rally::Vector3(ptA.getX(), ptA.getY(), ptA.getZ()));
-						}
-					}
-				}
-			}
-		}
 
 		checkForSkidmarks();
 	}

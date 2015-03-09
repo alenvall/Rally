@@ -30,7 +30,7 @@ SceneView::~SceneView() {
 
     playerCarView.detach();
 
-    bloomView.detach();
+  //  bloomView.detach();
 
     Ogre::Root* root = Ogre::Root::getSingletonPtr();
     delete root;
@@ -62,7 +62,7 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     Ogre::Viewport* viewport = this->addViewport(camera);
     camera->setAspectRatio(Ogre::Real(viewport->getActualWidth()) / Ogre::Real(viewport->getActualHeight()));
 
-    bloomView.attachTo(viewport, &world.getPlayerCar());
+   // bloomView.attachTo(viewport, &world.getPlayerCar());
 
     Ogre::SceneNode* sceneNode = sceneManager->getRootSceneNode()->createChildSceneNode();
     sceneNode->setPosition(Ogre::Vector3(0, 0, 0));
@@ -70,18 +70,49 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     // Load the scene.
     DotSceneLoader loader;
     loader.parseDotScene("world.scene", "General", sceneManager, sceneNode);
-
-    // shadows
+/*	sceneManager->getEntity("leaves1")->setCastShadows(false);
+	sceneManager->getEntity("leaves2")->setCastShadows(false);
+	sceneManager->getEntity("leaves3")->setCastShadows(false);
+	sceneManager->getEntity("leaves4")->setCastShadows(false);
+	sceneManager->getEntity("leaves5")->setCastShadows(false);
+	sceneManager->getEntity("leaves6")->setCastShadows(false);
+	sceneManager->getEntity("leaves7")->setCastShadows(false);
+	sceneManager->getEntity("leaves8")->setCastShadows(false);
+	sceneManager->getEntity("leaves9")->setCastShadows(false);
+	sceneManager->getEntity("leaves10")->setCastShadows(false);
+	sceneManager->getEntity("leaves11")->setCastShadows(false);
+	sceneManager->getEntity("leaves12")->setCastShadows(false);
+	sceneManager->getEntity("leaves13")->setCastShadows(false);
+	sceneManager->getEntity("buske1")->setCastShadows(false);
+	sceneManager->getEntity("buske2")->setCastShadows(false);
+	sceneManager->getEntity("buske3")->setCastShadows(false);
+	sceneManager->getEntity("buske4")->setCastShadows(false);
+	sceneManager->getEntity("buske5")->setCastShadows(false);
+	sceneManager->getEntity("buske6")->setCastShadows(false);
+	sceneManager->getEntity("buske7")->setCastShadows(false);
+	sceneManager->getEntity("tree1")->setCastShadows(false);
+	sceneManager->getEntity("tree2")->setCastShadows(false);
+	sceneManager->getEntity("tree3")->setCastShadows(false);
+	sceneManager->getEntity("tree4")->setCastShadows(false);
+	sceneManager->getEntity("tree5")->setCastShadows(false);
+	sceneManager->getEntity("tree6")->setCastShadows(false);
+	sceneManager->getEntity("tree7")->setCastShadows(false);
+	sceneManager->getEntity("tree8")->setCastShadows(false);
+	sceneManager->getEntity("tree9")->setCastShadows(false);
+	sceneManager->getEntity("tree10")->setCastShadows(false);
+*/
+	
+	// shadows
    	sceneManager->getEntity("mark")->setCastShadows(false);
     sceneManager->getEntity("horisont")->setCastShadows(false);
     sceneManager->getEntity("fysikgrans")->setCastShadows(false);
-    sceneManager->getEntity("maskin")->setCastShadows(false);
-    sceneManager->getEntity("plank")->setCastShadows(false);
-    sceneManager->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE);
+//    sceneManager->getEntity("maskin")->setCastShadows(false);
+//    sceneManager->getEntity("plank")->setCastShadows(false);
+    sceneManager->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
     sceneManager->setAmbientLight(Ogre::ColourValue(1, 1, 1));
     sceneManager->setShadowFarDistance(250);
     sceneManager->setShadowColour(Ogre::ColourValue(0.80f, 0.80f, 0.80f));
-    sceneManager->setShadowTextureSize( 2048 );
+    sceneManager->setShadowTextureSize( 4096 );
     sceneManager->setShadowTextureCount( 1 );
 
 	// lights

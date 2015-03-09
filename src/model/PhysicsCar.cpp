@@ -23,7 +23,7 @@ namespace Rally { namespace Model {
         const float FRONT_WHEEL_FRICTION = 2.0f;
         const float BACK_WHEEL_FRICTION = 1.9f;
 
-        const float ENGINE_FORCE = 3500.0f;
+        const float ENGINE_FORCE = 2500.0f;
         const float ENGINE_REVERSE_FORCE = -2800.0f;
         const float BREAKING_FORCE = 2000.0f;
 

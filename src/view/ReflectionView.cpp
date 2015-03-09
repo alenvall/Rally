@@ -94,8 +94,8 @@ namespace Rally { namespace View {
             /* fsaaHint optional parameter */);
 
         camera = sceneManager->createCamera(reflectionName + "_Camera");
-        camera->setNearClipDistance(0.5f);
-        camera->setFarClipDistance(1000.0f);
+        camera->setNearClipDistance(1.0f);
+        camera->setFarClipDistance(2000.0f);
         camera->setFixedYawAxis(false);
         camera->setFOVy(Ogre::Degree(90));
         camera->setAspectRatio(1.0f);

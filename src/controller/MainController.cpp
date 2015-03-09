@@ -19,7 +19,7 @@ namespace Rally { namespace Controller {
 
         sceneView.initialize(resourceConfigPath, pluginConfigPath);
 
-        netView.initialize(std::string("127.0.0.1"), 1337, &world.getPlayerCar());
+        netView.initialize(std::string("81.91.1.185"), 1337, &world.getPlayerCar());
 
         inputInit.setup();
     }
@@ -35,7 +35,7 @@ namespace Rally { namespace Controller {
 
             // Allow max 1000 FPS for precision/stability reasons.
             // This is hopefully capped by vsync or atleast computation below.
-            if(deltaTime < 0.001f) {
+            if(deltaTime < 0.017f) {
                 continue;
             }
 

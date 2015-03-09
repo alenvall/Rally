@@ -102,10 +102,7 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     bulletDebugDrawer = new Rally::Util::BulletDebugDrawer(sceneManager);
     world.getPhysicsWorld().getDynamicsWorld()->setDebugDrawer(bulletDebugDrawer);
 
-	// Sky dome
-	//sceneManager->setSkyDome(true, "Rally/CloudySky", 5, 8, 1000, true);
-
-	sceneManager->setSkyDome(true, "Rally/CloudySky", 5, 8);
+    sceneManager->setSkyDome(true, "Rally/CloudySky", 5, 8);
 
 	// Place the magic surface at the end of the tunnel.
 	tunnelPortalView.attachTo(sceneManager, "TunnelPortal");

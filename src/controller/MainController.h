@@ -29,11 +29,12 @@ namespace Rally { namespace Controller {
             SceneView& sceneView;
     };
 
-	class MainController {
+	class MainController : public Rally::View::SceneView_LogicListener {
         public:
             MainController();
             virtual ~MainController();
             void initialize(std::string resourceConfigPath, std::string pluginConfigPath);
+            virtual void updateLogic(float deltaTime);
             void start();
 
         private:

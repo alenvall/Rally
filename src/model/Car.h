@@ -20,6 +20,11 @@ namespace Rally { namespace Model {
             Rally::Quaternion getOrientation() const;
             Rally::Vector3 getVelocity() const;
 
+            /**
+             *  Normalized speed, might be increased by flight etc. Returns a value in the range[0, 1].
+             */
+            float getEffectFactor() const;
+
             Rally::Quaternion getRightFrontWheelOrientation() const {
                 return physicsCar.getRightFrontWheelOrientation();
             }

@@ -8,6 +8,7 @@
 #include <OgreViewport.h>
 #include <OgreConfigFile.h>
 #include <OgreEntity.h>
+#include <OgreCompositorManager.h>
 #include <OgreWindowEventUtilities.h>
 
 #include <sstream>
@@ -28,6 +29,8 @@ SceneView::~SceneView() {
     tunnelPortalView.detach();
 
     playerCarView.detach();
+
+    bloomView.detach();
 
     Ogre::Root* root = Ogre::Root::getSingletonPtr();
     delete root;
@@ -58,6 +61,8 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     camera = this->addCamera("MainCamera");
     Ogre::Viewport* viewport = this->addViewport(camera);
     camera->setAspectRatio(Ogre::Real(viewport->getActualWidth()) / Ogre::Real(viewport->getActualHeight()));
+
+    bloomView.attachTo(viewport, &world.getPlayerCar());
 
     Ogre::SceneNode* sceneNode = sceneManager->getRootSceneNode()->createChildSceneNode();
     sceneNode->setPosition(Ogre::Vector3(0, 0, 0));
@@ -154,6 +159,10 @@ void SceneView::loadResourceConfig(Ogre::String resourceConfigPath) {
                 sectionIterator.peekNextKey()); // resource group
         }
     }
+}
+
+void SceneView::addLogicListener(Rally::View::SceneView_LogicListener& logicListener) {
+    Ogre::Root::getSingleton().addFrameListener(&logicListener);
 }
 
 bool SceneView::renderFrame(float deltaTime) {

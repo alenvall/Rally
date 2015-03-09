@@ -110,7 +110,7 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 
 	playerCarView.attachTo(sceneManager);
 
-	goalView.attachTo(sceneManager, "Finish", "car.mesh", world.getFinish());
+	//goalView.attachTo(sceneManager, "Finish", "car.mesh", world.getFinish());
 
     // Debug draw Bullet
     bulletDebugDrawer = new Rally::Util::BulletDebugDrawer(sceneManager);

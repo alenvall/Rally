@@ -66,7 +66,7 @@ namespace Rally { namespace View {
 		rightBackWheelNode->attachObject(rightBackWheelEntity);
 		leftBackWheelNode->attachObject(leftBackWheelEntity);
 
-		initParticleSystem();
+		initParticleSystem(carName);
 		initSkidmarks();
 	}
 
@@ -87,16 +87,16 @@ namespace Rally { namespace View {
 			leftBackWheelNode->setOrientation(localCompensation*leftBackWheelOrientation);
 	}
 
-	void CarView::initParticleSystem(){
+	void CarView::initParticleSystem(const std::string& carName){
 		bodyParticleNode = sceneManager->getRootSceneNode()->createChildSceneNode();
-		
-		rightBackSystem = sceneManager->createParticleSystem("Wheel_rightback", "Car/Dirt");
 
-		leftBackSystem = sceneManager->createParticleSystem("Wheel_leftback", "Car/Dirt");
-		
-		rightFrontSystem = sceneManager->createParticleSystem("Wheel_rightfront", "Car/Dirt");
+		rightBackSystem = sceneManager->createParticleSystem(carName + "_RightBackParticleSystem", "Car/Dirt");
 
-		leftFrontSystem = sceneManager->createParticleSystem("Wheel_leftfront", "Car/Dirt");
+		leftBackSystem = sceneManager->createParticleSystem(carName + "_LeftBackParticleSystem", "Car/Dirt");
+		
+		rightFrontSystem = sceneManager->createParticleSystem(carName + "_RightFrontParticleSystem", "Car/Dirt");
+
+		leftFrontSystem = sceneManager->createParticleSystem(carName + "_LeftFrontParticleSystem", "Car/Dirt");
 
 
 		bodyParticleNode->attachObject(rightBackSystem);
@@ -146,7 +146,7 @@ namespace Rally { namespace View {
 		skidmarkNode = sceneManager->getRootSceneNode()->createChildSceneNode();
 
 		Ogre::BillboardType type = Ogre::BillboardType::BBT_PERPENDICULAR_SELF;
-		Ogre::BillboardRotationType rotationType = Ogre::BillboardRotationType::BBR_VERTEX;
+		Ogre::BillboardRotationType rotationType = Ogre::BillboardRotationType::BBR_TEXCOORD;
 		Rally::Vector3 up(0, 0, 1);
 		Rally::Vector3 common(0, 1, 0);
 
@@ -164,18 +164,14 @@ namespace Rally { namespace View {
 
 		skidmarkNode->attachObject(skidmarkBillboards);
 
-		skidcounter = 0;
 	}
 
 	void CarView::updateSkidmarks(Rally::Vector3 position, Rally::Vector3 normal, float speed){
-	
 		Ogre::Billboard* b = skidmarkBillboards->createBillboard(Rally::Vector3(position.x, position.y+0.05, position.z), 
 			Ogre::ColourValue::Black);
-		
-		
 		b->mDirection = normal;
-		
-		if(skidmarkBillboards->getNumBillboards() > 600)
-			skidmarkBillboards->removeBillboard(skidmarkBillboards->getBillboard(skidmarkBillboards->getNumBillboards()-600));
+
+		if(skidmarkBillboards->getNumBillboards() > 1000)
+			skidmarkBillboards->removeBillboard(skidmarkBillboards->getBillboard(skidmarkBillboards->getNumBillboards()-1000));
 	}
 } }

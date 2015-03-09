@@ -146,6 +146,8 @@ namespace Rally { namespace View {
         if(renderRoundRobin > 5) {
             renderRoundRobin = 0;
         }
+
+        return true;
     }
 
     void ReflectionView::preRenderTargetUpdate(const Ogre::RenderTargetEvent& event) {

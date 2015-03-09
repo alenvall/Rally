@@ -8,7 +8,7 @@ namespace Rally { namespace View {
     namespace {
         std::set<std::string> getReflectedMaterials() {
             std::set<std::string> reflected;
-            reflected.insert("carcolourhotpink");
+            reflected.insert("carcolourred");
             reflected.insert("blackplastic");
             return reflected;
         }

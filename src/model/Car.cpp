@@ -27,4 +27,10 @@ namespace Rally { namespace Model {
         return physicsCar.getVelocity();
     }
 
+    float Car::getEffectFactor() const {
+        // Clamped and normalized velocity is enought for now
+        float result = physicsCar.getVelocity().length() / 40.0f;
+        return (result > 1.0f) ? 1.0f : result;
+    }
+
 } }

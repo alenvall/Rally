@@ -170,9 +170,6 @@ namespace Rally { namespace View {
 		
 		b->mDirection = normal;
 
-		float speedEffect = 0.5 - 0.5/(speed+0.01);
-		b->setColour(Ogre::ColourValue(0.2, 0.2, 02., 0.3));
-		
 		if(skidmarkBillboards->getNumBillboards() > 2500)
 			skidmarkBillboards->removeBillboard(skidmarkBillboards->getBillboard(skidmarkBillboards->getNumBillboards()-2500));
 	}

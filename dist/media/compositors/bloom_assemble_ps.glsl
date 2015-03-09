@@ -9,5 +9,5 @@ void main() {
     vec4 bloomFactor = (vec4(1.0, 1.0, 1.0, 1.0) + vec4(bloomColor, 0));
     
     //gl_FragColor = vec4(bloomColor, 0);
-    gl_FragColor = bloomFactor*originalColor;
+    gl_FragColor = bloomFactor*originalColor + 0.5*vec4(bloomColor, 0);
 }

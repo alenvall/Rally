@@ -178,6 +178,7 @@ bool SceneView::renderFrame(float deltaTime) {
         updateRemoteCars();
 		//updateCheckPoints();
 		updateParticles();
+		updateSkidmarks();
 
     if(debugDrawEnabled){
         world.getPhysicsWorld().getDynamicsWorld()->debugDrawWorld();
@@ -330,7 +331,7 @@ void SceneView::updateParticles(){
 		for(std::list<Rally::Vector3>::iterator iterator = positions.begin();
 			iterator != positions.end();
 			++iterator) {
-				playerCarView.activateParticles(*iterator, 0);
+				playerCarView.updateParticles(*iterator, 0);
 		}
 
 		world.getPlayerCar().clearParticlePositions();
@@ -352,4 +353,52 @@ void SceneView::updateParticles(){
 		lf = true;
 
 	playerCarView.enableWheelParticles(rb, rf, lb, lf);
+}
+
+void SceneView::updateSkidmarks(){
+	std::list<Rally::Vector3> positions;
+	std::list<Rally::Vector3> normals;
+	std::list<Rally::Vector3>::iterator iteratorNormals;
+	std::list<Rally::Vector3>::iterator iterator;
+
+	for(int i = 0; i < 4; i++){
+		normals = world.getPlayerCar().getSkidmarkNormals(i);
+		positions = world.getPlayerCar().getSkidmarkPositions(i);
+
+		if(positions.size() > 0 && normals.size() > 0){
+			iteratorNormals = normals.begin();
+			iterator = positions.begin();
+
+			if(positions.size() >= 3){
+				for(int n = 0; n < positions.size(); n++){
+					Rally::Vector3 temp = *iterator;
+					playerCarView.updateSkidmarks(*iterator, *iteratorNormals, world.getPlayerCar().getVelocity().length());
+
+					int m = positions.size()-n-1;
+					while(m > 0){
+						for(int a = 0; a < m; a++){
+							++iterator;
+						}
+
+						playerCarView.updateSkidmarks((*iterator).midPoint(temp), *iteratorNormals, world.getPlayerCar().getVelocity().length());	
+
+						for(int b = 0; b < m; b++){
+							--iterator;
+						}
+						m--;
+					}
+					if(iterator != positions.end()){
+						++iterator;
+						++iteratorNormals;
+					}
+				}
+
+			}
+
+			if(positions.size() >= 3){
+				world.getPlayerCar().clearSkidmarkPositions(i);
+				world.getPlayerCar().clearSkidmarkNormals(i);
+			}
+		}
+	}
 }

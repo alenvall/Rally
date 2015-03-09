@@ -47,7 +47,7 @@ namespace Rally { namespace Model {
             dynamicsWorld(NULL),
             bodyShape(NULL),
             lowerMassCenterShape(NULL),
-            bodyMotionState(btTransform(btQuaternion(0.0f, 0.0f, 0.0f, 1.0f), btVector3(90.0f, 50.2f, 55.0f))),
+            bodyMotionState(btTransform(btQuaternion(0.0f, 0.0f, 0.0f, 1.0f), btVector3(90.0f, 20.2f, 75.0f))),
             bodyConstructionInfo(NULL),
             bodyRigidBody(NULL),
             vehicleRaycaster(NULL),
@@ -58,7 +58,7 @@ namespace Rally { namespace Model {
             breakingRequested(false),
             steeringRequested(0),
             engineForce(0),
-            breakingForce(0){
+            breakingForce(0) {
     }
 
     PhysicsCar::~PhysicsCar() {
@@ -336,9 +336,6 @@ namespace Rally { namespace Model {
         raycastVehicle->setSteeringValue(compensatedSteering, 0);
         raycastVehicle->setSteeringValue(compensatedSteering, 1);
 
-
-
-		//check Collision();
 		int numManifolds = dynamicsWorld->getDispatcher()->getNumManifolds();
 		for (int i=0;i<numManifolds;i++)
 		{
@@ -361,12 +358,55 @@ namespace Rally { namespace Model {
 						if(pt.getAppliedImpulse() >= 50){
 							if(contactManifold->getBody0() == bodyRigidBody)
 								particlePositions.push_front(Rally::Vector3(ptA.getX(), ptA.getY(), ptA.getZ()));
-							//else
-								//particlePositions.push_front(Rally::Vector3(ptB.getX(), ptB.getY(), ptB.getZ()));
 						}
 					}
 				}
 			}
+		}
+
+		checkForSkidmarks();
+	}
+
+	void PhysicsCar::checkForSkidmarks() {
+
+		//front
+		if(raycastVehicle->getWheelInfo(0).m_raycastInfo.m_isInContact &&
+			getRightFrontWheelTraction() < 0.35){
+
+			skidmarkPositions[0].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(0).m_raycastInfo.m_contactPointWS));
+			skidmarkNormals[0].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(0).m_raycastInfo.m_contactNormalWS));
+		} else {
+			skidmarkPositions[0].clear();
+		}
+
+		//front
+		if(raycastVehicle->getWheelInfo(1).m_raycastInfo.m_isInContact &&
+			getLeftFrontWheelTraction() < 0.35){
+			
+			skidmarkPositions[1].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(1).m_raycastInfo.m_contactPointWS));
+			skidmarkNormals[1].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(1).m_raycastInfo.m_contactNormalWS));
+		} else {
+			skidmarkPositions[1].clear();
+		}
+		
+		//back
+		if(raycastVehicle->getWheelInfo(2).m_raycastInfo.m_isInContact &&
+			getRightBackWheelTraction() < 0.35){
+			
+			skidmarkPositions[2].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(2).m_raycastInfo.m_contactPointWS));
+			skidmarkNormals[2].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(2).m_raycastInfo.m_contactNormalWS));
+		} else {
+			skidmarkPositions[2].clear();
+		}
+
+		//back
+		if(raycastVehicle->getWheelInfo(3).m_raycastInfo.m_isInContact &&
+			getLeftBackWheelTraction() < 0.35){
+			
+			skidmarkPositions[3].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(3).m_raycastInfo.m_contactPointWS));
+			skidmarkNormals[3].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(3).m_raycastInfo.m_contactNormalWS));
+		} else {
+			skidmarkPositions[3].clear();
 		}
 	}
 

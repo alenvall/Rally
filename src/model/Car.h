@@ -53,8 +53,34 @@ namespace Rally { namespace Model {
 			}
 
 			void clearParticlePositions(){
-				return physicsCar.clearParticlePositions();
+				physicsCar.clearParticlePositions();
 			}
+
+			void clearSkidmarkPositions(int wheel){
+				physicsCar.clearSkidmarkPositions(wheel);
+			}
+			
+			std::list<Rally::Vector3> getSkidmarkPositions(int wheel){
+				return physicsCar.getSkidmarkPositions(wheel);
+			}
+
+			std::list<Rally::Vector3> getSkidmarkNormals(int wheel){
+				return physicsCar.getSkidmarkNormals(wheel);
+			}
+
+			void clearSkidmarkNormals(int wheel){
+				physicsCar.clearSkidmarkNormals(wheel);
+			}
+
+			/*
+			std::list<float> getRots(int wheel){
+				return physicsCar.getRots(wheel);
+			}
+
+			void clearRots(int wheel){
+				physicsCar.clearRots(wheel);
+			}
+			*/
 
 			Rally::Model::PhysicsCar getPhysicsCar(){
 				return physicsCar;

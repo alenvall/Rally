@@ -50,7 +50,34 @@ namespace Rally { namespace Model {
 			}
 
 			void clearParticlePositions(){
-				return particlePositions.clear();
+				particlePositions.clear();
+			}
+
+			std::list<Rally::Vector3> getSkidmarkPositions(int wheel){
+				return skidmarkPositions[wheel];
+			}
+
+			void clearSkidmarkPositions(int wheel){
+				if(skidmarkPositions[wheel].size() > 3){
+					skidmarkPositions[wheel].pop_back();
+					skidmarkPositions[wheel].pop_back();
+
+				}else
+					skidmarkPositions[wheel].pop_back();
+
+			}
+
+			std::list<Rally::Vector3> getSkidmarkNormals(int wheel){
+				return skidmarkNormals[wheel];
+			}
+
+			void clearSkidmarkNormals(int wheel){
+				if(skidmarkNormals[wheel].size() > 3){
+					skidmarkNormals[wheel].pop_back();
+					skidmarkNormals[wheel].pop_back();
+
+				}else
+					skidmarkNormals[wheel].pop_back();
 			}
 
         private:
@@ -78,6 +105,12 @@ namespace Rally { namespace Model {
             float breakingForce;
 
 			std::list<Rally::Vector3> particlePositions;
+			
+			Rally::Vector3 wheelpos;
+			void checkForSkidmarks();
+			std::list<Rally::Vector3> skidmarkPositions[4];
+			std::list<Rally::Vector3> skidmarkNormals[4];
+
     };
 
 } }

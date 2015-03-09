@@ -39,6 +39,8 @@ class SceneView {
         void updateCheckPoints();
 
 		void updateParticles();
+
+		void updateSkidmarks();
         
 		bool debugDrawEnabled;
 

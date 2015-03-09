@@ -30,6 +30,11 @@ namespace Rally { namespace Model {
             float getRightBackWheelTraction() const;
             float getLeftBackWheelTraction() const;
 
+            Rally::Vector3 getRightFrontWheelOrigin() const;
+            Rally::Vector3 getLeftFrontWheelOrigin() const;
+            Rally::Vector3 getRightBackWheelOrigin() const;
+            Rally::Vector3 getLeftBackWheelOrigin() const;
+
             // @Override
             virtual void stepped(float deltaTime);
 

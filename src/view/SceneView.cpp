@@ -325,11 +325,17 @@ void SceneView::toggleReflections() {
 
 void SceneView::updateParticles(){
 	playerCarView.enableWheelParticles(
-		(world.getPlayerCar().getPhysicsCar().getRightBackWheelTraction() < 0.3),
-		(world.getPlayerCar().getPhysicsCar().getRightFrontWheelTraction() < 0.3),
-		(world.getPlayerCar().getPhysicsCar().getLeftBackWheelTraction() < 0.3),
-		(world.getPlayerCar().getPhysicsCar().getLeftFrontWheelTraction() < 0.3),
-		world.getPlayerCar().getPosition()
+		(world.getPlayerCar().getPhysicsCar().getRightBackWheelTraction() < 0.3) ? 
+			world.getPlayerCar().getPhysicsCar().getRightBackWheelOrigin() : Rally::Vector3::ZERO,
+
+		(world.getPlayerCar().getPhysicsCar().getRightFrontWheelTraction() < 0.3) ? 
+			world.getPlayerCar().getPhysicsCar().getRightFrontWheelOrigin() : Rally::Vector3::ZERO,
+
+		(world.getPlayerCar().getPhysicsCar().getLeftBackWheelTraction() < 0.3) ? 
+			world.getPlayerCar().getPhysicsCar().getLeftBackWheelOrigin() : Rally::Vector3::ZERO,
+
+		(world.getPlayerCar().getPhysicsCar().getLeftFrontWheelTraction() < 0.3) ? 
+			world.getPlayerCar().getPhysicsCar().getLeftFrontWheelOrigin() : Rally::Vector3::ZERO
 	);
 }
 

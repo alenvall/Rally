@@ -162,15 +162,29 @@ namespace Rally { namespace View {
 		skidmarkBillboards->setAutoextend(true);
 
 		skidmarkNode->attachObject(skidmarkBillboards);
+
+		skidcounter = 0;
 	}
 
 	void CarView::updateSkidmarks(Rally::Vector3 position, Rally::Vector3 normal, float speed){
-		Ogre::Billboard* b = skidmarkBillboards->createBillboard(Rally::Vector3(position.x, position.y+0.05, position.z), 
-			Ogre::ColourValue::Black);
 		
-		b->mDirection = normal;
+		if(skidcounter == 1000){
+			Ogre::Billboard* b = skidmarkBillboards->getBillboard(skidmarkBillboards->getNumBillboards()-skidcounter);
+			b->setPosition(Rally::Vector3(position.x, position.y+0.05, position.z));
+			b->mDirection = normal;
+			
+		} else {
 
-		if(skidmarkBillboards->getNumBillboards() > 2500)
-			skidmarkBillboards->removeBillboard(skidmarkBillboards->getBillboard(skidmarkBillboards->getNumBillboards()-2500));
+			Ogre::Billboard* b = skidmarkBillboards->createBillboard(Rally::Vector3(position.x, position.y+0.05, position.z), 
+				Ogre::ColourValue::Black);
+		
+			b->mDirection = normal;
+		}
+		if(skidcounter == 1000)
+				skidcounter = 0;
+		skidcounter++;
+
+		//if(skidmarkBillboards->getNumBillboards() > 1500)
+			//skidmarkBillboards->removeBillboard(skidmarkBillboards->getBillboard(skidmarkBillboards->getNumBillboards()-1500));
 	}
 } }

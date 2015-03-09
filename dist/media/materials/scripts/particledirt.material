@@ -10,12 +10,12 @@ particle_system Car/Dirt
     // Area emitter
     emitter Point
     {
-		angle 45
-        emission_rate 500
+		angle 30
+        emission_rate 250
         direction 0 1 0
-        velocity_min 0.5
-        velocity_max 2
-		time_to_live 3
+        velocity_min 4
+        velocity_max 6
+		time_to_live 2
         colour_range_start 0.62 0.31 0
         colour_range_end 0.68 0.31 0
     }

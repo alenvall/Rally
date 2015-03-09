@@ -54,6 +54,8 @@ class CarView {
 
         Ogre::SceneNode* skidmarkNode;
 		Ogre::BillboardSet* skidmarkBillboards;
+		int skidcounter;
+
 };
 
 } }

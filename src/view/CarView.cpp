@@ -89,18 +89,20 @@ namespace Rally { namespace View {
 
 	void CarView::initParticleSystem(){
 		bodyParticleNode = sceneManager->getRootSceneNode()->createChildSceneNode();
-		particleSystem = sceneManager->createParticleSystem("Sun", "Space/Sun");
-		bodyParticleNode->attachObject(particleSystem);
+		
+		rightBackSystem = sceneManager->createParticleSystem("Wheel_rightback", "Car/Dirt");
 
-		rightBackSystem = sceneManager->createParticleSystem("Wheel_rightback", "Space/Sun");
-		leftBackSystem = sceneManager->createParticleSystem("Wheel_leftback", "Space/Sun");
-		rightFrontSystem = sceneManager->createParticleSystem("Wheel_rightfront", "Space/Sun");
-		leftFrontSystem = sceneManager->createParticleSystem("Wheel_leftfront", "Space/Sun");
+		leftBackSystem = sceneManager->createParticleSystem("Wheel_leftback", "Car/Dirt");
+		
+		rightFrontSystem = sceneManager->createParticleSystem("Wheel_rightfront", "Car/Dirt");
 
-		rightBackWheelNode->attachObject(rightBackSystem);
-		leftBackWheelNode->attachObject(leftBackSystem);
-		rightFrontWheelNode->attachObject(rightFrontSystem);
-		leftFrontWheelNode->attachObject(leftFrontSystem);
+		leftFrontSystem = sceneManager->createParticleSystem("Wheel_leftfront", "Car/Dirt");
+
+
+		bodyParticleNode->attachObject(rightBackSystem);
+		bodyParticleNode->attachObject(leftBackSystem);
+		bodyParticleNode->attachObject(rightFrontSystem);
+		bodyParticleNode->attachObject(leftFrontSystem);
 
 		rightBackSystem->getEmitter(0)->setEnabled(false);
 		leftBackSystem->getEmitter(0)->setEnabled(false);
@@ -108,23 +110,26 @@ namespace Rally { namespace View {
 		leftFrontSystem->getEmitter(0)->setEnabled(false);
 	}
 
-	void CarView::updateParticles(Rally::Vector3 position, int intensity){
-		int hello = particleSystem->getNumEmitters();
-		//ugly removal of emitters to prevent lag
-		if(particleSystem->getNumEmitters() > 50)
-			for(int i = 0; i < particleSystem->getNumEmitters(); i++)
-				particleSystem->removeEmitter(i);
+	void CarView::enableWheelParticles(bool rightBack, bool rightFront, bool leftBack, bool leftFront, Rally::Vector3 position){
+		Ogre::Real low(0.4);
+		Ogre::Real high(0.7);
 
-		particleSystem->addEmitter("Point")->setDuration(2);
-		particleSystem->getEmitter(particleSystem->getNumEmitters()-1)->setPosition(position);
-
-	}
-
-	void CarView::enableWheelParticles(bool rightBack, bool rightFront, bool leftBack, bool leftFront){
 		rightBackSystem->getEmitter(0)->setEnabled(rightBack);
+		rightBackSystem->getEmitter(0)->setPosition(position + Ogre::Vector3(0.4f, -0.8f, -1.0f));
+		rightBackSystem->getEmitter(0)->setDirection(Rally::Vector3(Ogre::Math::RangeRandom(low, high), 1, Ogre::Math::RangeRandom(low, high)));
+
 		rightFrontSystem->getEmitter(0)->setEnabled(rightFront);
+		rightFrontSystem->getEmitter(0)->setPosition(position + Ogre::Vector3(0.4f, -0.8f, 1.20f));
+		rightFrontSystem->getEmitter(0)->setDirection(Rally::Vector3(Ogre::Math::RangeRandom(low, high), 1, Ogre::Math::RangeRandom(low, high)));
+
 		leftBackSystem->getEmitter(0)->setEnabled(leftBack);
+		leftBackSystem->getEmitter(0)->setPosition(position + Ogre::Vector3(-0.4f, -0.8f, -1.0f));
+		leftBackSystem->getEmitter(0)->setDirection(Rally::Vector3(Ogre::Math::RangeRandom(low, high), 1, Ogre::Math::RangeRandom(low, high)));
+
 		leftFrontSystem->getEmitter(0)->setEnabled(leftFront);
+		leftFrontSystem->getEmitter(0)->setPosition(position + Ogre::Vector3(-0.4f, -0.8f, 1.20f));
+		leftFrontSystem->getEmitter(0)->setDirection(Rally::Vector3(Ogre::Math::RangeRandom(low, high), 1, Ogre::Math::RangeRandom(low, high)));
+
 	}
 
 	void CarView::initSkidmarks(){
@@ -157,7 +162,7 @@ namespace Rally { namespace View {
 		b->mDirection = normal;
 
 		float speedEffect = 0.5 - 0.5/(speed+0.01);
-		b->setColour(Ogre::ColourValue(0, 0, 0, speed));
+		b->setColour(Ogre::ColourValue(0.2, 0.2, 02., 0.3));
 		
 		if(skidmarkBillboards->getNumBillboards() > 2500)
 			skidmarkBillboards->removeBillboard(skidmarkBillboards->getBillboard(skidmarkBillboards->getNumBillboards()-2500));

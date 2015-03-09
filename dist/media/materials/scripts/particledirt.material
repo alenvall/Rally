@@ -1,0 +1,27 @@
+particle_system Car/Dirt
+{
+    material tiremark
+    particle_width 0.1
+    particle_height 0.1
+    cull_each false
+    quota 10000
+    billboard_type oriented_self
+
+    // Area emitter
+    emitter Point
+    {
+        emission_rate 150
+        direction 0 1 0
+        velocity_min 1
+        velocity_max 4
+        colour_range_start 0.62 0.31 0
+        colour_range_end 0.68 0.31 0
+    }
+
+    // Gravity
+    affector LinearForce
+    {
+        force_vector 0 -10 0
+        force_application add
+    }
+}

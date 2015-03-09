@@ -110,7 +110,7 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 
 	playerCarView.attachTo(sceneManager);
 
-	goalView.attachTo(sceneManager, "Goal", "car.mesh", world.getGoal());
+	goalView.attachTo(sceneManager, "Finish", "car.mesh", world.getFinish());
 
     // Debug draw Bullet
     bulletDebugDrawer = new Rally::Util::BulletDebugDrawer(sceneManager);
@@ -324,35 +324,13 @@ void SceneView::toggleReflections() {
 
 
 void SceneView::updateParticles(){
-	std::list<Rally::Vector3> positions = world.getPlayerCar().getParticlePositions();
-
-	if(positions.size() > 0){
-
-		for(std::list<Rally::Vector3>::iterator iterator = positions.begin();
-			iterator != positions.end();
-			++iterator) {
-				playerCarView.updateParticles(*iterator, 0);
-		}
-
-		world.getPlayerCar().clearParticlePositions();
-	}
-
-	// wheel traction-effect
-	bool rb = false,
-		rf = false, 
-		lb = false, 
-		lf = false;
-
-	if(world.getPlayerCar().getPhysicsCar().getRightBackWheelTraction() < 0.3)
-		rb = true;	 
-	if(world.getPlayerCar().getPhysicsCar().getRightFrontWheelTraction() < 0.3)
-		rf = true;	 
-	if(world.getPlayerCar().getPhysicsCar().getLeftBackWheelTraction() < 0.3)
-		lb = true;	 
-	if(world.getPlayerCar().getPhysicsCar().getLeftFrontWheelTraction() < 0.3)
-		lf = true;
-
-	playerCarView.enableWheelParticles(rb, rf, lb, lf);
+	playerCarView.enableWheelParticles(
+		(world.getPlayerCar().getPhysicsCar().getRightBackWheelTraction() < 0.3),
+		(world.getPlayerCar().getPhysicsCar().getRightFrontWheelTraction() < 0.3),
+		(world.getPlayerCar().getPhysicsCar().getLeftBackWheelTraction() < 0.3),
+		(world.getPlayerCar().getPhysicsCar().getLeftFrontWheelTraction() < 0.3),
+		world.getPlayerCar().getPosition()
+	);
 }
 
 void SceneView::updateSkidmarks(){
@@ -375,7 +353,7 @@ void SceneView::updateSkidmarks(){
 					playerCarView.updateSkidmarks(*iterator, *iteratorNormals, world.getPlayerCar().getVelocity().length());
 
 					int m = positions.size()-n-1;
-					while(m > 0){
+					while(m > 0, m--){
 						for(int a = 0; a < m; a++){
 							++iterator;
 						}
@@ -385,7 +363,6 @@ void SceneView::updateSkidmarks(){
 						for(int b = 0; b < m; b++){
 							--iterator;
 						}
-						m--;
 					}
 					if(iterator != positions.end()){
 						++iterator;

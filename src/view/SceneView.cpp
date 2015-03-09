@@ -65,48 +65,36 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     // Load the scene.
     DotSceneLoader loader;
     loader.parseDotScene("world.scene", "General", sceneManager, sceneNode);
-	sceneManager->getEntity("leaves1")->setCastShadows(false);
-	sceneManager->getEntity("leaves2")->setCastShadows(false);
-	sceneManager->getEntity("leaves3")->setCastShadows(false);
-	sceneManager->getEntity("leaves4")->setCastShadows(false);
-	sceneManager->getEntity("leaves5")->setCastShadows(false);
-	sceneManager->getEntity("leaves6")->setCastShadows(false);
-	sceneManager->getEntity("leaves7")->setCastShadows(false);
-	sceneManager->getEntity("leaves8")->setCastShadows(false);
-	sceneManager->getEntity("leaves9")->setCastShadows(false);
-	sceneManager->getEntity("leaves10")->setCastShadows(false);
-	sceneManager->getEntity("leaves11")->setCastShadows(false);
-	sceneManager->getEntity("leaves12")->setCastShadows(false);
-	sceneManager->getEntity("leaves13")->setCastShadows(false);
-	sceneManager->getEntity("buske1")->setCastShadows(false);
-	sceneManager->getEntity("buske2")->setCastShadows(false);
-	sceneManager->getEntity("buske3")->setCastShadows(false);
-	sceneManager->getEntity("buske4")->setCastShadows(false);
-	sceneManager->getEntity("buske5")->setCastShadows(false);
-	sceneManager->getEntity("buske6")->setCastShadows(false);
-	sceneManager->getEntity("buske7")->setCastShadows(false);
-	sceneManager->getEntity("tree1")->setCastShadows(false);
-	sceneManager->getEntity("tree2")->setCastShadows(false);
-	sceneManager->getEntity("tree3")->setCastShadows(false);
-	sceneManager->getEntity("tree4")->setCastShadows(false);
-	sceneManager->getEntity("tree5")->setCastShadows(false);
-	sceneManager->getEntity("tree6")->setCastShadows(false);
-	sceneManager->getEntity("tree7")->setCastShadows(false);
-	sceneManager->getEntity("tree8")->setCastShadows(false);
-	sceneManager->getEntity("tree9")->setCastShadows(false);
-	sceneManager->getEntity("tree10")->setCastShadows(false);
 
-    sceneManager->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
-    sceneManager->setShadowColour(Ogre::ColourValue(0.5, 0.5, 0.5) );
+    // shadows
+   	sceneManager->getEntity("mark")->setCastShadows(false);
+    sceneManager->getEntity("horisont")->setCastShadows(false);
+    sceneManager->getEntity("fysikgrans")->setCastShadows(false);
+    sceneManager->getEntity("maskin")->setCastShadows(false);
+    sceneManager->getEntity("plank")->setCastShadows(false);
+    sceneManager->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE);
     sceneManager->setAmbientLight(Ogre::ColourValue(1, 1, 1));
+    sceneManager->setShadowFarDistance(250); 
+    sceneManager->setShadowColour(Ogre::ColourValue(0.80f, 0.80f, 0.80f));
+    sceneManager->setShadowTextureSize( 4096 ); 
+    sceneManager->setShadowTextureCount( 1 ); 
 
+	// lights
     Ogre::Light* sunLight = sceneManager->createLight("sunLight");
     sunLight->setType(Ogre::Light::LT_DIRECTIONAL);
     sunLight->setCastShadows(true);
-    sunLight->setDirection(Ogre::Vector3( 1, -2, 1 ));
+    sunLight->setDirection(Ogre::Vector3( 1, -3, 1 ));
     sunLight->setDiffuseColour(Ogre::ColourValue(1, 1, 1));
     sunLight->setSpecularColour(Ogre::ColourValue(1, 1, 1));
     sceneNode->attachObject(sunLight);
+
+    Ogre::Light* skyLight1 = sceneManager->createLight("skyLight1");
+    skyLight1->setType(Ogre::Light::LT_POINT);
+    skyLight1->setCastShadows(false);
+    skyLight1->setPosition(Ogre::Vector3(0, 300, 0));
+    skyLight1->setDiffuseColour(Ogre::ColourValue(0.8f, 0.8f, 1.0f));
+    skyLight1->setSpecularColour(Ogre::ColourValue(1, 1, 1));
+    sceneNode->attachObject(skyLight1);
 
 	playerCarView.attachTo(sceneManager);
 

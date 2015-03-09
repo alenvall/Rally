@@ -403,6 +403,13 @@ namespace Rally { namespace Model {
 		} else {
 			skidmarkPositions[3].clear();
 		}
+
+		for(int i = 0; i < 4; i++){
+			if(skidmarkPositions[i].size() > 50)
+				skidmarkPositions[i].clear();
+			if(skidmarkNormals[i].size() > 50)
+				skidmarkNormals[i].clear();
+		}
 	}
 
     bool PhysicsCar::isAllWheelsOnGround() {

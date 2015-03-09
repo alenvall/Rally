@@ -110,40 +110,34 @@ namespace Rally { namespace View {
 		leftFrontSystem->getEmitter(0)->setEnabled(false);
 	}
 
-	void CarView::enableWheelParticles(Rally::Vector3 rightBack, Rally::Vector3 rightFront, Rally::Vector3 leftBack, Rally::Vector3 leftFront){
-		Ogre::Real low(0.4);
+	void CarView::enableWheelParticles(bool enabled[], Rally::Vector3 position[]){
+		Ogre::Real low(0.3);
 		Ogre::Real high(0.7);
 
-		if(rightBack != Rally::Vector3::ZERO){
-			rightBackSystem->getEmitter(0)->setEnabled(true);
-			rightBackSystem->getEmitter(0)->setPosition(rightBack + Rally::Vector3(0, -0.25f, 0));
-			rightBackSystem->getEmitter(0)->setDirection(Rally::Vector3(Ogre::Math::RangeRandom(low, high), 1, Ogre::Math::RangeRandom(low, high)));
-		} else {
-			rightBackSystem->getEmitter(0)->setEnabled(false);
-		}
-		
-		if(rightFront != Rally::Vector3::ZERO){
-			rightFrontSystem->getEmitter(0)->setEnabled(true);
-			rightFrontSystem->getEmitter(0)->setPosition(rightFront + Rally::Vector3(0, -0.25f, 0));
-			rightFrontSystem->getEmitter(0)->setDirection(Rally::Vector3(Ogre::Math::RangeRandom(low, high), 1, Ogre::Math::RangeRandom(low, high)));
-		} else {
-			rightFrontSystem->getEmitter(0)->setEnabled(false);
+		Rally::Vector3 offset(0.f, -0.25f, 0.f);
+
+		rightBackSystem->getEmitter(0)->setEnabled(enabled[0]);
+		if(enabled[0]){
+			rightBackSystem->getEmitter(0)->setPosition(position[0] + offset);
+			rightBackSystem->getEmitter(0)->setDirection(Rally::Vector3(Ogre::Math::RangeRandom(low, high), 0.5, Ogre::Math::RangeRandom(low, high)));
 		}
 
-		if(leftBack != Rally::Vector3::ZERO){
-			leftBackSystem->getEmitter(0)->setEnabled(true);
-			leftBackSystem->getEmitter(0)->setPosition(leftBack + Rally::Vector3(0, -0.25f, 0));
-			leftBackSystem->getEmitter(0)->setDirection(Rally::Vector3(Ogre::Math::RangeRandom(low, high), 1, Ogre::Math::RangeRandom(low, high)));
-		} else {
-			leftBackSystem->getEmitter(0)->setEnabled(false);
+		rightFrontSystem->getEmitter(0)->setEnabled(enabled[1]);
+		if(enabled[1]){
+			rightFrontSystem->getEmitter(0)->setPosition(position[1] + offset);
+			rightFrontSystem->getEmitter(0)->setDirection(Rally::Vector3(Ogre::Math::RangeRandom(low, high), 0.5, Ogre::Math::RangeRandom(low, high)));
 		}
 
-		if(leftFront != Rally::Vector3::ZERO){
-			leftFrontSystem->getEmitter(0)->setEnabled(true);
-			leftFrontSystem->getEmitter(0)->setPosition(leftFront + Rally::Vector3(0, -0.25f, 0));
+		leftBackSystem->getEmitter(0)->setEnabled(enabled[2]);
+		if(enabled[2]){
+			leftBackSystem->getEmitter(0)->setPosition(position[2] + offset);
+			leftBackSystem->getEmitter(0)->setDirection(Rally::Vector3(Ogre::Math::RangeRandom(low, high), 0.5, Ogre::Math::RangeRandom(low, high)));
+		}
+
+		leftFrontSystem->getEmitter(0)->setEnabled(enabled[3]);
+		if(enabled[3]){
+			leftFrontSystem->getEmitter(0)->setPosition(position[3] + offset);
 			leftFrontSystem->getEmitter(0)->setDirection(Rally::Vector3(Ogre::Math::RangeRandom(low, high), 1, Ogre::Math::RangeRandom(low, high)));
-		} else {
-			leftFrontSystem->getEmitter(0)->setEnabled(false);
 		}
 	}
 

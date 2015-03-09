@@ -26,7 +26,7 @@ class CarView {
             const Rally::Quaternion& leftBackWheelOrientation);
 		
 		void initParticleSystem();
-		void enableWheelParticles(Rally::Vector3 rightBack, Rally::Vector3 rightFront, Rally::Vector3 leftBack, Rally::Vector3 leftFront);
+		void enableWheelParticles(bool enabled[], Rally::Vector3 position[]);
 		
 		void initSkidmarks();
 		void updateSkidmarks(Rally::Vector3 position, Rally::Vector3 normal, float speed);

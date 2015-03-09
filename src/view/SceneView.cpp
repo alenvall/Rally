@@ -220,7 +220,7 @@ void SceneView::updatePlayerCar(float deltaTime) {
     Rally::Vector3 endPosition = position + displacement;
 
 	float velocityAdjust = playerCar.getVelocity().length()/6;
-	float lerpAdjust = Ogre::Math::Clamp(velocityAdjust*deltaTime, 0.05f, 0.25f);
+	float lerpAdjust = Ogre::Math::Clamp(velocityAdjust*deltaTime, 0.05f, 0.8f);
 
 	// Lerp towards the new camera position to get a smoother pan
 	float lerpX = Ogre::Math::lerp(currentCameraPosition.x, endPosition.x, lerpAdjust);
@@ -322,21 +322,34 @@ void SceneView::toggleReflections() {
     playerCarView.setReflectionsOn(!playerCarView.isReflectionsOn());
 }
 
-
 void SceneView::updateParticles(){
-	playerCarView.enableWheelParticles(
-		(world.getPlayerCar().getPhysicsCar().getRightBackWheelTraction() < 0.3) ? 
-			world.getPlayerCar().getPhysicsCar().getRightBackWheelOrigin() : Rally::Vector3::ZERO,
+	bool enabled[4] = {false, false, false, false};
+	Rally::Vector3 positions[4];
 
-		(world.getPlayerCar().getPhysicsCar().getRightFrontWheelTraction() < 0.3) ? 
-			world.getPlayerCar().getPhysicsCar().getRightFrontWheelOrigin() : Rally::Vector3::ZERO,
+	if(world.getPlayerCar().getPhysicsCar().getRightBackWheelTraction() < 0.3){
+		positions[0] = world.getPlayerCar().getPhysicsCar().getRightBackWheelOrigin();
+		enabled[0] = true;
+	}
 
-		(world.getPlayerCar().getPhysicsCar().getLeftBackWheelTraction() < 0.3) ? 
-			world.getPlayerCar().getPhysicsCar().getLeftBackWheelOrigin() : Rally::Vector3::ZERO,
+	if(world.getPlayerCar().getPhysicsCar().getRightFrontWheelTraction() < 0.3){
+		positions[1] = world.getPlayerCar().getPhysicsCar().getRightFrontWheelOrigin();
+		enabled[1] = true;
+	}
 
-		(world.getPlayerCar().getPhysicsCar().getLeftFrontWheelTraction() < 0.3) ? 
-			world.getPlayerCar().getPhysicsCar().getLeftFrontWheelOrigin() : Rally::Vector3::ZERO
-	);
+
+	if(world.getPlayerCar().getPhysicsCar().getLeftBackWheelTraction() < 0.3){
+		positions[2] = world.getPlayerCar().getPhysicsCar().getLeftBackWheelOrigin();
+		enabled[2] = true;
+	}
+
+
+	if(world.getPlayerCar().getPhysicsCar().getLeftFrontWheelTraction() < 0.3){
+		positions[3] = world.getPlayerCar().getPhysicsCar().getLeftFrontWheelOrigin();
+		enabled[3] = true;
+	}
+
+	playerCarView.enableWheelParticles(enabled, positions);
+
 }
 
 void SceneView::updateSkidmarks(){
@@ -359,7 +372,9 @@ void SceneView::updateSkidmarks(){
 					playerCarView.updateSkidmarks(*iterator, *iteratorNormals, world.getPlayerCar().getVelocity().length());
 
 					int m = positions.size()-n-1;
-					while(m > 0, m--){
+					if(m > 5)
+						m = 5;
+					while(m > 0){
 						for(int a = 0; a < m; a++){
 							++iterator;
 						}
@@ -369,6 +384,7 @@ void SceneView::updateSkidmarks(){
 						for(int b = 0; b < m; b++){
 							--iterator;
 						}
+						m--;
 					}
 					if(iterator != positions.end()){
 						++iterator;

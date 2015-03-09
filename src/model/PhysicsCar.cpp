@@ -366,7 +366,7 @@ namespace Rally { namespace Model {
 
 		//front
 		if(raycastVehicle->getWheelInfo(0).m_raycastInfo.m_isInContact &&
-			getRightFrontWheelTraction() < 0.3){
+			getRightFrontWheelTraction() < 0.08){
 
 			skidmarkPositions[0].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(0).m_raycastInfo.m_contactPointWS));
 			skidmarkNormals[0].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(0).m_raycastInfo.m_contactNormalWS));
@@ -377,7 +377,7 @@ namespace Rally { namespace Model {
 
 		//front
 		if(raycastVehicle->getWheelInfo(1).m_raycastInfo.m_isInContact &&
-			getLeftFrontWheelTraction() < 0.3){
+			getLeftFrontWheelTraction() < 0.08){
 			
 			skidmarkPositions[1].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(1).m_raycastInfo.m_contactPointWS));
 			skidmarkNormals[1].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(1).m_raycastInfo.m_contactNormalWS));
@@ -388,7 +388,7 @@ namespace Rally { namespace Model {
 		
 		//back
 		if(raycastVehicle->getWheelInfo(2).m_raycastInfo.m_isInContact &&
-			getRightBackWheelTraction() < 0.3){
+			getRightBackWheelTraction() < 0.08){
 			
 			skidmarkPositions[2].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(2).m_raycastInfo.m_contactPointWS));
 			skidmarkNormals[2].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(2).m_raycastInfo.m_contactNormalWS));
@@ -399,7 +399,7 @@ namespace Rally { namespace Model {
 
 		//back
 		if(raycastVehicle->getWheelInfo(3).m_raycastInfo.m_isInContact &&
-			getLeftBackWheelTraction() < 0.3){
+			getLeftBackWheelTraction() < 0.08){
 			
 			skidmarkPositions[3].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(3).m_raycastInfo.m_contactPointWS));
 			skidmarkNormals[3].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(3).m_raycastInfo.m_contactNormalWS));

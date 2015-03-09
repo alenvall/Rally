@@ -325,24 +325,24 @@ void SceneView::updateParticles(){
 	bool enabled[4] = {false, false, false, false};
 	Rally::Vector3 positions[4];
 
-	if(world.getPlayerCar().getPhysicsCar().getRightBackWheelTraction() < 0.3){
+	if(world.getPlayerCar().getPhysicsCar().getRightBackWheelTraction() < 0.2){
 		positions[0] = world.getPlayerCar().getPhysicsCar().getRightBackWheelOrigin();
 		enabled[0] = true;
 	}
 
-	if(world.getPlayerCar().getPhysicsCar().getRightFrontWheelTraction() < 0.3){
+	if(world.getPlayerCar().getPhysicsCar().getRightFrontWheelTraction() < 0.2){
 		positions[1] = world.getPlayerCar().getPhysicsCar().getRightFrontWheelOrigin();
 		enabled[1] = true;
 	}
 
 
-	if(world.getPlayerCar().getPhysicsCar().getLeftBackWheelTraction() < 0.3){
+	if(world.getPlayerCar().getPhysicsCar().getLeftBackWheelTraction() < 0.2){
 		positions[2] = world.getPlayerCar().getPhysicsCar().getLeftBackWheelOrigin();
 		enabled[2] = true;
 	}
 
 
-	if(world.getPlayerCar().getPhysicsCar().getLeftFrontWheelTraction() < 0.3){
+	if(world.getPlayerCar().getPhysicsCar().getLeftFrontWheelTraction() < 0.2){
 		positions[3] = world.getPlayerCar().getPhysicsCar().getLeftFrontWheelOrigin();
 		enabled[3] = true;
 	}

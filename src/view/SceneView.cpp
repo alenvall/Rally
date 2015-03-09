@@ -365,7 +365,7 @@ void SceneView::updateSkidmarks(){
 			iteratorNormals = normals.begin();
 			iterator = positions.begin();
 
-			if(positions.size() >= 3){
+			if(positions.size() >= 3 && normals.size() >= 3){
 				for(int n = 0; n < positions.size(); n++){
 					Rally::Vector3 temp = *iterator;
 					playerCarView.updateSkidmarks(*iterator, *iteratorNormals, world.getPlayerCar().getVelocity().length());
@@ -377,7 +377,7 @@ void SceneView::updateSkidmarks(){
 						for(int a = 0; a < m; a++){
 							++iterator;
 						}
-
+						
 						playerCarView.updateSkidmarks((*iterator).midPoint(temp), *iteratorNormals, world.getPlayerCar().getVelocity().length());	
 
 						for(int b = 0; b < m; b++){

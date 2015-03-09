@@ -372,6 +372,7 @@ namespace Rally { namespace Model {
 			skidmarkNormals[0].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(0).m_raycastInfo.m_contactNormalWS));
 		} else {
 			skidmarkPositions[0].clear();
+			skidmarkNormals[0].clear();
 		}
 
 		//front
@@ -382,6 +383,7 @@ namespace Rally { namespace Model {
 			skidmarkNormals[1].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(1).m_raycastInfo.m_contactNormalWS));
 		} else {
 			skidmarkPositions[1].clear();
+			skidmarkNormals[1].clear();
 		}
 		
 		//back
@@ -392,6 +394,7 @@ namespace Rally { namespace Model {
 			skidmarkNormals[2].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(2).m_raycastInfo.m_contactNormalWS));
 		} else {
 			skidmarkPositions[2].clear();
+			skidmarkNormals[2].clear();
 		}
 
 		//back
@@ -402,13 +405,14 @@ namespace Rally { namespace Model {
 			skidmarkNormals[3].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(3).m_raycastInfo.m_contactNormalWS));
 		} else {
 			skidmarkPositions[3].clear();
+			skidmarkNormals[3].clear();
 		}
 
 		for(int i = 0; i < 4; i++){
-			if(skidmarkPositions[i].size() > 50)
+			if(skidmarkPositions[i].size() > 50){
 				skidmarkPositions[i].clear();
-			if(skidmarkNormals[i].size() > 50)
 				skidmarkNormals[i].clear();
+			}
 		}
 	}
 

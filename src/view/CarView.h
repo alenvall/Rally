@@ -25,7 +25,7 @@ class CarView {
             const Rally::Quaternion& rightBackWheelOrientation,
             const Rally::Quaternion& leftBackWheelOrientation);
 		
-		void initParticleSystem();
+		void initParticleSystem(const std::string& carName);
 		void enableWheelParticles(bool enabled[], Rally::Vector3 position[]);
 		
 		void initSkidmarks();
@@ -54,8 +54,6 @@ class CarView {
 
         Ogre::SceneNode* skidmarkNode;
 		Ogre::BillboardSet* skidmarkBillboards;
-		int skidcounter;
-
 };
 
 } }

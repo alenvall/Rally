@@ -14,7 +14,8 @@ namespace Rally { namespace Model {
 	public:
 		Checkpoint(Rally::Model::PhysicsWorld& physicsWorld);
 		virtual ~Checkpoint();
-		void Checkpoint::attachToWorld();
+
+		void Checkpoint::attachToWorld(btVector3& position, btVector3& shape);
 
 		void checkCollision();
 		virtual void processCollision(btCollisionObject* colObj);
@@ -24,12 +25,22 @@ namespace Rally { namespace Model {
         Rally::Vector3 getPosition() const;
         Rally::Quaternion getOrientation() const;
 
+		void setEnabled(bool enabled){
+			this->enabled = enabled;
+		}
+
+		bool isEnabled(){
+			return enabled;
+		}
+
 	private:
-		void Checkpoint::init();
+		void Checkpoint::init(btVector3& position, btVector3& shape);
 
 		Rally::Model::PhysicsWorld& physicsWorld;
 		btPairCachingGhostObject* ghostObject;
 		btDefaultMotionState* bodyMotionState;
+
+		bool enabled;
 	};
 
 } }

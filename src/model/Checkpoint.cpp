@@ -11,20 +11,20 @@ namespace Rally { namespace Model {
 		delete ghostObject;
 	}
 
-	void Checkpoint::init(){
+	void Checkpoint::init(btVector3& position, btVector3& shape){
 		ghostObject = new btPairCachingGhostObject();
-		btCollisionShape* shape = new btBoxShape(btVector3(btScalar(3.), btScalar(3.), btScalar(3.)));
-		ghostObject->setCollisionShape(shape);
+		btCollisionShape* tempShape = new btBoxShape(shape);
+		ghostObject->setCollisionShape(tempShape);
 		ghostObject->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
-		
-		ghostObject->setWorldTransform(btTransform(btQuaternion(0.f, 0.f, 0.f, 1.f), btVector3(-50.f, 2.f, 80.f)));
+		ghostObject->setWorldTransform(btTransform(btQuaternion(0.f, 0.f, 0.f, 1.f), position));
 
-		// Enable ghost objects
 		physicsWorld.getDynamicsWorld()->getPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
+
+		enabled = true;
 	}
 
-	void Checkpoint::attachToWorld(){
-		init();
+	void Checkpoint::attachToWorld(btVector3& position, btVector3& shape){
+		init(position, shape);
 
 		physicsWorld.getDynamicsWorld()->addCollisionObject(ghostObject);
 
@@ -42,11 +42,7 @@ namespace Rally { namespace Model {
     }
 		
 	void Checkpoint::processCollision(btCollisionObject* colObj){
-		/*btRigidBody* b = btRigidBody::upcast(colObj);
-		if (b) {
-			b->activate();
-			b->applyCentralImpulse(btVector3(0.f, 250.f, 0.f));
-		}*/
+
 	}
 
 	void Checkpoint::checkCollision(){

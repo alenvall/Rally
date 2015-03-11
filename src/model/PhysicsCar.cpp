@@ -364,54 +364,26 @@ namespace Rally { namespace Model {
 
 	void PhysicsCar::checkForSkidmarks() {
 
-		//front
-		if(raycastVehicle->getWheelInfo(0).m_raycastInfo.m_isInContact &&
-			getRightFrontWheelTraction() < 0.08){
-
-			skidmarkPositions[0].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(0).m_raycastInfo.m_contactPointWS));
-			skidmarkNormals[0].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(0).m_raycastInfo.m_contactNormalWS));
-		} else {
-			skidmarkPositions[0].clear();
-			skidmarkNormals[0].clear();
-		}
-
-		//front
-		if(raycastVehicle->getWheelInfo(1).m_raycastInfo.m_isInContact &&
-			getLeftFrontWheelTraction() < 0.08){
-			
-			skidmarkPositions[1].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(1).m_raycastInfo.m_contactPointWS));
-			skidmarkNormals[1].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(1).m_raycastInfo.m_contactNormalWS));
-		} else {
-			skidmarkPositions[1].clear();
-			skidmarkNormals[1].clear();
-		}
-		
-		//back
-		if(raycastVehicle->getWheelInfo(2).m_raycastInfo.m_isInContact &&
-			getRightBackWheelTraction() < 0.08){
-			
-			skidmarkPositions[2].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(2).m_raycastInfo.m_contactPointWS));
-			skidmarkNormals[2].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(2).m_raycastInfo.m_contactNormalWS));
-		} else {
-			skidmarkPositions[2].clear();
-			skidmarkNormals[2].clear();
-		}
-
-		//back
-		if(raycastVehicle->getWheelInfo(3).m_raycastInfo.m_isInContact &&
-			getLeftBackWheelTraction() < 0.08){
-			
-			skidmarkPositions[3].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(3).m_raycastInfo.m_contactPointWS));
-			skidmarkNormals[3].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(3).m_raycastInfo.m_contactNormalWS));
-		} else {
-			skidmarkPositions[3].clear();
-			skidmarkNormals[3].clear();
-		}
-
 		for(int i = 0; i < 4; i++){
-			if(skidmarkPositions[i].size() > 50){
+			if(skidmarkPositions[i].size() > 5){
 				skidmarkPositions[i].clear();
 				skidmarkNormals[i].clear();
+				skidmarkRotations[i].clear();
+			}
+		}
+		for(int i = 0; i < 4; i++){
+			if(raycastVehicle->getWheelInfo(i).m_raycastInfo.m_isInContact &&
+				raycastVehicle->getWheelInfo(i).m_skidInfo < 0.3){
+
+					if(raycastVehicle->getWheelInfo(i).m_raycastInfo.m_contactNormalWS.getY() > 0.2){
+					skidmarkPositions[i].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(i).m_raycastInfo.m_contactPointWS));
+					skidmarkNormals[i].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(i).m_raycastInfo.m_contactNormalWS));
+					skidmarkDirections[i].push_front(getVelocity().normalisedCopy());
+				}
+			} else {
+				skidmarkPositions[i].clear();
+				skidmarkNormals[i].clear();
+				skidmarkDirections[i].clear();
 			}
 		}
 	}

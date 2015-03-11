@@ -77,15 +77,13 @@ namespace Rally { namespace Model {
 				physicsCar.clearSkidmarkNormals(wheel);
 			}
 
-			/*
-			std::list<float> getRots(int wheel){
-				return physicsCar.getRots(wheel);
+			std::list<Rally::Vector3> getSkidmarkDirections(int wheel){
+				return physicsCar.getSkidmarkDirections(wheel);
 			}
 
-			void clearRots(int wheel){
-				physicsCar.clearRots(wheel);
+			void clearSkidmarkDirections(int wheel){
+				physicsCar.clearSkidmarkDirections(wheel);
 			}
-			*/
 
 			Rally::Model::PhysicsCar getPhysicsCar(){
 				return physicsCar;

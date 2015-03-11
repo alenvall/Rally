@@ -219,7 +219,7 @@ void SceneView::updatePlayerCar(float deltaTime) {
     Rally::Vector3 endPosition = position + displacement;
 
 	float velocityAdjust = playerCar.getVelocity().length()/6;
-	float lerpAdjust = Ogre::Math::Clamp(velocityAdjust*deltaTime, 0.05f, 0.8f);
+	float lerpAdjust = Ogre::Math::Clamp(velocityAdjust*deltaTime, 0.01f, 0.8f);
 
 	// Lerp towards the new camera position to get a smoother pan
 	float lerpX = Ogre::Math::lerp(currentCameraPosition.x, endPosition.x, lerpAdjust);
@@ -354,31 +354,38 @@ void SceneView::updateParticles(){
 void SceneView::updateSkidmarks(){
 	std::list<Rally::Vector3> positions;
 	std::list<Rally::Vector3> normals;
-	std::list<Rally::Vector3>::iterator iteratorNormals;
+	std::list<Rally::Vector3> directions;
 	std::list<Rally::Vector3>::iterator iterator;
+	std::list<Rally::Vector3>::iterator iteratorNormals;
+	std::list<Rally::Vector3>::iterator iteratorDirections;
 
 	for(int i = 0; i < 4; i++){
-		normals = world.getPlayerCar().getSkidmarkNormals(i);
 		positions = world.getPlayerCar().getSkidmarkPositions(i);
+		normals = world.getPlayerCar().getSkidmarkNormals(i);
+		directions = world.getPlayerCar().getSkidmarkDirections(i);
 
-		if(positions.size() > 0 && normals.size() > 0){
-			iteratorNormals = normals.begin();
+		if(positions.size() > 0){
 			iterator = positions.begin();
+			iteratorNormals = normals.begin();
+			iteratorDirections = directions.begin();
 
-			if(positions.size() >= 3 && normals.size() >= 3){
+			if(positions.size() >= 3 && normals.size() >= 3 && directions.size() >= 3){
+				playerCarView.updateSkidmarks(*iterator, *iteratorNormals, 
+					*iteratorDirections, world.getPlayerCar().getVelocity().length());
 				for(int n = 0; n < positions.size(); n++){
 					Rally::Vector3 temp = *iterator;
-					playerCarView.updateSkidmarks(*iterator, *iteratorNormals, world.getPlayerCar().getVelocity().length());
+					Rally::Vector3 tempDir = *iterator;
 
 					int m = positions.size()-n-1;
-					if(m > 5)
-						m = 5;
+					if(m > 3)
+						m = 3;
 					while(m > 0){
 						for(int a = 0; a < m; a++){
 							++iterator;
 						}
 						
-						playerCarView.updateSkidmarks((*iterator).midPoint(temp), *iteratorNormals, world.getPlayerCar().getVelocity().length());	
+						playerCarView.updateSkidmarks((*iterator).midPoint(temp), *iteratorNormals, 
+							(*iteratorDirections), world.getPlayerCar().getVelocity().length());	
 
 						for(int b = 0; b < m; b++){
 							--iterator;
@@ -388,14 +395,13 @@ void SceneView::updateSkidmarks(){
 					if(iterator != positions.end()){
 						++iterator;
 						++iteratorNormals;
+						++iteratorDirections;
 					}
 				}
 
-			}
-
-			if(positions.size() >= 3){
 				world.getPlayerCar().clearSkidmarkPositions(i);
 				world.getPlayerCar().clearSkidmarkNormals(i);
+				world.getPlayerCar().clearSkidmarkDirections(i);
 			}
 		}
 	}

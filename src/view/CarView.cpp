@@ -146,7 +146,7 @@ namespace Rally { namespace View {
 		skidmarkNode = sceneManager->getRootSceneNode()->createChildSceneNode();
 
 		Ogre::BillboardType type = Ogre::BillboardType::BBT_PERPENDICULAR_SELF;
-		Ogre::BillboardRotationType rotationType = Ogre::BillboardRotationType::BBR_TEXCOORD;
+		Ogre::BillboardRotationType rotationType = Ogre::BillboardRotationType::BBR_VERTEX;
 		Rally::Vector3 up(0, 0, 1);
 		Rally::Vector3 common(0, 1, 0);
 
@@ -158,18 +158,32 @@ namespace Rally { namespace View {
 		skidmarkBillboards->setCommonUpVector(up);
 		skidmarkBillboards->setCommonDirection(common);
 		skidmarkBillboards->setBillboardsInWorldSpace(true);
-		skidmarkBillboards->setDefaultDimensions(Ogre::Real(0.25), Ogre::Real(0.25));
+		skidmarkBillboards->setDefaultDimensions(Ogre::Real(0.2), Ogre::Real(0.5));
 		skidmarkBillboards->setAutoextend(true);
 
 		skidmarkNode->attachObject(skidmarkBillboards);
 
 	}
 
-	void CarView::updateSkidmarks(Rally::Vector3 position, Rally::Vector3 normal, float speed){
-
+	void CarView::updateSkidmarks(Rally::Vector3 position, Rally::Vector3 normal, Rally::Vector3 direction, float speed){
 		Ogre::Billboard* b = skidmarkBillboards->createBillboard(Rally::Vector3(position.x, position.y+0.05, position.z), 
 			Ogre::ColourValue::Black);
+
 		b->mDirection = normal;
+
+		direction.y = 0;
+
+		Ogre::Radian r = direction.angleBetween(Rally::Vector3(0, 0, 1));
+		
+		if(direction.z > 0 && direction.x > 0){
+			r =  Ogre::Radian(Ogre::Math::PI*2) - r;
+		}
+
+		if(direction.z < 0 && direction.x > 0){
+			r *= -1;
+		}
+		
+		b->setRotation(r);
 
 		if(skidmarkBillboards->getNumBillboards() > 1000)
 			skidmarkBillboards->removeBillboard(skidmarkBillboards->getBillboard(skidmarkBillboards->getNumBillboards()-1000));

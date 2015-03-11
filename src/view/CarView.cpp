@@ -67,7 +67,6 @@ namespace Rally { namespace View {
 		leftBackWheelNode->attachObject(leftBackWheelEntity);
 
 		initParticleSystem(carName);
-		initSkidmarks();
 	}
 
 	void CarView::updateBody(const Rally::Vector3& position, const Rally::Quaternion& orientation) {
@@ -97,7 +96,7 @@ namespace Rally { namespace View {
 		rightFrontSystem = sceneManager->createParticleSystem(carName + "_RightFrontParticleSystem", "Car/Dirt");
 
 		leftFrontSystem = sceneManager->createParticleSystem(carName + "_LeftFrontParticleSystem", "Car/Dirt");
-
+		
 
 		bodyParticleNode->attachObject(rightBackSystem);
 		bodyParticleNode->attachObject(leftBackSystem);
@@ -108,6 +107,11 @@ namespace Rally { namespace View {
 		leftBackSystem->getEmitter(0)->setEnabled(false);
 		rightFrontSystem->getEmitter(0)->setEnabled(false);
 		leftFrontSystem->getEmitter(0)->setEnabled(false);
+
+		rightBackSystem->setDefaultDimensions(0.05, 0.05);
+		rightFrontSystem->setDefaultDimensions(0.05, 0.05);
+		leftBackSystem->setDefaultDimensions(0.05, 0.05);
+		leftFrontSystem->setDefaultDimensions(0.05, 0.05);
 	}
 
 	void CarView::enableWheelParticles(bool enabled[], Rally::Vector3 position[]){
@@ -140,52 +144,3 @@ namespace Rally { namespace View {
 			leftFrontSystem->getEmitter(0)->setDirection(Rally::Vector3(Ogre::Math::RangeRandom(low, high), 1, Ogre::Math::RangeRandom(low, high)));
 		}
 	}
-
-	void CarView::initSkidmarks(){
-
-		skidmarkNode = sceneManager->getRootSceneNode()->createChildSceneNode();
-
-		Ogre::BillboardType type = Ogre::BillboardType::BBT_PERPENDICULAR_SELF;
-		Ogre::BillboardRotationType rotationType = Ogre::BillboardRotationType::BBR_VERTEX;
-		Rally::Vector3 up(0, 0, 1);
-		Rally::Vector3 common(0, 1, 0);
-
-		skidmarkBillboards = sceneManager->createBillboardSet();
-		skidmarkBillboards->setMaterialName("skidmark");
-		skidmarkBillboards->setVisible(true);
-		skidmarkBillboards->setBillboardType(type);
-		skidmarkBillboards->setBillboardRotationType(rotationType);
-		skidmarkBillboards->setCommonUpVector(up);
-		skidmarkBillboards->setCommonDirection(common);
-		skidmarkBillboards->setBillboardsInWorldSpace(true);
-		skidmarkBillboards->setDefaultDimensions(Ogre::Real(0.2), Ogre::Real(0.5));
-		skidmarkBillboards->setAutoextend(true);
-
-		skidmarkNode->attachObject(skidmarkBillboards);
-
-	}
-
-	void CarView::updateSkidmarks(Rally::Vector3 position, Rally::Vector3 normal, Rally::Vector3 direction, float speed){
-		Ogre::Billboard* b = skidmarkBillboards->createBillboard(Rally::Vector3(position.x, position.y+0.05, position.z), 
-			Ogre::ColourValue::Black);
-
-		b->mDirection = normal;
-
-		direction.y = 0;
-
-		Ogre::Radian r = direction.angleBetween(Rally::Vector3(0, 0, 1));
-		
-		if(direction.z > 0 && direction.x > 0){
-			r =  Ogre::Radian(Ogre::Math::PI*2) - r;
-		}
-
-		if(direction.z < 0 && direction.x > 0){
-			r *= -1;
-		}
-		
-		b->setRotation(r);
-
-		if(skidmarkBillboards->getNumBillboards() > 1000)
-			skidmarkBillboards->removeBillboard(skidmarkBillboards->getBillboard(skidmarkBillboards->getNumBillboards()-1000));
-	}
-} }

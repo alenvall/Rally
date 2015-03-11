@@ -3,6 +3,7 @@
 
 #include "view/CarView.h"
 #include "view/ReflectionView.h"
+#include "view/SkidmarkView.h"
 
 #include "Rally.h"
 
@@ -16,7 +17,7 @@ class PlayerCarView : public CarView {
     public:
         PlayerCarView();
         virtual ~PlayerCarView();
-        virtual void attachTo(Ogre::SceneManager* sceneManager);
+        virtual void attachTo(Ogre::SceneManager* sceneManager, Rally::Model::Car& car);
         virtual void detach();
         virtual void updateBody(const Rally::Vector3& position, const Rally::Quaternion& orientation);
 
@@ -29,6 +30,8 @@ class PlayerCarView : public CarView {
     private:
         bool reflectionsOn;
         Rally::View::ReflectionView reflectionView;
+
+		Rally::View::SkidmarkView skidmarkView;
 };
 
 } }

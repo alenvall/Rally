@@ -101,9 +101,10 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     skyLight1->setSpecularColour(Ogre::ColourValue(1, 1, 1));
     sceneNode->attachObject(skyLight1);
 
-	playerCarView.attachTo(sceneManager);
+	playerCarView.attachTo(sceneManager, world.getPlayerCar());
 
 	//goalView.attachTo(sceneManager, "Finish", "car.mesh", world.getFinish());
+	goalView.attachTo(sceneManager, "Start", "car.mesh", world.getStart());
 
     // Debug draw Bullet
     bulletDebugDrawer = new Rally::Util::BulletDebugDrawer(sceneManager);
@@ -177,7 +178,6 @@ bool SceneView::renderFrame(float deltaTime) {
         updateRemoteCars();
 		//updateCheckPoints();
 		updateParticles();
-		updateSkidmarks();
 
     if(debugDrawEnabled){
         world.getPhysicsWorld().getDynamicsWorld()->debugDrawWorld();
@@ -233,7 +233,7 @@ void SceneView::updatePlayerCar(float deltaTime) {
 	Shoot a ray from the car (with an offset to prevent collision with itself) to the camera.
 	If anyting is intersected the camera is adjusted to prevent that the camera is blocked.
 	*/
-	btVector3 start(position.x, position.y + 2.0f, position.z);
+	btVector3 start(position.x, position.y + 1.1f, position.z);
 	btVector3 end(newPos.x, newPos.y, newPos.z);
 
 	btCollisionWorld::ClosestRayResultCallback ClosestRayResultCallBack(start, end);
@@ -353,58 +353,3 @@ void SceneView::updateParticles(){
 
 }
 
-void SceneView::updateSkidmarks(){
-	std::list<Rally::Vector3> positions;
-	std::list<Rally::Vector3> normals;
-	std::list<Rally::Vector3> directions;
-	std::list<Rally::Vector3>::iterator iterator;
-	std::list<Rally::Vector3>::iterator iteratorNormals;
-	std::list<Rally::Vector3>::iterator iteratorDirections;
-
-	for(int i = 0; i < 4; i++){
-		positions = world.getPlayerCar().getSkidmarkPositions(i);
-		normals = world.getPlayerCar().getSkidmarkNormals(i);
-		directions = world.getPlayerCar().getSkidmarkDirections(i);
-
-		if(positions.size() > 0){
-			iterator = positions.begin();
-			iteratorNormals = normals.begin();
-			iteratorDirections = directions.begin();
-
-			if(positions.size() >= 2 && normals.size() >= 2 && directions.size() >= 2){
-				playerCarView.updateSkidmarks(*iterator, *iteratorNormals, 
-					*iteratorDirections, world.getPlayerCar().getVelocity().length());
-				for(int n = 0; n < positions.size(); n++){
-					Rally::Vector3 temp = *iterator;
-					Rally::Vector3 tempDir = *iterator;
-
-					int m = positions.size()-n-1;
-					if(m > 3)
-						m = 3;
-					while(m > 0){
-						for(int a = 0; a < m; a++){
-							++iterator;
-						}
-						
-						playerCarView.updateSkidmarks((*iterator).midPoint(temp), *iteratorNormals, 
-							(*iteratorDirections), world.getPlayerCar().getVelocity().length());	
-
-						for(int b = 0; b < m; b++){
-							--iterator;
-						}
-						m--;
-					}
-					if(iterator != positions.end()){
-						++iterator;
-						++iteratorNormals;
-						++iteratorDirections;
-					}
-				}
-
-				world.getPlayerCar().clearSkidmarkPositions(i);
-				world.getPlayerCar().clearSkidmarkNormals(i);
-				world.getPlayerCar().clearSkidmarkDirections(i);
-			}
-		}
-	}
-}

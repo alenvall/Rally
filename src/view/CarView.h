@@ -51,9 +51,6 @@ class CarView {
 		Ogre::ParticleSystem* leftBackSystem;
 		Ogre::ParticleSystem* leftFrontSystem;
 		Ogre::SceneNode* bodyParticleNode;
-
-        Ogre::SceneNode* skidmarkNode;
-		Ogre::BillboardSet* skidmarkBillboards;
 };
 
 } }

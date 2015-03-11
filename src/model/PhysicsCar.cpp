@@ -371,6 +371,7 @@ namespace Rally { namespace Model {
 				skidmarkDirections[i].clear();
 			}
 		}
+		if(getVelocity().length() > 5)
 		for(int i = 0; i < 4; i++){
 			if(raycastVehicle->getWheelInfo(i).m_raycastInfo.m_isInContact &&
 				raycastVehicle->getWheelInfo(i).m_skidInfo < 0.3){

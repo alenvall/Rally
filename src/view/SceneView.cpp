@@ -241,7 +241,9 @@ void SceneView::updatePlayerCar(float deltaTime) {
 	// Perform raycast
 	world.getPhysicsWorld().getDynamicsWorld()->getCollisionWorld()->rayTest(start, end, ClosestRayResultCallBack);
 
-	if(ClosestRayResultCallBack.hasHit()) {
+	if(ClosestRayResultCallBack.hasHit() &&
+		ClosestRayResultCallBack.m_collisionObject->getInternalType() != btCollisionObject::CO_GHOST_OBJECT) {
+
 		btVector3 hitLoc = ClosestRayResultCallBack.m_hitPointWorld;
 
 		//If the camera is blocked, the new camera is set to where the collison

@@ -368,7 +368,7 @@ namespace Rally { namespace Model {
 			if(skidmarkPositions[i].size() > 5){
 				skidmarkPositions[i].clear();
 				skidmarkNormals[i].clear();
-				skidmarkRotations[i].clear();
+				skidmarkDirections[i].clear();
 			}
 		}
 		for(int i = 0; i < 4; i++){

@@ -369,7 +369,7 @@ void SceneView::updateSkidmarks(){
 			iteratorNormals = normals.begin();
 			iteratorDirections = directions.begin();
 
-			if(positions.size() >= 3 && normals.size() >= 3 && directions.size() >= 3){
+			if(positions.size() >= 2 && normals.size() >= 2 && directions.size() >= 2){
 				playerCarView.updateSkidmarks(*iterator, *iteratorNormals, 
 					*iteratorDirections, world.getPlayerCar().getVelocity().length());
 				for(int n = 0; n < positions.size(); n++){

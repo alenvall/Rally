@@ -60,7 +60,7 @@ namespace Rally { namespace View {
 
 				if(positions.size() >= 2 && normals.size() >= 2 && directions.size() >= 2){
 					createSkidmark(*iterator, *iteratorNormals, 
-						*iteratorDirections, car->getVelocity().length());
+						*iteratorDirections);
 					for(int n = 0; n < positions.size(); n++){
 						Rally::Vector3 temp = *iterator;
 						Rally::Vector3 tempDir = *iterator;
@@ -74,7 +74,7 @@ namespace Rally { namespace View {
 							}
 
 							createSkidmark((*iterator).midPoint(temp), *iteratorNormals, 
-								(*iteratorDirections), car->getVelocity().length());	
+								(*iteratorDirections));	
 
 							for(int b = 0; b < m; b++){
 								--iterator;
@@ -96,7 +96,7 @@ namespace Rally { namespace View {
 		}
 	}
 
-	void SkidmarkView::createSkidmark(Rally::Vector3 position, Rally::Vector3 normal, Rally::Vector3 direction, float speed){
+	void SkidmarkView::createSkidmark(Rally::Vector3 position, Rally::Vector3 normal, Rally::Vector3 direction){
 		Ogre::Billboard* b = skidmarkBillboards->createBillboard(Rally::Vector3(position.x, position.y+0.05, position.z), 
 			Ogre::ColourValue::Black);
 

@@ -27,7 +27,7 @@ class SkidmarkView {
         Ogre::SceneNode* skidmarkNode;
 		Ogre::BillboardSet* skidmarkBillboards;
 		
-		void createSkidmark(Rally::Vector3 position, Rally::Vector3 normal, Rally::Vector3 direction, float speed);
+		void createSkidmark(Rally::Vector3 position, Rally::Vector3 normal, Rally::Vector3 direction);
 		
         Rally::Model::Car* car;
 

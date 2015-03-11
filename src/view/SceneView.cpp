@@ -32,6 +32,10 @@ SceneView::~SceneView() {
 
     bloomView.detach();
 
+	lensflare->end();
+	delete lensflare;
+	lensflare = NULL;
+
     Ogre::Root* root = Ogre::Root::getSingletonPtr();
     delete root;
 }
@@ -120,6 +124,10 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
         Rally::Vector3(255.0f, 12.0f, 240.0f), // position
         Rally::Vector3(255.0f, 12.0f, 239.0f)); // look at
     tunnelPortalView.takeSnapshot();
+
+	lensflare = new Rally::View::LensFlareView();
+	lensflare->init(sceneManager, camera, viewport->getWidth(), viewport->getHeight(), 800, 30, "LensFlareHalo", "LensFlareCircle", "LensFlareBurst");
+	lensflare->setPosition(Ogre::Vector3(-800, 500, -800));
 }
 
 
@@ -173,6 +181,7 @@ bool SceneView::renderFrame(float deltaTime) {
     } else {
         updatePlayerCar(deltaTime);
         updateRemoteCars();
+		lensflare->update();
 
     if(debugDrawEnabled){
         world.getPhysicsWorld().getDynamicsWorld()->debugDrawWorld();

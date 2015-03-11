@@ -144,3 +144,4 @@ namespace Rally { namespace View {
 			leftFrontSystem->getEmitter(0)->setDirection(Rally::Vector3(Ogre::Math::RangeRandom(low, high), 1, Ogre::Math::RangeRandom(low, high)));
 		}
 	}
+} }

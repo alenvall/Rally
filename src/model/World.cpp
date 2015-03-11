@@ -18,8 +18,8 @@ namespace Rally { namespace Model {
     void World::initialize(const std::string & bulletFile) {
         physicsWorld.initialize(bulletFile);
         playerCar.attachToWorld();
-		finish.attachToWorld(btVector3(-1.8f, 0.f, 0.f), btVector3(1.f, 6.f, 3.f));
-		start.attachToWorld(btVector3(90.0f, 8.2f, 110.0f), btVector3(3.f, 3.f, 3.f));
+		finish.attachToWorld(btVector3(-1.3f, 0.f, -1.1f), btVector3(0.1f, 6.f, 3.2f));
+		start.attachToWorld(btVector3(90.0f, 8.f, 110.0f), btVector3(3.f, 3.f, 3.f));
         finishTimer.reset();
     }
 

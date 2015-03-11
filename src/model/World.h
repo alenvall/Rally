@@ -6,6 +6,7 @@
 #include "model/RemoteCar.h"
 #include "model/Finish.h"
 #include <map>
+#include "util/Timer.h"
 
 namespace Rally { namespace Model {
 
@@ -49,6 +50,12 @@ namespace Rally { namespace Model {
                 return finish;
             }
 
+			Rally::Model::Checkpoint& getStart() {
+                return start;
+            }
+
+			void printFinishedTime();
+
 			/*const std::map<int, Rally::Model::Checkpoint>& getCheckPoints() const {
                 return checkPoints;
             }*/
@@ -59,8 +66,11 @@ namespace Rally { namespace Model {
             Rally::Model::PhysicsWorld physicsWorld;
             Rally::Model::Car playerCar;
 			Rally::Model::Finish finish;
+			Rally::Model::Finish start;
             //std::map<int, Rally::Model::Checkpoint> checkPoints;
             std::map<int, Rally::Model::RemoteCar> remoteCars;
+			Rally::Util::Timer finishTimer;
+
     };
 
 } }

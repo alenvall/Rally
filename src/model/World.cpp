@@ -8,7 +8,8 @@ namespace Rally { namespace Model {
     World::World() :
             physicsWorld(),
             playerCar(physicsWorld),
-			finish(physicsWorld){
+			finish(physicsWorld),
+			start(physicsWorld) {
     }
 
     World::~World() {
@@ -17,10 +18,23 @@ namespace Rally { namespace Model {
     void World::initialize(const std::string & bulletFile) {
         physicsWorld.initialize(bulletFile);
         playerCar.attachToWorld();
-		finish.attachToWorld();
+		finish.attachToWorld(btVector3(-1.8f, 0.f, 0.f), btVector3(1.f, 6.f, 3.f));
+		start.attachToWorld(btVector3(90.0f, 8.2f, 110.0f), btVector3(3.f, 3.f, 3.f));
+        finishTimer.reset();
     }
 
     void World::update(float deltaTime) {
         physicsWorld.update(deltaTime);
+		printFinishedTime();
     }
+
+	void World::printFinishedTime(){
+		if(!start.hasFinished())
+			finishTimer.reset();
+
+		if(start.hasFinished() && finish.hasFinished() && finish.isEnabled()){
+			finish.setEnabled(false);
+			std::cout << "Finished after: " << finishTimer.getElapsedSeconds() << " seconds!" << std::endl;
+		}
+	}
 } }

@@ -10,12 +10,9 @@
 namespace Rally { namespace View {
 
 
-	SkidmarkView::SkidmarkView() {
+	SkidmarkView::SkidmarkView() {}
 
-	}
-
-	SkidmarkView::~SkidmarkView() {
-	}
+	SkidmarkView::~SkidmarkView() {}
 
 	void SkidmarkView::attachTo(Ogre::SceneManager* sceneManager, Rally::Model::Car& car){
 		this->car = &car;
@@ -61,7 +58,7 @@ namespace Rally { namespace View {
 				if(positions.size() >= 2 && normals.size() >= 2 && directions.size() >= 2){
 					createSkidmark(*iterator, *iteratorNormals, 
 						*iteratorDirections);
-					for(int n = 0; n < positions.size(); n++){
+					for(int n = 0, size = positions.size(); n < size; n++){
 						Rally::Vector3 temp = *iterator;
 						Rally::Vector3 tempDir = *iterator;
 

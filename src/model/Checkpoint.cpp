@@ -7,8 +7,6 @@ namespace Rally { namespace Model {
 	}
 
 	Checkpoint::~Checkpoint(){
-		delete ghostObject->getCollisionShape();
-		delete ghostObject;
 	}
 
 	void Checkpoint::init(btVector3& position, btVector3& shape){

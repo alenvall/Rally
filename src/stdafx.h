@@ -4,6 +4,7 @@
 #if _WIN32
 #include "WinSock2.h"
 #include "windows.h"
+#include <mmsystem.h>
 #endif
 
 // Ogre
@@ -16,6 +17,7 @@
 #include <OgreException.h>
 #include <OgreFrameListener.h>
 #include <OgreGpuProgramParams.h>
+#include <OgreHardwarePixelBuffer.h>
 #include <OgreManualObject.h>
 #include <OgreMaterial.h>
 #include <OgreQuaternion.h>
@@ -38,7 +40,17 @@
 #include <Terrain/OgreTerrainGroup.h>
 #include <Terrain/OgreTerrainMaterialGeneratorA.h>
 
-
 // Bullet
 #include <btBulletDynamicsCommon.h>
 #include <../Extras/Serialize/BulletWorldImporter/btBulletWorldImporter.h>
+
+// Standard
+#include <climits>
+#include <cmath>
+#include <iostream>
+#include <map>
+#include <set>
+#include <sstream>
+#include <stdexcept>
+#include <string>
+#include <vector>

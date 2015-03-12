@@ -106,9 +106,6 @@ namespace Rally { namespace View {
 	}
 
 	void CarView::enableWheelParticles(bool enabled[], Rally::Vector3 position[]){
-		Ogre::Real low(Ogre::Real(0.3));
-		Ogre::Real high(Ogre::Real(0.7));
-
 		Rally::Vector3 offset(0.f, -0.25f, 0.f);
 
 		rightBackSystem->getEmitter(0)->setEnabled(enabled[0]);

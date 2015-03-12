@@ -1,6 +1,6 @@
 #include "view/SceneView.h"
 
-#include "DotSceneLoader.h"
+#include "util/DotSceneLoader.h"
 
 #include "util/BulletDebugDrawer.h"
 

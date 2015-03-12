@@ -29,10 +29,10 @@ namespace Rally { namespace Model {
     }
 
 	void World::printFinishedTime(){
-		if(!start.hasFinished())
+		if(!start.hasCollided())
 			finishTimer.reset();
 
-		if(start.hasFinished() && finish.hasFinished() && finish.isEnabled()){
+		if(start.hasCollided() && finish.hasCollided() && finish.isEnabled()){
 			finish.setEnabled(false);
 			std::cout << "Finished after: " << finishTimer.getElapsedSeconds() << " seconds!" << std::endl;
 		}

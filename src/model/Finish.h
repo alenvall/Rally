@@ -11,15 +11,15 @@ namespace Rally { namespace Model {
 
 	public:
 		Finish(Rally::Model::PhysicsWorld& physicsWorld) : Checkpoint(physicsWorld){
-			finished = false;
+			collided = false;
 		};
 
 		virtual void processCollision(btCollisionObject* colObj);
 
-		bool finished;
+		bool collided;
 
-		bool hasFinished(){
-			return finished;
+		bool hasCollided(){
+			return collided;
 		}
 	};
 

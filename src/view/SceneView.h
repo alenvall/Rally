@@ -5,6 +5,7 @@
 #include "view/PlayerCarView.h"
 #include "view/PortalView.h"
 #include "view/BloomView.h"
+#include "view/LensFlareView.h"
 #include "model/World.h"
 
 #include <OgreCamera.h>
@@ -70,6 +71,7 @@ class SceneView {
         Rally::Util::BulletDebugDrawer* bulletDebugDrawer;
 
         Rally::View::BloomView bloomView;
+		Rally::View::LensFlareView* lensflare;
 };
 
 #endif // RALLY_VIEW_SCENEVIEW_H_

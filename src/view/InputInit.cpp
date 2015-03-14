@@ -96,10 +96,11 @@ bool InputInit::isKeyPressed(const std::string& s) {
 }
 
 bool InputInit::isKeyPressedDebounced(const std::string& s) {
-    if(debouncer.getElapsedSeconds() > 0.5f) {
+    if(isKeyPressed(s) && debouncer.getElapsedSeconds() > 0.5f) {
         debouncer.reset();
-        return isKeyPressed(s);
+        return true;
     }
+
     return false;
 }
 

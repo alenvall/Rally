@@ -306,8 +306,8 @@ void SceneView::remoteCarRemoved(int carId, const Rally::Model::RemoteCar& remot
     remoteCarViews.erase(carId);
 }
 
-void SceneView::setDebugDrawEnabled(bool enabled){
-    debugDrawEnabled = enabled;
+void SceneView::toggleDebugDraw() {
+    debugDrawEnabled = !debugDrawEnabled;
 }
 
 void SceneView::toggleReflections() {

@@ -84,11 +84,11 @@ namespace Rally { namespace Controller {
             car.setSteeringRequested(0);
         }
 
-        if(inputInit.isKeyPressed("d")){
-		    sceneView.setDebugDrawEnabled(true);
+        if(inputInit.isKeyPressedDebounced("d")) {
+		    sceneView.toggleDebugDraw();
         }
-        if (inputInit.isKeyPressed("f")){
-		    sceneView.setDebugDrawEnabled(false);
+
+        if (inputInit.isKeyPressedDebounced("f")) {
         }
 
         if (inputInit.isKeyPressedDebounced("r")){

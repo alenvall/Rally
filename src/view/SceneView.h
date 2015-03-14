@@ -42,7 +42,7 @@ class SceneView {
         bool renderFrame(float deltaTime);
         void remoteCarUpdated(int carId, const Rally::Model::RemoteCar& remoteCar);
         void remoteCarRemoved(int carId, const Rally::Model::RemoteCar& remoteCar);
-        void setDebugDrawEnabled(bool enabled);
+        void toggleDebugDraw();
         void toggleReflections();
         void addLogicListener(Rally::View::SceneView_LogicListener& logicListener);
 

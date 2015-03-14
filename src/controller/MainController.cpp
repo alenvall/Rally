@@ -89,6 +89,7 @@ namespace Rally { namespace Controller {
         }
 
         if (inputInit.isKeyPressedDebounced("f")) {
+            world.gravityGlitch();
         }
 
         if (inputInit.isKeyPressedDebounced("r")){

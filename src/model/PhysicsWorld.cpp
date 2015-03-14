@@ -27,7 +27,9 @@ namespace Rally { namespace Model {
 			solver(NULL),
 			dispatcher(NULL),
 			collisionConfiguration(NULL),
-			broadphase(NULL) {
+			broadphase(NULL),
+			gravityGlitchActive(false) {
+        gravityGlitchTimer.reset();
     }
 
     PhysicsWorld::~PhysicsWorld() {
@@ -69,6 +71,9 @@ namespace Rally { namespace Model {
 
         dynamicsWorld->setInternalTickCallback(preStepCallbackProxy, static_cast<void*>(this), true);
         dynamicsWorld->setInternalTickCallback(postStepCallbackProxy, static_cast<void*>(this), false);
+
+        dynamicsWorld->setGravity(btVector3(0, -10.0f, 0));
+        gravityGlitchTimer.reset();
     }
 
     void PhysicsWorld::update(float deltaTime) {
@@ -91,6 +96,10 @@ namespace Rally { namespace Model {
     }
 
     void PhysicsWorld::invokeStepCallbacks(float deltaTime, bool isPre) {
+        if(isPre) {
+            gravityGlitchDriver();
+        }
+
         for(std::vector<PhysicsWorld_StepCallback*>::iterator callbackIterator = stepCallbacks.begin();
                 callbackIterator != stepCallbacks.end();
                 ++callbackIterator) {
@@ -98,6 +107,25 @@ namespace Rally { namespace Model {
                 (*callbackIterator)->willStep(deltaTime);
             } else {
                 (*callbackIterator)->stepped(deltaTime);
+            }
+        }
+    }
+
+    void PhysicsWorld::gravityGlitch() {
+        if(!gravityGlitchActive) {
+            gravityGlitchTimer.reset();
+            gravityGlitchActive = true;
+        }
+    }
+
+    void PhysicsWorld::gravityGlitchDriver() {
+        if(gravityGlitchActive) {
+            float step = gravityGlitchTimer.getElapsedSeconds();
+            if(step < 0.6f) {
+                dynamicsWorld->setGravity(btVector3(3.0f * btSin(step), 4.0f * btCos(step), 5.0f * btCos(step)));
+            } else {
+                dynamicsWorld->setGravity(btVector3(0, -10.0f, 0));
+                gravityGlitchActive = false;
             }
         }
     }

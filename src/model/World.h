@@ -44,6 +44,10 @@ namespace Rally { namespace Model {
                 return remoteCars;
             }
 
+            void gravityGlitch() {
+                physicsWorld.gravityGlitch();
+            }
+
         private:
             Rally::Model::PhysicsWorld physicsWorld;
             Rally::Model::Car playerCar;

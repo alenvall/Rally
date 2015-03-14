@@ -23,9 +23,27 @@ namespace Rally { namespace Model {
                 const Rally::Vector3& incomingVelocity,
                 const Rally::Quaternion& targetOrientation);
 
+            void setCarType(char carType) {
+                this->carType = carType;
+            }
+
+            char getCarType() const {
+                return carType;
+            }
+
+            void setTractionVector(const Rally::Vector4& tractionVector) {
+                this->tractionVector = tractionVector;
+            }
+
+            Rally::Vector4 getTractionVector() {
+                return tractionVector;
+            }
+
         private:
             Rally::Model::PhysicsWorld& physicsWorld;
             Rally::Model::PhysicsRemoteCar physicsRemoteCar;
+            char carType;
+            Rally::Vector4 tractionVector;
     };
 
 } }

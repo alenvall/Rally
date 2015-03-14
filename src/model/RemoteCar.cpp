@@ -5,7 +5,8 @@
 namespace Rally { namespace Model {
 
     RemoteCar::RemoteCar(Rally::Model::PhysicsWorld& physicsWorld) :
-            physicsWorld(physicsWorld) {
+            physicsWorld(physicsWorld),
+            carType('a') {
     }
 
     RemoteCar::~RemoteCar() {

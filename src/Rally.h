@@ -11,11 +11,13 @@
 #endif
 
 #include <OgreVector3.h>
+#include <OgreVector4.h>
 #include <OgreQuaternion.h>
 
 // Todo: Move this to shared file.
 namespace Rally {
     typedef Ogre::Vector3 Vector3;
+    typedef Ogre::Vector4 Vector4;
     typedef Ogre::Quaternion Quaternion;
 }
 

@@ -103,10 +103,15 @@ namespace Rally { namespace Controller {
     void MainController_RemoteCarListener::carUpdated(unsigned short carId,
             Rally::Vector3 position,
             Rally::Quaternion orientation,
-            Rally::Vector3 velocity) {
+            Rally::Vector3 velocity,
+            char carType,
+            Rally::Vector4 tractionVector) {
         Rally::Model::RemoteCar& remoteCar = world.getRemoteCar(carId); // carId is upcast to int
 
         remoteCar.setTargetTransform(position, velocity, orientation);
+
+        remoteCar.setTractionVector(tractionVector);
+        remoteCar.setCarType(carType);
 
         sceneView.remoteCarUpdated(carId, remoteCar);
     }

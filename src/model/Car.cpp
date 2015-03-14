@@ -5,7 +5,8 @@
 namespace Rally { namespace Model {
 
     Car::Car(Rally::Model::PhysicsWorld& physicsWorld) :
-            physicsWorld(physicsWorld) {
+            physicsWorld(physicsWorld),
+            carType('a') {
     }
 
     Car::~Car() {

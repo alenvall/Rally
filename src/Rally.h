@@ -19,6 +19,8 @@ namespace Rally {
     typedef Ogre::Vector3 Vector3;
     typedef Ogre::Vector4 Vector4;
     typedef Ogre::Quaternion Quaternion;
+    typedef Ogre::Degree Degree;
+    typedef Ogre::Radian Radian;
 }
 
 #endif // RALLY_H_

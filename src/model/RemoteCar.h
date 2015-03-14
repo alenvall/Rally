@@ -39,6 +39,10 @@ namespace Rally { namespace Model {
                 return tractionVector;
             }
 
+            Rally::Quaternion getWheelRotation() const {
+                return physicsRemoteCar.getWheelRotation();
+            }
+
         private:
             Rally::Model::PhysicsWorld& physicsWorld;
             Rally::Model::PhysicsRemoteCar physicsRemoteCar;

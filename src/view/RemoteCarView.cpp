@@ -15,7 +15,11 @@ namespace Rally { namespace View {
     }
 
     void RemoteCarView::updateWithRemoteCar() {
-        this->updateBody(remoteCar.getPosition(), remoteCar.getOrientation());
+        Rally::Quaternion carOrientation = remoteCar.getOrientation();
+        Rally::Quaternion wheelRotation = carOrientation * remoteCar.getWheelRotation();
+
+        this->updateBody(remoteCar.getPosition(), carOrientation);
+        this->updateWheels(wheelRotation, wheelRotation, wheelRotation, wheelRotation);
     }
 
 } }

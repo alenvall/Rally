@@ -45,6 +45,10 @@ namespace Rally { namespace Model {
                 const Rally::Vector3& incomingVelocity,
                 const Rally::Quaternion& targetOrientation);
 
+            Rally::Quaternion getWheelRotation() const {
+                return wheelRotation;
+            }
+
             Rally::Vector3 getPosition() const;
             Rally::Quaternion getOrientation() const;
             Rally::Vector3 getVelocity() const;
@@ -59,6 +63,7 @@ namespace Rally { namespace Model {
             PhysicsRemoteCar_BodyMotionState bodyMotionState;
             btRigidBody::btRigidBodyConstructionInfo* bodyConstructionInfo;
             btRigidBody* bodyRigidBody;
+            Rally::Quaternion wheelRotation;
     };
 
 } }

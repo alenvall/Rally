@@ -88,15 +88,20 @@ namespace Rally { namespace Controller {
 		    sceneView.toggleDebugDraw();
         }
 
-        if (inputInit.isKeyPressedDebounced("f")) {
+        if(inputInit.isKeyPressedDebounced("f")) {
             world.gravityGlitch();
         }
 
-        if (inputInit.isKeyPressedDebounced("r")){
+        if(inputInit.isKeyPressedDebounced("space")) {
+		    world.getPlayerCar().cycleCarType();
+		    sceneView.playerCarTypeUpdated();
+        }
+
+        if(inputInit.isKeyPressedDebounced("r")) {
 		    sceneView.toggleReflections();
         }
 
-        if (inputInit.isKeyPressed("p")){
+        if(inputInit.isKeyPressed("p")) {
             std::cout << car.getPosition() << std::endl;
         }
     }
@@ -112,9 +117,14 @@ namespace Rally { namespace Controller {
         remoteCar.setTargetTransform(position, velocity, orientation);
 
         remoteCar.setTractionVector(tractionVector);
-        remoteCar.setCarType(carType);
 
-        sceneView.remoteCarUpdated(carId, remoteCar);
+        bool carTypeChanged = false;
+        if(remoteCar.getCarType() != carType) {
+            remoteCar.setCarType(carType);
+            carTypeChanged = true;
+        }
+
+        sceneView.remoteCarUpdated(carId, remoteCar, carTypeChanged);
     }
 
     void MainController_RemoteCarListener::carRemoved(unsigned short carId) {

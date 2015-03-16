@@ -68,6 +68,8 @@ namespace Rally { namespace Model {
                 return carType;
             }
 
+            void cycleCarType();
+
         private:
             Rally::Model::PhysicsWorld& physicsWorld;
             Rally::Model::PhysicsCar physicsCar;

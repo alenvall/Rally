@@ -19,6 +19,7 @@ class PlayerCarView : public CarView {
         virtual void attachTo(Ogre::SceneManager* sceneManager);
         virtual void detach();
         virtual void updateBody(const Rally::Vector3& position, const Rally::Quaternion& orientation);
+        virtual void changeCar(char carType);
 
         void setReflectionsOn(bool state);
 

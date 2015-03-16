@@ -40,11 +40,15 @@ class SceneView {
         virtual ~SceneView();
         void initialize(std::string resourceConfigPath, std::string pluginConfigPath);
         bool renderFrame(float deltaTime);
-        void remoteCarUpdated(int carId, const Rally::Model::RemoteCar& remoteCar);
+        void remoteCarUpdated(int carId, const Rally::Model::RemoteCar& remoteCar, bool carTypeChanged);
         void remoteCarRemoved(int carId, const Rally::Model::RemoteCar& remoteCar);
         void toggleDebugDraw();
         void toggleReflections();
         void addLogicListener(Rally::View::SceneView_LogicListener& logicListener);
+
+        void playerCarTypeUpdated() {
+            playerCarView.changeCar(world.getPlayerCar().getCarType());
+        }
 
     private:
         Ogre::Viewport* addViewport(Ogre::Camera* followedCamera);

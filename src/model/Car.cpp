@@ -34,4 +34,12 @@ namespace Rally { namespace Model {
         return (result > 1.0f) ? 1.0f : result;
     }
 
+    void Car::cycleCarType() {
+        // Todo: clean up this mess when the models need to perform logic on carType.
+        carType++;
+        if(carType > 'r') {
+            carType = 'a';
+        }
+    }
+
 } }

@@ -41,13 +41,20 @@ namespace Rally { namespace View {
             sceneManager->destroySceneNode(carNode);
             sceneManager->destroyEntity(carEntity);
         }
+
+        carEntities.clear();
     }
 
     void CarView::attachTo(Ogre::SceneManager* sceneManager, const std::string& carName) {
         this->sceneManager = sceneManager;
 
-        carEntity = sceneManager->createEntity(carName, "car.mesh");
-		carEntity->getSubEntity(4)->setMaterialName("carcolourred");
+        carEntities.push_back(sceneManager->createEntity(carName + "_lambo", "car.mesh"));
+        carEntities.push_back(sceneManager->createEntity(carName + "_740sedan", "car740.mesh"));
+        carEntities.push_back(sceneManager->createEntity(carName + "_740kombi", "car740.mesh"));
+        carEntity = carEntities[0];
+
+        carEntity->getSubEntity(4)->setMaterialName("carcolourred");
+
         carNode = sceneManager->getRootSceneNode()->createChildSceneNode();
         carNode->attachObject(carEntity);
 
@@ -82,5 +89,81 @@ namespace Rally { namespace View {
         leftFrontWheelNode->setOrientation(localCompensation*leftFrontWheelOrientation);
         rightBackWheelNode->setOrientation(localCompensation*rightBackWheelOrientation);
         leftBackWheelNode->setOrientation(localCompensation*leftBackWheelOrientation);
+    }
+
+    void CarView::changeCar(char carType) {
+        if(carType < 'a' || carType > 'r') {
+            // Don't trust the network...
+            return;
+        }
+
+        carNode->detachObject(carEntity);
+        switch(carType) {
+            case 'a':
+            case 'd':
+            case 'g':
+            case 'j':
+            case 'm':
+            case 'p':
+                carEntity = carEntities[0];
+            break;
+
+            case 'b':
+            case 'e':
+            case 'h':
+            case 'k':
+            case 'n':
+            case 'q':
+                carEntity = carEntities[1];
+            break;
+
+            case 'c':
+            case 'f':
+            case 'i':
+            case 'l':
+            case 'o':
+            case 'r':
+                carEntity = carEntities[2];
+            break;
+        }
+        carNode->attachObject(carEntity);
+
+        switch(carType) {
+            case 'a':
+            case 'b':
+            case 'c':
+                carEntity->getSubEntity(4)->setMaterialName("carcolourred");
+            break;
+
+            case 'd':
+            case 'e':
+            case 'f':
+                carEntity->getSubEntity(4)->setMaterialName("carcolourgustavred");
+            break;
+
+            case 'g':
+            case 'h':
+            case 'i':
+                carEntity->getSubEntity(4)->setMaterialName("carcolourhotpink");
+            break;
+
+            case 'j':
+            case 'k':
+            case 'l':
+                carEntity->getSubEntity(4)->setMaterialName("carcolourblue");
+            break;
+
+            case 'm':
+            case 'n':
+            case 'o':
+                carEntity->getSubEntity(4)->setMaterialName("carcolourwhite");
+            break;
+
+            case 'p':
+            case 'q':
+            case 'r':
+                carEntity->getSubEntity(4)->setMaterialName("carcolouryellow");
+            break;
+        }
     }
 } }

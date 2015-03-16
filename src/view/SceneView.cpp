@@ -20,8 +20,8 @@ SceneView::SceneView(Rally::Model::World& world) :
         world(world),
         camera(NULL),
         sceneManager(NULL),
-        renderWindow(NULL){
-        debugDrawEnabled = false;
+        renderWindow(NULL) {
+    debugDrawEnabled = false;
 }
 
 SceneView::~SceneView() {
@@ -285,7 +285,7 @@ void SceneView::updateRemoteCars() {
     }
 }
 
-void SceneView::remoteCarUpdated(int carId, const Rally::Model::RemoteCar& remoteCar) {
+void SceneView::remoteCarUpdated(int carId, const Rally::Model::RemoteCar& remoteCar, bool carTypeChanged) {
     std::map<int, Rally::View::RemoteCarView>::iterator found = remoteCarViews.find(carId);
 
     // Lazily construct if not found
@@ -300,6 +300,8 @@ void SceneView::remoteCarUpdated(int carId, const Rally::Model::RemoteCar& remot
     }
 
     // We don't really update the car here, as it has to be done every frame for the interpolation.
+
+    found->second.changeCar(remoteCar.getCarType());
 }
 
 void SceneView::remoteCarRemoved(int carId, const Rally::Model::RemoteCar& remoteCar) {

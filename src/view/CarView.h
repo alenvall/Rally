@@ -2,6 +2,7 @@
 #define RALLY_VIEW_CARVIEW_H_
 
 #include "Rally.h"
+#include <vector>
 
 namespace Ogre {
     class SceneManager;
@@ -25,8 +26,11 @@ class CarView {
             const Rally::Quaternion& rightBackWheelOrientation,
             const Rally::Quaternion& leftBackWheelOrientation);
 
+        virtual void changeCar(char carType);
+
     protected:
         Ogre::SceneManager* sceneManager;
+        std::vector<Ogre::Entity*> carEntities;
         Ogre::Entity* carEntity;
         Ogre::SceneNode* carNode;
 

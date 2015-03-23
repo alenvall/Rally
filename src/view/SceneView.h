@@ -2,6 +2,7 @@
 #define RALLY_VIEW_SCENEVIEW_H_
 
 #include "view/RemoteCarView.h"
+#include "view/CheckpointView.h"
 #include "view/PlayerCarView.h"
 #include "view/PortalView.h"
 #include "view/BloomView.h"
@@ -57,15 +58,25 @@ class SceneView {
         void loadResourceConfig(Ogre::String resourceConfigPath);
         void updatePlayerCar(float deltaTime);
         void updateRemoteCars();
+		
+        void updateCheckPoints();
 
         bool debugDrawEnabled;
         bool bloomEnabled;
+
+		void updateParticles();
+
+		void updateSkidmarks();
 
         Rally::Model::World& world;
 
         Ogre::Camera* camera;
         Ogre::SceneManager* sceneManager;
         Ogre::RenderWindow* renderWindow;
+		Ogre::ParticleSystemManager* particleManager;
+
+        Rally::View::CheckpointView goalView;
+        std::list<Rally::View::CheckpointView> checkPointViews;
 
         Rally::View::PlayerCarView playerCarView;
         std::map<int, Rally::View::RemoteCarView> remoteCarViews;

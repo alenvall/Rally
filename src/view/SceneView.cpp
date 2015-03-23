@@ -105,7 +105,10 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     skyLight1->setSpecularColour(Ogre::ColourValue(1, 1, 1));
     sceneNode->attachObject(skyLight1);
 
-	playerCarView.attachTo(sceneManager);
+	playerCarView.attachTo(sceneManager, world.getPlayerCar());
+
+	//goalView.attachTo(sceneManager, "Finish", "car.mesh", world.getFinish());
+	goalView.attachTo(sceneManager, "Start", "car.mesh", world.getStart());
 
     // Debug draw Bullet
     bulletDebugDrawer = new Rally::Util::BulletDebugDrawer(sceneManager);
@@ -181,6 +184,8 @@ bool SceneView::renderFrame(float deltaTime) {
     } else {
         updatePlayerCar(deltaTime);
         updateRemoteCars();
+		//updateCheckPoints();
+		updateParticles();
 		lensflare->update();
 
     if(debugDrawEnabled){
@@ -212,11 +217,18 @@ void SceneView::updatePlayerCar(float deltaTime) {
 	Rally::Vector3 displacementBase = playerCar.getOrientation() * Ogre::Vector3::UNIT_Z;
 	displacementBase *= -1;
 
-	Rally::Vector3 displacement(6.0f * displacementBase.x, 3.5f, 6.0f * displacementBase.z);
+	float xzdisplacement = 7.0f;
+	float ydisplacement = 3.0f;
+
+	Rally::Vector3 displacement(
+		xzdisplacement * displacementBase.x, 
+		ydisplacement, 
+		xzdisplacement * displacementBase.z);
+
     Rally::Vector3 endPosition = position + displacement;
 
-	float velocityAdjust = playerCar.getVelocity().length()/6;
-	float lerpAdjust = Ogre::Math::Clamp(velocityAdjust*deltaTime, 0.01f, 0.25f);
+	float velocityAdjust = playerCar.getVelocity().length()/8;
+	float lerpAdjust = Ogre::Math::Clamp(velocityAdjust*deltaTime, 0.01f, 0.9f);
 
 	// Lerp towards the new camera position to get a smoother pan
 	float lerpX = Ogre::Math::lerp(currentCameraPosition.x, endPosition.x, lerpAdjust);
@@ -230,7 +242,7 @@ void SceneView::updatePlayerCar(float deltaTime) {
 	Shoot a ray from the car (with an offset to prevent collision with itself) to the camera.
 	If anyting is intersected the camera is adjusted to prevent that the camera is blocked.
 	*/
-	btVector3 start(position.x, position.y + 2.0f, position.z);
+	btVector3 start(position.x, position.y + 1.1f, position.z);
 	btVector3 end(newPos.x, newPos.y, newPos.z);
 
 	btCollisionWorld::ClosestRayResultCallback ClosestRayResultCallBack(start, end);
@@ -238,7 +250,9 @@ void SceneView::updatePlayerCar(float deltaTime) {
 	// Perform raycast
 	world.getPhysicsWorld().getDynamicsWorld()->getCollisionWorld()->rayTest(start, end, ClosestRayResultCallBack);
 
-	if(ClosestRayResultCallBack.hasHit()) {
+	if(ClosestRayResultCallBack.hasHit() &&
+		ClosestRayResultCallBack.m_collisionObject->getInternalType() != btCollisionObject::CO_GHOST_OBJECT) {
+
 		btVector3 hitLoc = ClosestRayResultCallBack.m_hitPointWorld;
 
 		//If the camera is blocked, the new camera is set to where the collison
@@ -285,6 +299,10 @@ void SceneView::updateRemoteCars() {
     }
 }
 
+void SceneView::updateCheckPoints() {
+	//goalView.update();
+}
+
 void SceneView::remoteCarUpdated(int carId, const Rally::Model::RemoteCar& remoteCar, bool carTypeChanged) {
     std::map<int, Rally::View::RemoteCarView>::iterator found = remoteCarViews.find(carId);
 
@@ -319,4 +337,34 @@ void SceneView::toggleReflections() {
 void SceneView::toggleBloom() {
     bloomEnabled = !bloomEnabled;
     bloomView.setEnabled(bloomEnabled);
+}
+
+void SceneView::updateParticles(){
+	bool enabled[4] = {false, false, false, false};
+	Rally::Vector3 positions[4];
+
+	if(world.getPlayerCar().getPhysicsCar().getRightBackWheelTraction() < 0.2){
+		positions[0] = world.getPlayerCar().getPhysicsCar().getRightBackWheelOrigin();
+		enabled[0] = true;
+	}
+
+	if(world.getPlayerCar().getPhysicsCar().getRightFrontWheelTraction() < 0.2){
+		positions[1] = world.getPlayerCar().getPhysicsCar().getRightFrontWheelOrigin();
+		enabled[1] = true;
+	}
+
+
+	if(world.getPlayerCar().getPhysicsCar().getLeftBackWheelTraction() < 0.2){
+		positions[2] = world.getPlayerCar().getPhysicsCar().getLeftBackWheelOrigin();
+		enabled[2] = true;
+	}
+
+
+	if(world.getPlayerCar().getPhysicsCar().getLeftFrontWheelTraction() < 0.2){
+		positions[3] = world.getPlayerCar().getPhysicsCar().getLeftFrontWheelOrigin();
+		enabled[3] = true;
+	}
+
+	playerCarView.enableWheelParticles(enabled, positions);
+
 }

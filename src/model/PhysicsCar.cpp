@@ -47,7 +47,7 @@ namespace Rally { namespace Model {
             dynamicsWorld(NULL),
             bodyShape(NULL),
             lowerMassCenterShape(NULL),
-            bodyMotionState(btTransform(btQuaternion(0.0f, 0.0f, 0.0f, 1.0f), btVector3(90.0f, 50.2f, 55.0f))),
+            bodyMotionState(btTransform(btQuaternion(0.0f, 0.0f, 0.0f, 1.0f), btVector3(90.0f, 20.2f, 75.0f))),
             bodyConstructionInfo(NULL),
             bodyRigidBody(NULL),
             vehicleRaycaster(NULL),
@@ -245,6 +245,29 @@ namespace Rally { namespace Model {
         return raycastVehicle->getWheelInfo(3).m_skidInfo;
     }
 
+	Rally::Vector3 PhysicsCar::getRightFrontWheelOrigin() const {
+        raycastVehicle->updateWheelTransform(0, true);
+		btVector3 orientation = raycastVehicle->getWheelInfo(0).m_worldTransform.getOrigin();
+        return Rally::Vector3(orientation.x(), orientation.y(), orientation.z());
+    }
+
+	Rally::Vector3 PhysicsCar::getLeftFrontWheelOrigin() const {
+        raycastVehicle->updateWheelTransform(1, true);
+		btVector3 orientation = raycastVehicle->getWheelInfo(1).m_worldTransform.getOrigin();
+        return Rally::Vector3(orientation.x(), orientation.y(), orientation.z());
+    }
+	
+	Rally::Vector3 PhysicsCar::getRightBackWheelOrigin() const {
+        raycastVehicle->updateWheelTransform(2, true);
+		btVector3 orientation = raycastVehicle->getWheelInfo(2).m_worldTransform.getOrigin();
+        return Rally::Vector3(orientation.x(), orientation.y(), orientation.z());
+    }
+	
+	Rally::Vector3 PhysicsCar::getLeftBackWheelOrigin() const {
+        raycastVehicle->updateWheelTransform(3, true);
+		btVector3 orientation = raycastVehicle->getWheelInfo(3).m_worldTransform.getOrigin();
+        return Rally::Vector3(orientation.x(), orientation.y(), orientation.z());
+    }
     void PhysicsCar::stepped(float deltaTime) {
         // Some values used several times below.
         btVector3 velocity = bodyRigidBody->getLinearVelocity();
@@ -335,7 +358,36 @@ namespace Rally { namespace Model {
         // Apply equally on both front wheels.
         raycastVehicle->setSteeringValue(compensatedSteering, 0);
         raycastVehicle->setSteeringValue(compensatedSteering, 1);
-    }
+
+		checkForSkidmarks();
+	}
+
+	void PhysicsCar::checkForSkidmarks() {
+
+		for(int i = 0; i < 4; i++){
+			if(skidmarkPositions[i].size() > 5){
+				skidmarkPositions[i].clear();
+				skidmarkNormals[i].clear();
+				skidmarkDirections[i].clear();
+			}
+		}
+		if(getVelocity().length() > 5)
+		for(int i = 0; i < 4; i++){
+			if(raycastVehicle->getWheelInfo(i).m_raycastInfo.m_isInContact &&
+				raycastVehicle->getWheelInfo(i).m_skidInfo < 0.3){
+
+					if(raycastVehicle->getWheelInfo(i).m_raycastInfo.m_contactNormalWS.getY() > 0.2){
+					skidmarkPositions[i].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(i).m_raycastInfo.m_contactPointWS));
+					skidmarkNormals[i].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(i).m_raycastInfo.m_contactNormalWS));
+					skidmarkDirections[i].push_front(getVelocity().normalisedCopy());
+				}
+			} else {
+				skidmarkPositions[i].clear();
+				skidmarkNormals[i].clear();
+				skidmarkDirections[i].clear();
+			}
+		}
+	}
 
     bool PhysicsCar::isAllWheelsOnGround() {
         return raycastVehicle->getWheelInfo(0).m_raycastInfo.m_isInContact &&

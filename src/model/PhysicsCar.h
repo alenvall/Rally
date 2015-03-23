@@ -30,6 +30,11 @@ namespace Rally { namespace Model {
             float getRightBackWheelTraction() const;
             float getLeftBackWheelTraction() const;
 
+            Rally::Vector3 getRightFrontWheelOrigin() const;
+            Rally::Vector3 getLeftFrontWheelOrigin() const;
+            Rally::Vector3 getRightBackWheelOrigin() const;
+            Rally::Vector3 getLeftBackWheelOrigin() const;
+
             // @Override
             virtual void stepped(float deltaTime);
 
@@ -44,6 +49,54 @@ namespace Rally { namespace Model {
             void setSteeringRequested(int steeringRequested) {
                 this->steeringRequested = steeringRequested;
             }
+			
+			std::list<Rally::Vector3> getParticlePositions(){
+				return particlePositions;
+			}
+
+			void clearParticlePositions(){
+				particlePositions.clear();
+			}
+
+			std::list<Rally::Vector3> getSkidmarkPositions(int wheel){
+				return skidmarkPositions[wheel];
+			}
+
+			void clearSkidmarkPositions(int wheel){
+				if(skidmarkPositions[wheel].size() > 3){
+					skidmarkPositions[wheel].pop_back();
+					skidmarkPositions[wheel].pop_back();
+
+				}else
+					skidmarkPositions[wheel].pop_back();
+
+			}
+
+			std::list<Rally::Vector3> getSkidmarkNormals(int wheel){
+				return skidmarkNormals[wheel];
+			}
+
+			void clearSkidmarkNormals(int wheel){
+				if(skidmarkNormals[wheel].size() > 3){
+					skidmarkNormals[wheel].pop_back();
+					skidmarkNormals[wheel].pop_back();
+
+				}else
+					skidmarkNormals[wheel].pop_back();
+			}
+
+			std::list<Rally::Vector3> getSkidmarkDirections(int wheel){
+				return skidmarkDirections[wheel];
+			}
+
+			void clearSkidmarkDirections(int wheel){
+				if(skidmarkDirections[wheel].size() > 3){
+					skidmarkDirections[wheel].pop_back();
+					skidmarkDirections[wheel].pop_back();
+
+				}else
+					skidmarkDirections[wheel].pop_back();
+			}
 
         private:
             void initializeConstructionInfo();
@@ -68,6 +121,15 @@ namespace Rally { namespace Model {
 
             float engineForce;
             float breakingForce;
+
+			std::list<Rally::Vector3> particlePositions;
+			
+			Rally::Vector3 wheelpos;
+			void checkForSkidmarks();
+			std::list<Rally::Vector3> skidmarkPositions[4];
+			std::list<Rally::Vector3> skidmarkNormals[4];
+			std::list<Rally::Vector3> skidmarkDirections[4];
+
     };
 
 } }

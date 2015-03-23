@@ -25,6 +25,12 @@ class CarView {
             const Rally::Quaternion& leftFrontWheelOrientation,
             const Rally::Quaternion& rightBackWheelOrientation,
             const Rally::Quaternion& leftBackWheelOrientation);
+		
+		void initParticleSystem(const std::string& carName);
+		void enableWheelParticles(bool enabled[], Rally::Vector3 position[]);
+		
+		void initSkidmarks();
+		void updateSkidmarks(Rally::Vector3 position, Rally::Vector3 normal, Rally::Vector3 direction, float speed);
 
         virtual void changeCar(char carType);
 
@@ -43,6 +49,12 @@ class CarView {
         Ogre::SceneNode* leftFrontWheelNode;
         Ogre::SceneNode* rightBackWheelNode;
         Ogre::SceneNode* leftBackWheelNode;
+
+		Ogre::ParticleSystem* rightBackSystem;
+		Ogre::ParticleSystem* rightFrontSystem;
+		Ogre::ParticleSystem* leftBackSystem;
+		Ogre::ParticleSystem* leftFrontSystem;
+		Ogre::SceneNode* bodyParticleNode;
 };
 
 } }

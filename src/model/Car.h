@@ -59,6 +59,42 @@ namespace Rally { namespace Model {
             void setSteeringRequested(int steeringRequested) {
                 physicsCar.setSteeringRequested(steeringRequested);
             }
+			
+			std::list<Rally::Vector3> getParticlePositions(){
+				return physicsCar.getParticlePositions();
+			}
+
+			void clearParticlePositions(){
+				physicsCar.clearParticlePositions();
+			}
+
+			void clearSkidmarkPositions(int wheel){
+				physicsCar.clearSkidmarkPositions(wheel);
+			}
+			
+			std::list<Rally::Vector3> getSkidmarkPositions(int wheel){
+				return physicsCar.getSkidmarkPositions(wheel);
+			}
+
+			std::list<Rally::Vector3> getSkidmarkNormals(int wheel){
+				return physicsCar.getSkidmarkNormals(wheel);
+			}
+
+			void clearSkidmarkNormals(int wheel){
+				physicsCar.clearSkidmarkNormals(wheel);
+			}
+
+			std::list<Rally::Vector3> getSkidmarkDirections(int wheel){
+				return physicsCar.getSkidmarkDirections(wheel);
+			}
+
+			void clearSkidmarkDirections(int wheel){
+				physicsCar.clearSkidmarkDirections(wheel);
+			}
+
+			Rally::Model::PhysicsCar getPhysicsCar(){
+				return physicsCar;
+			}
 
             void setCarType(char carType) {
                 this->carType = carType;

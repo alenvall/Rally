@@ -17,8 +17,9 @@ namespace Rally { namespace View {
     PlayerCarView::~PlayerCarView() {
     }
 
-    void PlayerCarView::attachTo(Ogre::SceneManager* sceneManager) {
+    void PlayerCarView::attachTo(Ogre::SceneManager* sceneManager, Rally::Model::Car& car) {
         CarView::attachTo(sceneManager, "PlayerCar");
+		skidmarkView.attachTo(sceneManager, car);
     }
 
     void PlayerCarView::detach() {
@@ -65,6 +66,7 @@ namespace Rally { namespace View {
             reflectionView.moveCamera(position);
         }
         CarView::updateBody(position, orientation);
+		skidmarkView.update();
     }
 
 } }

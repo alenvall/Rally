@@ -100,6 +100,10 @@ namespace Rally { namespace Controller {
         if(inputInit.isKeyPressedDebounced("r")) {
 		    sceneView.toggleReflections();
         }
+        
+        if(inputInit.isKeyPressedDebounced("b")) {
+		    sceneView.toggleBloom();
+        }
 
         if(inputInit.isKeyPressed("p")) {
             std::cout << car.getPosition() << std::endl;

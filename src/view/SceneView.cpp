@@ -315,3 +315,8 @@ void SceneView::toggleDebugDraw() {
 void SceneView::toggleReflections() {
     playerCarView.setReflectionsOn(!playerCarView.isReflectionsOn());
 }
+
+void SceneView::toggleBloom() {
+    bloomEnabled = !bloomEnabled;
+    bloomView.setEnabled(bloomEnabled);
+}

@@ -44,6 +44,7 @@ class SceneView {
         void remoteCarRemoved(int carId, const Rally::Model::RemoteCar& remoteCar);
         void toggleDebugDraw();
         void toggleReflections();
+        void toggleBloom();
         void addLogicListener(Rally::View::SceneView_LogicListener& logicListener);
 
         void playerCarTypeUpdated() {
@@ -58,6 +59,7 @@ class SceneView {
         void updateRemoteCars();
 
         bool debugDrawEnabled;
+        bool bloomEnabled;
 
         Rally::Model::World& world;
 

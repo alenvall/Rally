@@ -1,6 +1,6 @@
 #include "view/SceneView.h"
 
-#include "DotSceneLoader.h"
+#include "util/DotSceneLoader.h"
 
 #include "util/BulletDebugDrawer.h"
 
@@ -20,8 +20,8 @@ SceneView::SceneView(Rally::Model::World& world) :
         world(world),
         camera(NULL),
         sceneManager(NULL),
-        renderWindow(NULL){
-        debugDrawEnabled = false;
+        renderWindow(NULL) {
+    debugDrawEnabled = false;
 }
 
 SceneView::~SceneView() {
@@ -31,6 +31,10 @@ SceneView::~SceneView() {
     playerCarView.detach();
 
     bloomView.detach();
+
+	lensflare->end();
+	delete lensflare;
+	lensflare = NULL;
 
     Ogre::Root* root = Ogre::Root::getSingletonPtr();
     delete root;
@@ -123,6 +127,10 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
         Rally::Vector3(255.0f, 12.0f, 240.0f), // position
         Rally::Vector3(255.0f, 12.0f, 239.0f)); // look at
     tunnelPortalView.takeSnapshot();
+
+	lensflare = new Rally::View::LensFlareView();
+	lensflare->init(sceneManager, camera, viewport->getWidth(), viewport->getHeight(), 800, 30, "LensFlareHalo", "LensFlareCircle", "LensFlareBurst");
+	lensflare->setPosition(Ogre::Vector3(-800, 500, -800));
 }
 
 
@@ -178,6 +186,7 @@ bool SceneView::renderFrame(float deltaTime) {
         updateRemoteCars();
 		//updateCheckPoints();
 		updateParticles();
+		lensflare->update();
 
     if(debugDrawEnabled){
         world.getPhysicsWorld().getDynamicsWorld()->debugDrawWorld();
@@ -294,7 +303,7 @@ void SceneView::updateCheckPoints() {
 	//goalView.update();
 }
 
-void SceneView::remoteCarUpdated(int carId, const Rally::Model::RemoteCar& remoteCar) {
+void SceneView::remoteCarUpdated(int carId, const Rally::Model::RemoteCar& remoteCar, bool carTypeChanged) {
     std::map<int, Rally::View::RemoteCarView>::iterator found = remoteCarViews.find(carId);
 
     // Lazily construct if not found
@@ -309,14 +318,16 @@ void SceneView::remoteCarUpdated(int carId, const Rally::Model::RemoteCar& remot
     }
 
     // We don't really update the car here, as it has to be done every frame for the interpolation.
+
+    found->second.changeCar(remoteCar.getCarType());
 }
 
 void SceneView::remoteCarRemoved(int carId, const Rally::Model::RemoteCar& remoteCar) {
     remoteCarViews.erase(carId);
 }
 
-void SceneView::setDebugDrawEnabled(bool enabled){
-    debugDrawEnabled = enabled;
+void SceneView::toggleDebugDraw() {
+    debugDrawEnabled = !debugDrawEnabled;
 }
 
 void SceneView::toggleReflections() {

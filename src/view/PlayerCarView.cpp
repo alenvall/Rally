@@ -1,22 +1,17 @@
 #include "view/PlayerCarView.h"
 #include <OgreEntity.h>
+#include <OgreSubEntity.h>
 #include <sstream>
 #include <string>
 
 namespace Rally { namespace View {
 
-    namespace {
-        std::set<std::string> getReflectedMaterials() {
-            std::set<std::string> reflected;
-            reflected.insert("carcolourred");
-            reflected.insert("blackplastic");
-            return reflected;
-        }
-    }
-
     PlayerCarView::PlayerCarView() :
-            reflectionView(getReflectedMaterials()),
             reflectionsOn(false) {
+        std::set<std::string> reflected;
+        reflected.insert("carcolourred");
+        reflected.insert("blackplastic");
+        reflectionView.setReflectionReceivers(reflected);
     }
 
     PlayerCarView::~PlayerCarView() {
@@ -40,6 +35,30 @@ namespace Rally { namespace View {
             reflectionView.detach();
             reflectionsOn = false;
         }
+    }
+
+    void PlayerCarView::changeCar(char carType) {
+        bool hadReflections = reflectionsOn;
+
+        if(hadReflections) setReflectionsOn(false);
+
+        CarView::changeCar(carType);
+
+        std::set<std::string> reflected;
+        reflected.insert(carEntity->getSubEntity(4)->getMaterialName());
+        switch(carType) {
+            case 'a':
+            case 'd':
+            case 'g':
+            case 'j':
+            case 'm':
+            case 'p':
+                reflected.insert("blackplastic");
+            break;
+        }
+        reflectionView.setReflectionReceivers(reflected);
+
+        if(hadReflections) setReflectionsOn(true);
     }
 
     void PlayerCarView::updateBody(const Rally::Vector3& position, const Rally::Quaternion& orientation) {

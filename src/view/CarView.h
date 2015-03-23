@@ -2,6 +2,7 @@
 #define RALLY_VIEW_CARVIEW_H_
 
 #include "Rally.h"
+#include <vector>
 
 namespace Ogre {
     class SceneManager;
@@ -31,8 +32,11 @@ class CarView {
 		void initSkidmarks();
 		void updateSkidmarks(Rally::Vector3 position, Rally::Vector3 normal, Rally::Vector3 direction, float speed);
 
+        virtual void changeCar(char carType);
+
     protected:
         Ogre::SceneManager* sceneManager;
+        std::vector<Ogre::Entity*> carEntities;
         Ogre::Entity* carEntity;
         Ogre::SceneNode* carNode;
 

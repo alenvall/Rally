@@ -1,6 +1,8 @@
 #ifndef RALLY_MODEL_PHYSICSWORLD_H_
 #define RALLY_MODEL_PHYSICSWORLD_H_
 
+#include "util/Timer.h"
+
 #include <string>
 #include <vector>
 
@@ -31,6 +33,8 @@ namespace Rally { namespace Model {
             void initialize(const std::string & bulletFile);
             void update(float deltaTime);
 
+            void gravityGlitch();
+
             btDiscreteDynamicsWorld* getDynamicsWorld() {
                 return dynamicsWorld;
             }
@@ -40,6 +44,8 @@ namespace Rally { namespace Model {
             void invokeStepCallbacks(float deltaTime, bool isPre);
 
         private:
+            void gravityGlitchDriver();
+
             btBroadphaseInterface* broadphase;
             btDefaultCollisionConfiguration* collisionConfiguration;
             btCollisionDispatcher* dispatcher;
@@ -47,6 +53,9 @@ namespace Rally { namespace Model {
             btDiscreteDynamicsWorld* dynamicsWorld;
             btBulletWorldImporter* fileLoader;
             std::vector<PhysicsWorld_StepCallback*> stepCallbacks;
+
+            Rally::Util::Timer gravityGlitchTimer;
+            bool gravityGlitchActive;
     };
 
 } }

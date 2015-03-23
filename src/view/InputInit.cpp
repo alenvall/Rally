@@ -68,6 +68,7 @@ void InputInit::keyInit() {
     keyMap["left"] = false;
     keyMap["right"] = false;
     keyMap["escape"] = false;
+    keyMap["space"] = false;
     keyMap["d"] = false;
     keyMap["f"] = false;
     keyMap["x"] = false;
@@ -96,10 +97,11 @@ bool InputInit::isKeyPressed(const std::string& s) {
 }
 
 bool InputInit::isKeyPressedDebounced(const std::string& s) {
-    if(debouncer.getElapsedSeconds() > 0.5f) {
+    if(isKeyPressed(s) && debouncer.getElapsedSeconds() > 0.5f) {
         debouncer.reset();
-        return isKeyPressed(s);
+        return true;
     }
+
     return false;
 }
 
@@ -124,6 +126,10 @@ bool InputInit::keyPressed(const OIS::KeyEvent& arg) {
     {
         keyMap.at("escape") = true;
         shutDown = true;
+    }
+    if (arg.key == OIS::KC_SPACE)
+    {
+        keyMap.at("space") = true;
     }
     if (arg.key == OIS::KC_D)
     {
@@ -164,6 +170,10 @@ bool InputInit::keyReleased(const OIS::KeyEvent& arg) {
     if (arg.key == OIS::KC_RIGHT)
     {
         keyMap.at("right") = false;
+    }
+    if (arg.key == OIS::KC_SPACE)
+    {
+        keyMap.at("space") = false;
     }
     if (arg.key == OIS::KC_ESCAPE)
     {

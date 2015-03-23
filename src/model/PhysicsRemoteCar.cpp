@@ -12,6 +12,7 @@ namespace Rally { namespace Model {
     namespace {
         const btVector3 CAR_DIMENSIONS(2.0f, 1.0f, 4.0f);
         const float MAX_CORRECTION_DISTANCE = 10.0f;
+        const float wheelRadius = 0.5f;
     }
 
     PhysicsRemoteCar::PhysicsRemoteCar() :
@@ -19,7 +20,8 @@ namespace Rally { namespace Model {
             dynamicsWorld(NULL),
             bodyShape(NULL),
             bodyConstructionInfo(NULL),
-            bodyRigidBody(NULL) {
+            bodyRigidBody(NULL),
+            wheelRotation(1.0f, 0, 0, 0) {
     }
 
     PhysicsRemoteCar::~PhysicsRemoteCar() {
@@ -114,7 +116,12 @@ namespace Rally { namespace Model {
 
         // Interpolate the position by integrating the velocity.
         btVector3 currentPosition = bodyMotionState.currentTransform.getOrigin();
-        bodyMotionState.currentTransform.setOrigin(currentPosition + bodyMotionState.interpolationVelocity*deltaTime);
+        btVector3 deltaPosition = bodyMotionState.interpolationVelocity*deltaTime;
+        bodyMotionState.currentTransform.setOrigin(currentPosition + deltaPosition);
+
+        // Turn the wheels. We loose precision relative to the world here, not that it matters...
+        float wheelRotationRadians = /* 2*PI* */ deltaPosition.length() / (/* 2*PI* */ wheelRadius);
+        wheelRotation = Rally::Quaternion(Rally::Radian(wheelRotationRadians), Rally::Vector3::NEGATIVE_UNIT_X) * wheelRotation;
     }
 
     void PhysicsRemoteCar_BodyMotionState::getWorldTransform(btTransform& worldTransform) const {

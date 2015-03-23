@@ -172,7 +172,7 @@ namespace Rally { namespace View {
     }
 
     void RallyNetView::pushCar() {
-        char packet[44];
+        char packet[48];
 
         packet[0] = 1; // Type = 1
 
@@ -180,11 +180,17 @@ namespace Rally { namespace View {
         unsigned short packetId = htons(++lastSentPacketId);
         memcpy(packet + 1, &packetId, 2);
 
-        packet[3]  = 0; // Car type = 0
+        packet[3]  = playerCar->getCarType();
 
         writeVector3toPacket(packet + 4 + 0*3*4, playerCar->getPosition());
         writeVector3toPacket(packet + 4 + 1*3*4, playerCar->getVelocity());
         writeQuaternionToPacket(packet + 4 + 2*3*4, playerCar->getOrientation());
+
+        Rally::Vector4 tractionVector = playerCar->getTractionVector();
+        packet[44] = static_cast<unsigned char>(tractionVector.x*255.0f);
+        packet[45] = static_cast<unsigned char>(tractionVector.y*255.0f);
+        packet[46] = static_cast<unsigned char>(tractionVector.z*255.0f);
+        packet[47] = static_cast<unsigned char>(tractionVector.w*255.0f);
 
         int status = ::send(socket, packet, sizeof(packet), 0x00000000);
         if(status < 0) {
@@ -216,7 +222,7 @@ namespace Rally { namespace View {
                 } else {
                     throw std::runtime_error("Socket error when receiving packet.");
                 }
-            } if(receivedBytes == 46 && packet[0] == 1) { // complete packetType == 1
+            } if(receivedBytes == 50 && packet[0] == 1) { // complete packetType == 1
                 unsigned short sequenceId;
                 memcpy(&sequenceId, packet+1, 2);
                 sequenceId = ntohs(sequenceId);
@@ -247,12 +253,15 @@ namespace Rally { namespace View {
                 internalClient.lastPacketArrival = ::time(0);
 
                 char carType = packet[3];
+                Rally::Vector4 tractionVector = Rally::Vector4(packet[46], packet[47], packet[48], packet[49]) / 255.0f;
 
                 listener.carUpdated(
                     playerId,
                     packetToVector3(packet + 6 + 0*4*3),
                     packetToQuaternion(packet + 6 + 2*4*3),
-                    packetToVector3(packet + 6 + 1*4*3));
+                    packetToVector3(packet + 6 + 1*4*3),
+                    carType,
+                    tractionVector);
             }
         }
 

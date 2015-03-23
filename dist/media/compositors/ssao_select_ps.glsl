@@ -42,7 +42,7 @@ void main() {
     vec3 position = texture2D(gbuffer_position, gl_TexCoord[0].xy).xyz;
     vec3 normal = texture2D(gbuffer_normal, gl_TexCoord[0].xy).xyz; // Already normalized
     
-    float radius = effectFactor; // Needs to be inside what we can blur obviously...
+    float radius = 0.6 + 0.2*effectFactor; // Needs to be inside what we can blur obviously...
     
     float occlusion = 0.0;
     for(int i = 0; i < 16; ++i) {
@@ -62,24 +62,26 @@ void main() {
             vec4(thoughtX, 0.0),
             vec4(thoughtY, 0.0),
             vec4(normal, 0.0),
-            vec4(position.x, -position.y /* TODO: Why does this work better (does it?)? */, position.z, 1.0));
-        
+            vec4(position.x, position.y, position.z, 1.0));
+
         // Now, just project the position onto screen space so that we can sample!
         vec4 sampleProbedPosition = sampleModelView * vec4(randomVector, 1.0);
         vec4 sampleCoord = sceneProjectionMatrix * sampleProbedPosition;
         
         // Perspective divide and transtation [-1, 1] -> [0, 1] (NDC -> texcoord)
         sampleCoord.xy = vec2(0.5, 0.5) + 0.5*(sampleCoord.xy / sampleCoord.w);
-        
+        sampleCoord.y = 1.0 - sampleCoord.y;
         vec3 sampleRealPosition = texture2D(gbuffer_position, sampleCoord.xy).xyz;
         
-        // Only count if this pixel was in fact behind the (guessed) sampled pixel in the scene (meaning it was occluded).
-        // Also, filter away stuff that is too far away (outside our hemisphere), adding some realism.
-        if(sampleRealPosition.z >= sampleProbedPosition.z && length(sampleRealPosition - sampleProbedPosition.xyz) <= radius) {
+        // Only count if this sampled pixel was in fact in front of the (guessed) probed pixel
+        // (meaning it was occluding the current pixel in the rendered scene).
+        // Also, filter away stuff that is too far away (outside our hemisphere),
+        // for example edges of houses etc. (The only differ in their z-coord).
+        if(sampleRealPosition.z > sampleProbedPosition.z && abs(sampleProbedPosition.z - sampleRealPosition.z) <= radius) {
             occlusion += 1.0;
         }
     }
     
     float occlusionColor = 1.0 - (occlusion / 16.0);
-    gl_FragColor = vec4(normal, 1.0);
+    gl_FragColor = vec4(occlusionColor, occlusionColor, occlusionColor, 1.0);
 }

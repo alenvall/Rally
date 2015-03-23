@@ -9,8 +9,8 @@ varying vec3 viewSpacePosition;
 varying vec3 viewSpaceNormal;
 
 void main() {
-    viewSpacePosition = (worldView*gl_Vertex).xyz;
-    viewSpaceNormal = (worldView * vec4(gl_Normal, 0)).xyz;
+    viewSpacePosition = (worldView*vec4(gl_Vertex.xyz/gl_Vertex.w, 1.0)).xyz;
+    viewSpaceNormal = (worldView * vec4(gl_Normal, 0.0)).xyz;
     //viewSpaceNormal = (mat3(transpose(inverse(worldView))) * gl_Normal).xyz;
     
     gl_Position = worldViewProj * gl_Vertex;

@@ -41,6 +41,13 @@ namespace Rally { namespace Model {
                 return physicsCar.getLeftBackWheelOrientation();
             }
 
+            Rally::Vector4 getTractionVector() const {
+                return Rally::Vector4(physicsCar.getRightFrontWheelTraction(),
+                    physicsCar.getLeftFrontWheelTraction(),
+                    physicsCar.getRightBackWheelTraction(),
+                    physicsCar.getLeftBackWheelTraction());
+            }
+
             void setAccelerationRequested(bool accelerationRequested) {
                 physicsCar.setAccelerationRequested(accelerationRequested);
             }
@@ -89,9 +96,20 @@ namespace Rally { namespace Model {
 				return physicsCar;
 			}
 
+            void setCarType(char carType) {
+                this->carType = carType;
+            }
+
+            char getCarType() const {
+                return carType;
+            }
+
+            void cycleCarType();
+
         private:
             Rally::Model::PhysicsWorld& physicsWorld;
             Rally::Model::PhysicsCar physicsCar;
+            char carType;
     };
 
 } }

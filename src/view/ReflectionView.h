@@ -24,7 +24,7 @@ namespace Rally { namespace View {
 
 class ReflectionView : public Ogre::FrameListener, public Ogre::RenderTargetListener {
     public:
-        ReflectionView(const std::set<std::string>& reflectionReceivers);
+        ReflectionView();
         virtual ~ReflectionView();
 
         virtual bool frameStarted(const Ogre::FrameEvent& event);
@@ -35,6 +35,10 @@ class ReflectionView : public Ogre::FrameListener, public Ogre::RenderTargetList
         void detach();
         void attachTo(Ogre::SceneManager* sceneManager, Ogre::Entity* entity, const std::string& reflectionName);
         void moveCamera(const Rally::Vector3& position);
+
+        void setReflectionReceivers(const std::set<std::string>& reflectionReceivers) {
+            this->reflectionReceivers = reflectionReceivers;
+        }
 
     private:
         Ogre::SceneManager* sceneManager;

@@ -240,7 +240,7 @@ int main(int argc, char** argv) {
                 ClientIdentifier clientIdentifier = receivePacket(socket, packet, &packetSize);
 
                 // Process packet, possibly broadcast it
-                if(packetSize == 44 && packet[0] == 1) {
+                if(packetSize == 48 && packet[0] == 1) {
                     ClientData& clientData = clients[clientIdentifier]; // Will create if not found
 
                     unsigned short packetId = ntohs((packet[1]<<8) + packet[2]); // char -> short big endian -> short machine endian
@@ -250,7 +250,7 @@ int main(int argc, char** argv) {
                         // We need to splice in the sender's playerId (it's server based)
                         unsigned short playerId = htons(clientData.getPlayerId());
                         packetSize += 2;
-                        memmove(packet + 6, packet + 4, 40);
+                        memmove(packet + 6, packet + 4, 44);
                         memcpy(packet + 4, &playerId, 2);
 
                         broadcastPacket(socket, packet, packetSize, clientIdentifier, clients);

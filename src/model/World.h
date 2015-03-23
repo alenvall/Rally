@@ -61,7 +61,11 @@ namespace Rally { namespace Model {
             }*/
 			
 			std::list<Rally::Vector3> positions;
-			
+		
+            void gravityGlitch() {
+                physicsWorld.gravityGlitch();
+            }
+
         private:
             Rally::Model::PhysicsWorld physicsWorld;
             Rally::Model::Car playerCar;

@@ -10,12 +10,11 @@
 
 namespace Rally { namespace View {
 
-    ReflectionView::ReflectionView(const std::set<std::string>& reflectionReceivers) :
+    ReflectionView::ReflectionView() :
             sceneManager(NULL),
             renderTargets(),
             camera(NULL),
             oldMaterialPtrs(NULL),
-            reflectionReceivers(reflectionReceivers),
             renderRoundRobin(0) {
         // Ogre uses the same order as the OpenGL specification for cube maps:
         // 0 GL_TEXTURE_CUBE_MAP_POSITIVE_X

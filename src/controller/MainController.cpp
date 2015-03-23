@@ -19,7 +19,7 @@ namespace Rally { namespace Controller {
 
         sceneView.initialize(resourceConfigPath, pluginConfigPath);
 
-        netView.initialize(std::string("127.0.0.1"), 1337, &world.getPlayerCar());
+        netView.initialize(std::string("81.91.1.185"), 1337, &world.getPlayerCar());
 
         inputInit.setup();
     }
@@ -84,18 +84,24 @@ namespace Rally { namespace Controller {
             car.setSteeringRequested(0);
         }
 
-        if(inputInit.isKeyPressed("d")){
-		    sceneView.setDebugDrawEnabled(true);
-        }
-        if (inputInit.isKeyPressed("f")){
-		    sceneView.setDebugDrawEnabled(false);
+        if(inputInit.isKeyPressedDebounced("d")) {
+		    sceneView.toggleDebugDraw();
         }
 
-        if (inputInit.isKeyPressedDebounced("r")){
+        if(inputInit.isKeyPressedDebounced("f")) {
+            world.gravityGlitch();
+        }
+
+        if(inputInit.isKeyPressedDebounced("space")) {
+		    world.getPlayerCar().cycleCarType();
+		    sceneView.playerCarTypeUpdated();
+        }
+
+        if(inputInit.isKeyPressedDebounced("r")) {
 		    sceneView.toggleReflections();
         }
 
-        if (inputInit.isKeyPressed("p")){
+        if(inputInit.isKeyPressed("p")) {
             std::cout << car.getPosition() << std::endl;
         }
     }
@@ -103,12 +109,22 @@ namespace Rally { namespace Controller {
     void MainController_RemoteCarListener::carUpdated(unsigned short carId,
             Rally::Vector3 position,
             Rally::Quaternion orientation,
-            Rally::Vector3 velocity) {
+            Rally::Vector3 velocity,
+            char carType,
+            Rally::Vector4 tractionVector) {
         Rally::Model::RemoteCar& remoteCar = world.getRemoteCar(carId); // carId is upcast to int
 
         remoteCar.setTargetTransform(position, velocity, orientation);
 
-        sceneView.remoteCarUpdated(carId, remoteCar);
+        remoteCar.setTractionVector(tractionVector);
+
+        bool carTypeChanged = false;
+        if(remoteCar.getCarType() != carType) {
+            remoteCar.setCarType(carType);
+            carTypeChanged = true;
+        }
+
+        sceneView.remoteCarUpdated(carId, remoteCar, carTypeChanged);
     }
 
     void MainController_RemoteCarListener::carRemoved(unsigned short carId) {

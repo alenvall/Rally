@@ -1,6 +1,7 @@
 #include "view/SSAOView.h"
 
 #include <OgreTechnique.h>
+#include <OgreCamera.h>
 #include <OgreCompositorManager.h>
 
 #include <sstream>
@@ -19,6 +20,7 @@ namespace Rally { namespace View {
     }
 
     SSAOView::~SSAOView() {
+        ssaoSelectShaderParameters.setNull();
         blurHorizontalShaderParameters.setNull();
         blurVerticalShaderParameters.setNull();
     }
@@ -41,13 +43,16 @@ namespace Rally { namespace View {
     }
 
     void SSAOView::detach() {
+        ssaoSelectShaderParameters.setNull();
         blurHorizontalShaderParameters.setNull();
         blurVerticalShaderParameters.setNull();
         Ogre::CompositorManager::getSingleton().removeCompositor(viewport, "compositors/SSAOCompositor");
     }
 
     void SSAOView::notifyMaterialSetup(Ogre::uint32 compositorPassId, Ogre::MaterialPtr& clonedMaterial) {
-        if(compositorPassId == 200) {
+        if(compositorPassId == 100) {
+            ssaoSelectShaderParameters = clonedMaterial->getBestTechnique()->getPass(0)->getFragmentProgramParameters();
+        } else if(compositorPassId == 200) {
             blurHorizontalShaderParameters = clonedMaterial->getBestTechnique()->getPass(0)->getFragmentProgramParameters();
         } else if(compositorPassId == 300) {
             blurVerticalShaderParameters = clonedMaterial->getBestTechnique()->getPass(0)->getFragmentProgramParameters();
@@ -56,7 +61,13 @@ namespace Rally { namespace View {
 
     void SSAOView::notifyMaterialRender(Ogre::uint32 compositorPassId, Ogre::MaterialPtr& clonedMaterial) {
         if(compositorPassId == 100) {
-            recalculateBlur();
+            float effectFactor = car->getEffectFactor();
+
+            ssaoSelectShaderParameters->setNamedConstant("sceneProjectionMatrix",
+                viewport->getCamera()->getProjectionMatrix());
+            ssaoSelectShaderParameters->setNamedConstant("effectFactor", effectFactor);
+
+            recalculateBlur(effectFactor);
         } else if(compositorPassId == 200) {
             blurHorizontalShaderParameters->setNamedConstant("baseWeight", blurBaseWeight);
             blurHorizontalShaderParameters->setNamedConstant("weights", blurWeights);
@@ -68,13 +79,12 @@ namespace Rally { namespace View {
         }
     }
 
-    void SSAOView::recalculateBlur() {
+    void SSAOView::recalculateBlur(float effectFactor) {
         // Thui is more or less a copy with some tweaks of the blur used for bloom.
 
         float pixelWidth = 1.0f / viewport->getActualWidth();
         float pixelHeight = 1.0f / viewport->getActualHeight();
 
-        float effectFactor = car->getEffectFactor();
         effectFactor *= effectFactor;
 
         float sigma = 1.0f;// + 9.0f*effectFactor;

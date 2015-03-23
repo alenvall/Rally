@@ -85,7 +85,7 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     sceneManager->getEntity("fysikgrans")->setCastShadows(false);
     sceneManager->getEntity("maskin")->setCastShadows(false);
     sceneManager->getEntity("plank")->setCastShadows(false);
-    sceneManager->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE);
+    //  sceneManager->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE);
     sceneManager->setAmbientLight(Ogre::ColourValue(1, 1, 1));
     sceneManager->setShadowFarDistance(250);
     sceneManager->setShadowColour(Ogre::ColourValue(0.80f, 0.80f, 0.80f));

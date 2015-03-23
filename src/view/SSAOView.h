@@ -28,9 +28,10 @@ class SSAOView : public Ogre::CompositorInstance::Listener {
         void detach();
 
     private:
-        void recalculateBlur();
+        void recalculateBlur(float effectFactor);
 
         Ogre::CompositorInstance* compositorInstance;
+        Ogre::GpuProgramParametersSharedPtr ssaoSelectShaderParameters;
         Ogre::GpuProgramParametersSharedPtr blurHorizontalShaderParameters;
         Ogre::GpuProgramParametersSharedPtr blurVerticalShaderParameters;
 

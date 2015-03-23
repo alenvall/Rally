@@ -18,10 +18,10 @@ void main() {
     // Everything is clipped and in viewspace so this works, with the
     // small exception that the distance is from the middle point of the near
     // clipping plane relative to the viewing frustum, not a straight ray.
-    float distance = length(viewSpacePosition) - nearClipDistance;
-    float normalizedDistance = distance / (farClipDistance - nearClipDistance);
+    //float distance = length(viewSpacePosition) - nearClipDistance;
+    //float normalizedDistance = distance / (farClipDistance - nearClipDistance);
     
-    gl_FragData[0] = vec4(viewSpacePosition, normalizedDistance);
-    gl_FragData[1] = vec4(normalizedNormal, 0);
+    gl_FragData[0] = vec4(viewSpacePosition, 0.0);//normalizedDistance);
+    gl_FragData[1] = vec4(normalizedNormal, 0.0);
 }
 

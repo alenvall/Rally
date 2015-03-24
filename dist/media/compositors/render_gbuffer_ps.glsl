@@ -5,8 +5,10 @@
 
 // Based on Ogre's SSAO demo (uses a G buffer)
 
-uniform float nearClipDistance;
-uniform float farClipDistance;
+//uniform float nearClipDistance;
+//uniform float farClipDistance;
+
+uniform vec3 emissive;
 
 varying vec3 viewSpacePosition;
 varying vec3 viewSpaceNormal;
@@ -21,7 +23,8 @@ void main() {
     //float distance = length(viewSpacePosition) - nearClipDistance;
     //float normalizedDistance = distance / (farClipDistance - nearClipDistance);
     
-    gl_FragData[0] = vec4(viewSpacePosition, 0.0);//normalizedDistance);
+    float emissiveStrength = emissive.r + emissive.g + emissive.b;
+    gl_FragData[0] = vec4(viewSpacePosition, emissiveStrength);//normalizedDistance);
     gl_FragData[1] = vec4(normalizedNormal, 0.0);
 }
 

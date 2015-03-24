@@ -72,6 +72,8 @@ namespace Rally { namespace View {
         Ogre::Pass* templatePass = renderGBufferMaterialPtr->getTechnique(0)->getPass(0);
         *pass = *templatePass;
 
+        pass->setEmissive(originalMaterial->getTechnique(0)->getPass(0)->getEmissive());
+
         return technique;
     }
 

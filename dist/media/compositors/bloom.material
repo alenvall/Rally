@@ -19,6 +19,7 @@ fragment_program bloom_select_ps glsl {
     source bloom_select_ps.glsl
     default_params {
         param_named original int 0
+        param_named gbuffer_lighting int 1
     }
 }
 
@@ -86,6 +87,11 @@ material compositors/BloomSelect {
             fragment_program_ref bloom_select_ps {
             }
             vertex_program_ref bloom_common_vs {
+            }
+            texture_unit {
+                tex_coord_set 0
+                tex_address_mode clamp
+                filtering none  
             }
             texture_unit {
                 tex_coord_set 0

@@ -4,6 +4,8 @@ compositor compositors/BloomCompositor {
         texture ping target_width target_height PF_R8G8B8
         texture pong target_width target_height PF_R8G8B8
         
+        texture_ref gbuffer compositors/GBufferCompositor gbuffer
+        
         // Fill in the original
         target original {
             input previous
@@ -16,6 +18,7 @@ compositor compositors/BloomCompositor {
                 identifier 100
                 material compositors/BloomSelect
                 input 0 original
+                input 1 gbuffer 0
             }
         }
         

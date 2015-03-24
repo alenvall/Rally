@@ -7,6 +7,8 @@
 // Projection matrix as in how the scene was rendered, not what the compositor uses.
 uniform mat4 sceneProjectionMatrix;
 
+uniform vec4 viewportSize;
+
 uniform sampler2D gbuffer_position;
 uniform sampler2D gbuffer_normal;
 
@@ -14,58 +16,95 @@ uniform float effectFactor;
 
 void main() {
     // A script to generate the random hemisphere vectors
-    // Array.apply(null, Array(16)).map(function(){ var a = 2*Math.random()-1; var b = 2*Math.random()-1; var c = Math.random(); var len = Math.sqrt(a*a + b*b + c*c); return [a/len, b/len, c/len]; }).map(function(vec){ var rand = Math.random(); rand *= rand; /* scatter points nearer the base */ return [rand*vec[0], rand*vec[1], rand*vec[2]]; }).map(function(vec){ return "vec3(" + vec[0] + ", " + vec[1] + ", " + vec[2] + ")"; }).join(",\n")
-    // It takes a randomized vector [-1, 1]x[-1, 1]x[0, 1], normalizes it and then scales it by a value [0, 1].
-    // The scale factor is choosen randomly from a distribution with PDF(x) = x*x.
-    // This leads to, statistically, more points near the base of the hemisphere (quadratically).
+    // (function(nearDist, farDist){ return Array.apply(null, Array(16)).map(function(){ var a = 2*Math.random()-1; var b = 2*Math.random()-1; var c = Math.random(); var len = Math.sqrt(a*a + b*b + c*c); return [a/len, b/len, c/len]; }).map(function(vec){ var rand = Math.random(); rand *= rand; rand = nearDist + (farDist-nearDist)*rand; return [rand*vec[0], rand*vec[1], rand*vec[2]]; }).map(function(vec){ return "vec3(" + vec[0] + ", " + vec[1] + ", " + vec[2] + ")"; }).join(",\n        "); })(0.1, 0.5);
+    // It takes a randomized vector [-1, 1]x[-1, 1]x[0, 1], normalizes it and then scales it by a value [1, 4].
     // As can be seen, the z-values are never negative, this gives our hemisphere.
-    // All that is needed is rotating the hemisphere with the normal.
+    // The scale factor is choosen randomly from a distribution with PDF(x) = nearDist + (farDist-nearDist)*x*x.
+    // This leads to, statistically, more points near the base of the hemisphere (quadratically).
+    // The length is bounded by [1, 4] and the idea is that it should be scaled further so that
+    // no texel will test itself for occlusion. A cheap way is to just change radius below and
+    // hope for the best, even if the results wouldn't be 100 % accurate.
     vec3 hemisphere[16] = vec3[](
-        vec3(0.0020756480994042702, -0.017572747806015608, 0.05995900403090007),
-        vec3(0.21463696030158566, -0.3067030745792103, 0.8721968211060579),
-        vec3(0.014071842137666575, -0.013840455314652373, 0.03494547217856626),
-        vec3(0.014252748707934144, -0.005255269773646369, 0.006892984633250459),
-        vec3(-0.0004377977026165935, 0.0006632623636295884, 0.0006937579736438057),
-        vec3(0.08199710488714318, -0.020202363977663958, 0.10241137694052568),
-        vec3(-0.23016410389435638, 0.8255269031439877, 0.2511641670259204),
-        vec3(-0.05864085214779092, -0.02155261119608473, 0.297979711405229),
-        vec3(-0.03300579964400299, -0.024575805980712958, 0.02089384282231312),
-        vec3(0.29587371774236826, 0.041955615534282203, 0.12080975606603449),
-        vec3(0.21500669719719034, -0.35010532550215095, 0.28574103836787157),
-        vec3(-0.18798686309681095, -0.1476248970971063, 0.07626244346614072),
-        vec3(0.02158442615806525, -0.042233830338288175, 0.03328912327506663),
-        vec3(0.11231829746147552, -0.07222822529709923, 0.0714465029581088),
-        vec3(0.07776175312312252, -0.015005833608012735, 0.47533973346899466),
-        vec3(-0.0012428876030767958, 0.0020953290764394185, 0.0002652865254757231)
+        vec3(-0.17947426117077606, -0.2552789504219729, 0.32771201703308744),
+        vec3(-0.0929430250903943, -0.15022899751515606, 0.15734721849596883),
+        vec3(-0.023182541661165706, 0.08987930735474939, 0.06378498765102361),
+        vec3(-0.2504982585129548, -0.21735898345747406, 0.19624367519245178),
+        vec3(-0.020959529911299728, -0.340341322226052, 0.04663782253381715),
+        vec3(0.06614578641177501, -0.06934635075715916, 0.03723163252854354),
+        vec3(0.11051493486728853, -0.3075720427417002, 0.20906022960369047),
+        vec3(0.19509182324257024, 0.10203328121782702, 0.07510483504565645),
+        vec3(0.12781646826356982, -0.3167203611463459, 0.33289697509920874),
+        vec3(-0.12221070092220723, -0.03258109258316044, 0.24833611736630345),
+        vec3(0.08159243530451434, 0.10596728486347019, 0.10018306171759324),
+        vec3(0.059999509667150175, -0.08176483505414722, 0.07445634853488346),
+        vec3(0.06621578268766325, -0.17033266961717766, 0.21850057312155527),
+        vec3(-0.04004902358906149, -0.07537300385054206, 0.07790280988401853),
+        vec3(-0.3014783919444156, -0.21485240026169983, 0.08698036845677733),
+        vec3(0.11120756426123887, -0.13074617072995254, 0.03665566895440695)
     );
+    float farDist = 0.5;
 
     vec3 position = texture2D(gbuffer_position, gl_TexCoord[0].xy).xyz;
     vec3 normal = texture2D(gbuffer_normal, gl_TexCoord[0].xy).xyz; // Already normalized
     
-    float radius = 0.6 + 0.2*effectFactor; // Needs to be inside what we can blur obviously...
+    // Get some high-frequency noise used below, use the current pixel index and
+    // do a modulo 4 on it, so that we get 0, 1, 2, 3, 0, 1, 2, 3.
+    vec2 highFrequencyNoise = viewportSize.xy * gl_TexCoord[0].xy;
+    highFrequencyNoise = highFrequencyNoise - 4.0*floor(
+        0.0001 + // Get rid of rounding errors, as we might not exactly get 0, 1, 2, ...
+        highFrequencyNoise/4.0
+    );
+    // We check if it's >= 4 and clamp to 3 (4 might appear as a roundig issue).
+    // When we check, we might aswell remap the values...
+    // 0 -> 0, 1 -> 1, 2 -> 2, 3 -> 1.5/2.5 to remove some liearity in the noise.
+    if(highFrequencyNoise.x >= 3.0) highFrequencyNoise.x = 1.5;
+    if(highFrequencyNoise.y >= 3.0) highFrequencyNoise.y = 2.5;
     
+    // Finally, add 0.1 (we don't want a 0-vector below), and normalize.
+    highFrequencyNoise = normalize(0.1 + highFrequencyNoise);
+    
+    // Get any vector colinear with the surface normal and cross it to get an X-axis.
+    // Then cross that with the normal again to get an Y axis. We might choose about
+    // any vector, as long as it isn't colinear with the normal. Let's introduce some
+    // randomness here, by rotating the coordinate system we form around the normal.
+    // This high-frequence noise can be low-pass filtered away in a blurring stage.
+    // Going this noise+blur decreases banding effects on the surfaces.
+    vec3 randomness;
+    
+    // Choose the vector component that is biggest and make 0. Since the normal is
+    // normalized, we have a great chance at finding something non-colinear.
+    // randomness may be regarded as normalized, as highFrequencyNoise is that
+    // and one of randomness' components is 0.
+    if(normal.x > normal.y && normal.x > normal.z) {
+        randomness = vec3(0.0, highFrequencyNoise.x, highFrequencyNoise.y);
+    } else if (normal.y > normal.x && normal.y > normal.z) {
+        randomness = vec3(highFrequencyNoise.x, 0.0, highFrequencyNoise.y);
+    } else {
+        // Not catching solutions around x = y = z is acceptable (fuzzy =).
+        randomness = vec3(highFrequencyNoise.x, highFrequencyNoise.y, 0.0);
+    }
+    
+    vec3 thoughtX = cross(normal, randomness);
+    vec3 thoughtY = cross(normal, thoughtX);
+    
+    // Building a rotation matrix column by column, seeing where each basis vector ends up.
+    // We want the Z-axis to originate where the normal points, as all the pre-computed
+    // vectors face that way in some sense (z > 0 always). This makes the hemisphere
+    // face the right way as if its 'up' vector/bottom plane normal was oriented that way.
+    // Also, add the position, that will effectively translate the randomVector into the
+    // correct spot in the scene (world space).
+    mat4 sampleModelView = mat4(
+        vec4(thoughtX, 0.0),
+        vec4(thoughtY, 0.0),
+        vec4(normal, 0.0),
+        vec4(position.x, position.y, position.z, 1.0));
+        
     float occlusion = 0.0;
     for(int i = 0; i < 16; ++i) {
-        vec3 randomVector = radius * hemisphere[i];
+        vec3 hemisphereLocalSamplePosition = hemisphere[i];
         
-        // Project the randomized vector onto a thought x-axis in the plane 'normal' is orthogonal to
-        vec3 thoughtX = normalize(randomVector - normal * dot(normal, randomVector));
-        vec3 thoughtY = cross(normal, thoughtX);
-        
-        // Building a rotation matrix column by column, seeing where each basis vector ends up.
-        // We want the Z-axis to originate where the normal points, as all the pre-computed
-        // vectors face that way in some sense (z > 0 always). This makes the hemisphere
-        // face the right way as if its 'up' vector/bottom plane normal was oriented that way.
-        // Also, add the position, that will effectively translate the randomVector into the
-        // correct spot in the scene (world space).
-        mat4 sampleModelView = mat4(
-            vec4(thoughtX, 0.0),
-            vec4(thoughtY, 0.0),
-            vec4(normal, 0.0),
-            vec4(position.x, position.y, position.z, 1.0));
-
         // Now, just project the position onto screen space so that we can sample!
-        vec4 sampleProbedPosition = sampleModelView * vec4(randomVector, 1.0);
+        vec4 sampleProbedPosition = sampleModelView * vec4(hemisphereLocalSamplePosition, 1.0);
         vec4 sampleCoord = sceneProjectionMatrix * sampleProbedPosition;
         
         // Perspective divide and transtation [-1, 1] -> [0, 1] (NDC -> texcoord)
@@ -75,10 +114,20 @@ void main() {
         
         // Only count if this sampled pixel was in fact in front of the (guessed) probed pixel
         // (meaning it was occluding the current pixel in the rendered scene).
-        // Also, filter away stuff that is too far away (outside our hemisphere),
-        // for example edges of houses etc. (The only differ in their z-coord).
-        if(sampleRealPosition.z > sampleProbedPosition.z && abs(sampleProbedPosition.z - sampleRealPosition.z) <= radius) {
-            occlusion += 1.0;
+        if(sampleRealPosition.z >= sampleProbedPosition.z) {
+            float occlusionAdd = 1.0;
+            
+            // Filter off stuff that is too far away (outside our hemisphere),
+            // for example edges of houses etc. (The only differ in their z-coord).
+            float distance = abs(sampleProbedPosition.z - sampleRealPosition.z);
+            if(distance > farDist) {
+                // Provide some falloff, so that the shadow doesn't suddenly disappear.
+                occlusionAdd = clamp(/* works better without for some reason: farDist* */ farDist/(distance*distance), 0.0, 1.0);
+            }
+            
+            // The sky box is off the GBuffer, but otherwise we could filter away
+            // the SSAO from it here as it seems to interfere with it.
+            occlusion += occlusionAdd;
         }
     }
     

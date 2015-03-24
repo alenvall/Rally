@@ -123,6 +123,11 @@ namespace Rally { namespace View {
                 Ogre::TextureUnitState* textureUnitState = newMaterial->getTechnique(0)->getPass(0)->createTextureUnitState();
                 textureUnitState->setCubicTexture(&reflectionTexture, true);
                 textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
+                textureUnitState->setColourOperationEx(
+                    Ogre::LBX_BLEND_MANUAL,
+                    Ogre::LBS_TEXTURE, Ogre::LBS_CURRENT,
+                    Ogre::ColourValue::White, Ogre::ColourValue::White,
+                    0.25f);
                 textureUnitState->setEnvironmentMap(true, Ogre::TextureUnitState::ENV_REFLECTION);
 
                 oldMaterialPtrs[subEntityId] = oldMaterial;

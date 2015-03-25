@@ -304,7 +304,6 @@ void SceneView::updateCheckPoints() {
 }
 
 void SceneView::remoteCarUpdated(int carId, const Rally::Model::RemoteCar& remoteCar, bool carTypeChanged) {
->>>>>>> master
     std::map<int, Rally::View::RemoteCarView>::iterator found = remoteCarViews.find(carId);
 
     // Lazily construct if not found

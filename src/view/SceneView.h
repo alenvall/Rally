@@ -8,6 +8,7 @@
 #include "view/GBufferView.h"
 #include "view/SSAOView.h"
 #include "view/BloomView.h"
+#include "view/MotionBlurView.h"
 #include "view/LensFlareView.h"
 #include "model/World.h"
 
@@ -94,6 +95,7 @@ class SceneView {
         Rally::View::GBufferView gbufferView;
         Rally::View::SSAOView ssaoView;
         Rally::View::BloomView bloomView;
+        Rally::View::MotionBlurView motionBlurView;
 		Rally::View::LensFlareView* lensflare;
 };
 

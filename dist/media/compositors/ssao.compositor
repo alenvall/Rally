@@ -1,6 +1,6 @@
 compositor compositors/SSAOCompositor {
     technique {
-        texture ping target_width target_height PF_R8G8B8
+        texture ping target_width target_height PF_R8G8B8 chain_scope
         texture pong target_width target_height PF_R8G8B8
         
         texture_ref gbuffer compositors/GBufferCompositor gbuffer

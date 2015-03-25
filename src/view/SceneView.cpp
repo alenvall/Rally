@@ -353,7 +353,11 @@ void SceneView::togglePostProcessing() {
 
         bloomView.attachTo(viewport, &world.getPlayerCar());
         bloomView.setEnabled(true);
+
+        motionBlurView.attachTo(viewport, &world.getPlayerCar());
+        motionBlurView.setEnabled(true);
     } else {
+        motionBlurView.detach();
         bloomView.detach();
         ssaoView.detach();
         gbufferView.detach();

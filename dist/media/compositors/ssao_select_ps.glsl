@@ -100,6 +100,7 @@ void main() {
         vec4(position.x, position.y, position.z, 1.0));
         
     float occlusion = 0.0;
+    float edgeDetection = 0.0;
     for(int i = 0; i < 16; ++i) {
         vec3 hemisphereLocalSamplePosition = hemisphere[i];
         
@@ -112,6 +113,8 @@ void main() {
         sampleCoord.y = 1.0 - sampleCoord.y;
         vec3 sampleRealPosition = texture2D(gbuffer_position, sampleCoord.xy).xyz;
         
+        float distance = abs(sampleProbedPosition.z - sampleRealPosition.z);
+        
         // Only count if this sampled pixel was in fact in front of the (guessed) probed pixel
         // (meaning it was occluding the current pixel in the rendered scene).
         if(sampleRealPosition.z >= sampleProbedPosition.z) {
@@ -119,18 +122,23 @@ void main() {
             
             // Filter off stuff that is too far away (outside our hemisphere),
             // for example edges of houses etc. (The only differ in their z-coord).
-            float distance = abs(sampleProbedPosition.z - sampleRealPosition.z);
             if(distance > farDist) {
                 // Provide some falloff, so that the shadow doesn't suddenly disappear.
                 occlusionAdd = clamp(/* works better without for some reason: farDist* */ farDist/(distance*distance), 0.0, 1.0);
+                edgeDetection += 1.0 - occlusionAdd;
             }
             
             // The sky box is off the GBuffer, but otherwise we could filter away
             // the SSAO from it here as it seems to interfere with it.
             occlusion += occlusionAdd;
+        } else if(distance > farDist) {
+            edgeDetection += 1.0;
         }
     }
     
     float occlusionColor = 1.0 - (occlusion / 16.0);
-    gl_FragColor = vec4(occlusionColor, occlusionColor, occlusionColor, 1.0);
+    
+    // This is shared with the motion blur compositor
+    float edgeDetectionForMotionBlur = effectFactor * (0.5 + 0.5 * edgeDetection / 16.0); // Used in the motionblur_blend shader
+    gl_FragColor = vec4(occlusionColor, edgeDetection, edgeDetectionForMotionBlur, 1.0);
 }

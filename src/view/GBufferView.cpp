@@ -31,7 +31,6 @@ namespace Rally { namespace View {
         }
 
         // compositorInstance->addListener(this);
-        setEnabled(true);
     }
 
     void GBufferView::setEnabled(bool enabled) {

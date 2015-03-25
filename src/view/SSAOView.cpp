@@ -35,7 +35,6 @@ namespace Rally { namespace View {
         }
 
         compositorInstance->addListener(this);
-        setEnabled(true);
     }
 
     void SSAOView::setEnabled(bool enabled) {

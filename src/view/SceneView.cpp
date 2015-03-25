@@ -19,8 +19,10 @@
 SceneView::SceneView(Rally::Model::World& world) :
         world(world),
         camera(NULL),
+        viewport(NULL),
         sceneManager(NULL),
-        renderWindow(NULL) {
+        renderWindow(NULL),
+        postProcessingEnabled(false) {
     debugDrawEnabled = false;
 }
 
@@ -65,12 +67,8 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     sceneManager->setSkyDome(true, "Rally/CloudySky", 5, 8);
 
     camera = this->addCamera("MainCamera");
-    Ogre::Viewport* viewport = this->addViewport(camera);
+    viewport = this->addViewport(camera);
     camera->setAspectRatio(Ogre::Real(viewport->getActualWidth()) / Ogre::Real(viewport->getActualHeight()));
-
-    gbufferView.attachTo(viewport);
-    ssaoView.attachTo(viewport, &world.getPlayerCar());
-    bloomView.attachTo(viewport, &world.getPlayerCar());
 
     Ogre::SceneNode* sceneNode = sceneManager->getRootSceneNode()->createChildSceneNode();
     sceneNode->setPosition(Ogre::Vector3(0, 0, 0));
@@ -226,8 +224,8 @@ void SceneView::updatePlayerCar(float deltaTime) {
 	float ydisplacement = 3.0f;
 
 	Rally::Vector3 displacement(
-		xzdisplacement * displacementBase.x, 
-		ydisplacement, 
+		xzdisplacement * displacementBase.x,
+		ydisplacement,
 		xzdisplacement * displacementBase.z);
 
     Rally::Vector3 endPosition = position + displacement;
@@ -339,9 +337,30 @@ void SceneView::toggleReflections() {
     playerCarView.setReflectionsOn(!playerCarView.isReflectionsOn());
 }
 
-void SceneView::toggleBloom() {
-    bloomEnabled = !bloomEnabled;
-    bloomView.setEnabled(bloomEnabled);
+void SceneView::togglePostProcessing() {
+    postProcessingEnabled = !postProcessingEnabled;
+
+    if(postProcessingEnabled) {
+        // TODO: Fix so that setEnabled works, can't be that hard...
+        /*gbufferView.setEnabled(true);
+        ssaoView.setEnabled(true);
+        bloomView.setEnabled(true);*/
+        gbufferView.attachTo(viewport);
+        gbufferView.setEnabled(true);
+
+        ssaoView.attachTo(viewport, &world.getPlayerCar());
+        ssaoView.setEnabled(true);
+
+        bloomView.attachTo(viewport, &world.getPlayerCar());
+        bloomView.setEnabled(true);
+    } else {
+        bloomView.detach();
+        ssaoView.detach();
+        gbufferView.detach();
+        /*bloomView.setEnabled(false);
+        ssaoView.setEnabled(false);
+        gbufferView.setEnabled(false);*/
+    }
 }
 
 void SceneView::updateParticles(){

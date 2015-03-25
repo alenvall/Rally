@@ -12,6 +12,7 @@
 #include "model/World.h"
 
 #include <OgreCamera.h>
+#include <OgreViewport.h>
 #include <OgreSceneManager.h>
 #include <OgreRenderWindow.h>
 #include "InputInit.h"
@@ -47,7 +48,7 @@ class SceneView {
         void remoteCarRemoved(int carId, const Rally::Model::RemoteCar& remoteCar);
         void toggleDebugDraw();
         void toggleReflections();
-        void toggleBloom();
+        void togglePostProcessing();
         void addLogicListener(Rally::View::SceneView_LogicListener& logicListener);
 
         void playerCarTypeUpdated() {
@@ -60,11 +61,11 @@ class SceneView {
         void loadResourceConfig(Ogre::String resourceConfigPath);
         void updatePlayerCar(float deltaTime);
         void updateRemoteCars();
-		
+
         void updateCheckPoints();
 
         bool debugDrawEnabled;
-        bool bloomEnabled;
+        bool postProcessingEnabled;
 
 		void updateParticles();
 
@@ -73,6 +74,7 @@ class SceneView {
         Rally::Model::World& world;
 
         Ogre::Camera* camera;
+        Ogre::Viewport* viewport;
         Ogre::SceneManager* sceneManager;
         Ogre::RenderWindow* renderWindow;
 		Ogre::ParticleSystemManager* particleManager;

@@ -1,7 +1,7 @@
 #include "model/Checkpoint.h"
 
 #include "Rally.h"
-#include "model\PhysicsWorld.h"
+#include "model/PhysicsWorld.h"
 
 #include <btBulletDynamicsCommon.h>
 

@@ -15,13 +15,13 @@ namespace Rally { namespace Model {
 		Checkpoint(Rally::Model::PhysicsWorld& physicsWorld);
 		virtual ~Checkpoint();
 
-		void Checkpoint::attachToWorld(btVector3& position, btVector3& shape);
+		void attachToWorld(btVector3& position, btVector3& shape);
 
 		void checkCollision();
 		virtual void processCollision(btCollisionObject* colObj);
 
 		virtual void stepped(float deltaTime);
-		
+
         Rally::Vector3 getPosition() const;
         Rally::Quaternion getOrientation() const;
 
@@ -34,7 +34,7 @@ namespace Rally { namespace Model {
 		}
 
 	private:
-		void Checkpoint::init(btVector3& position, btVector3& shape);
+		void init(btVector3& position, btVector3& shape);
 
 		Rally::Model::PhysicsWorld& physicsWorld;
 		btPairCachingGhostObject* ghostObject;

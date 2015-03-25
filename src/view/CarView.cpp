@@ -3,6 +3,8 @@
 #include <OgreRoot.h>
 #include <OgreEntity.h>
 #include <OgreSubEntity.h>
+#include <OgreParticleSystem.h>
+#include <OgreParticleEmitter.h>
 
 #include <sstream>
 #include <string>
@@ -81,10 +83,10 @@ namespace Rally { namespace View {
 		bodyParticleNode = sceneManager->getRootSceneNode()->createChildSceneNode();
 
 		rightBackSystem = sceneManager->createParticleSystem(carName + "_RightBackParticleSystem", "Car/Dirt");
-		leftBackSystem = sceneManager->createParticleSystem(carName + "_LeftBackParticleSystem", "Car/Dirt");		
+		leftBackSystem = sceneManager->createParticleSystem(carName + "_LeftBackParticleSystem", "Car/Dirt");
 		rightFrontSystem = sceneManager->createParticleSystem(carName + "_RightFrontParticleSystem", "Car/Dirt");
 		leftFrontSystem = sceneManager->createParticleSystem(carName + "_LeftFrontParticleSystem", "Car/Dirt");
-		
+
 		bodyParticleNode->attachObject(rightBackSystem);
 		bodyParticleNode->attachObject(leftBackSystem);
 		bodyParticleNode->attachObject(rightFrontSystem);

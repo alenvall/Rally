@@ -15,7 +15,7 @@ namespace Rally { namespace Model {
 		Checkpoint(Rally::Model::PhysicsWorld& physicsWorld);
 		virtual ~Checkpoint();
 
-		void attachToWorld(btVector3& position, btVector3& shape);
+		void attachToWorld(const btVector3& position, const btVector3& shape);
 
 		void checkCollision();
 		virtual void processCollision(btCollisionObject* colObj);
@@ -34,7 +34,7 @@ namespace Rally { namespace Model {
 		}
 
 	private:
-		void init(btVector3& position, btVector3& shape);
+		void init(const btVector3& position, const btVector3& shape);
 
 		Rally::Model::PhysicsWorld& physicsWorld;
 		btPairCachingGhostObject* ghostObject;

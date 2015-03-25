@@ -1,0 +1,56 @@
+compositor compositors/BloomCompositor {
+    technique {
+        texture original target_width target_height PF_R8G8B8
+        texture ping target_width target_height PF_R8G8B8
+        texture pong target_width target_height PF_R8G8B8
+        
+        texture_ref gbuffer compositors/GBufferCompositor gbuffer
+        
+        // Fill in the original
+        target original {
+            input previous
+        }
+        
+        // Filter out the cool stuff into ping
+        target ping {
+            input none
+            pass render_quad {
+                identifier 100
+                material compositors/BloomSelect
+                input 0 original
+                input 1 gbuffer 0
+            }
+        }
+        
+        // Gaussian blur x into pong
+        target pong {
+            input none
+            pass render_quad {
+                identifier 200
+                material compositors/BlurHorizontal
+                input 0 ping
+            }
+        }
+        
+        // Gaussian blur y into ping
+        target ping {
+            input none
+            pass render_quad {
+                identifier 300
+                material compositors/BlurVertical
+                input 0 pong
+            }
+        }
+        
+        // Combine filtered and blurred image with original
+        target_output {
+            input none
+            pass render_quad {
+                identifier 400
+                material compositors/BloomAssemble
+                input 0 original
+                input 1 ping
+            }
+        }
+    }
+}

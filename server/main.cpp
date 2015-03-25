@@ -81,7 +81,7 @@ class ClientData {
             playerId(NEXT_AVAILABLE_PLAYER_ID++) {
         }
 
-        bool processPositionPacket(short packetId) {
+        bool processPositionPacket(unsigned short packetId) {
             totalPackagesReceived++;
 
             unsigned short lastPacketIdShort = static_cast<unsigned short>(lastPositionPacketId);
@@ -97,15 +97,20 @@ class ClientData {
 
             // Keep everything except the last short, overwrite that.
             lastPositionPacketId = (lastPositionPacketId & (UINT_MAX xor USHRT_MAX)) + packetId;
-            lastPacketArrival = ::time(0);
+            ::time(&lastPacketArrival);
             return true;
         }
 
-        bool isClientTimedOut(time_t now) {
-            return (lastPacketArrival + CLIENT_TIMEOUT_DELAY < now);
+        bool isClientTimedOut(const time_t& now) {
+            if(lastPacketArrival == 0) {
+                // No packet before
+                return false;
+            }
+            // difftime(end, start) -> double seconds
+            return difftime(now, lastPacketArrival) > CLIENT_TIMEOUT_DELAY;
         }
 
-        bool getTotalPackagesReceived() {
+        int getTotalPackagesReceived() {
             return totalPackagesReceived;
         }
 
@@ -161,8 +166,6 @@ ClientIdentifier receivePacket(int socket, char* packet, int* packetSize) {
     }
 
     *packetSize = receivedBytes;
-
-    ClientIdentifier clientIdentifier();
 
     return ClientIdentifier(ntohl(address.sin_addr.s_addr), ntohs(address.sin_port));
 }
@@ -237,8 +240,8 @@ int main(int argc, char** argv) {
                 ClientIdentifier clientIdentifier = receivePacket(socket, packet, &packetSize);
 
                 // Process packet, possibly broadcast it
-                if(packetSize == 40 && packet[0] == 1) {
-                    ClientData clientData = clients[clientIdentifier]; // Will create if not found
+                if(packetSize == 48 && packet[0] == 1) {
+                    ClientData& clientData = clients[clientIdentifier]; // Will create if not found
 
                     unsigned short packetId = ntohs((packet[1]<<8) + packet[2]); // char -> short big endian -> short machine endian
                     if(clientData.processPositionPacket(packetId)) {
@@ -247,7 +250,7 @@ int main(int argc, char** argv) {
                         // We need to splice in the sender's playerId (it's server based)
                         unsigned short playerId = htons(clientData.getPlayerId());
                         packetSize += 2;
-                        memmove(packet + 6, packet + 4, 36);
+                        memmove(packet + 6, packet + 4, 44);
                         memcpy(packet + 4, &playerId, 2);
 
                         broadcastPacket(socket, packet, packetSize, clientIdentifier, clients);
@@ -256,8 +259,6 @@ int main(int argc, char** argv) {
                     if(clientData.getTotalPackagesReceived() == 1) {
                         std::cout << "Client " << clientIdentifier.toString() << " connected." << std::endl;
                     }
-
-                    clients[clientIdentifier] = clientData;
                 }
             } else if(receivedAnything < 0) {
                 throw std::runtime_error("Error waiting on/select()ing from socket.");
@@ -266,17 +267,22 @@ int main(int argc, char** argv) {
             }
 
             // Cleanup internal map from timed out clients.
-            time_t now = ::time(0);
+            time_t now;
+            ::time(&now);
             for(std::map<ClientIdentifier, ClientData>::iterator clientIterator = clients.begin();
                     clientIterator != clients.end();
-                    ++clientIterator) {
-                ClientData clientData = clientIterator->second;
+                    /*++clientIterator*/) {
+                ClientData& clientData = clientIterator->second;
 
                 if(clientData.isClientTimedOut(now)) {
                     std::cout << "Client " << clientIterator->first.toString() << " timed out, after a total of " <<
                     clientData.getTotalPackagesReceived() << " valid packages received." << std::endl;
-
-                    clients.erase(clientIterator);
+                    
+                    std::map<ClientIdentifier, ClientData>::iterator removeIterator = clientIterator;
+                    ++clientIterator;
+                    clients.erase(removeIterator);
+                } else {
+                    ++clientIterator;
                 }
             }
         }

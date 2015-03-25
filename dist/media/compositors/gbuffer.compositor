@@ -1,0 +1,26 @@
+compositor compositors/GBufferCompositor {
+    technique {
+        texture gbuffer target_width target_height PF_FLOAT32_RGBA PF_FLOAT32_RGBA chain_scope
+        texture original target_width target_height PF_R8G8B8 chain_scope
+        
+        // Fill in the original
+        target original {
+            input previous
+        }
+        
+        // Now render the scene objects into the GBuffer, with the GBufferMaterial
+        target gbuffer {
+            input none
+            material_scheme GBufferScheme
+            shadows off
+            
+            pass clear {
+                depth_value 1.0
+                buffers colour depth stencil
+            }
+            
+            pass render_scene {
+            }
+        }
+    }
+}

@@ -1,0 +1,145 @@
+// Loosely based on Ogre Demo's Bloom2
+
+vertex_program bloom_common_vs glsl {
+    source bloom_common_vs.glsl
+    default_params {
+        param_named_auto worldViewProj worldviewproj_matrix
+    }
+}
+
+fragment_program bloom_assemble_ps glsl {
+    source bloom_assemble_ps.glsl
+    default_params {
+        param_named original int 0
+        param_named bloomMap int 1
+    }
+}
+
+fragment_program bloom_select_ps glsl {
+    source bloom_select_ps.glsl
+    default_params {
+        param_named original int 0
+        param_named gbuffer_lighting int 1
+    }
+}
+
+vertex_program blur_common_vs glsl {
+    source blur_common_vs.glsl
+    default_params {
+        param_named_auto worldViewProj worldviewproj_matrix
+    }
+}
+
+fragment_program blur_horizontal_ps glsl {
+    source blur_horizontal_ps.glsl
+    default_params {
+        param_named weights float4 0.18 0.12 0.06 0.04
+        param_named offsets float4 0.001 0.002 0.003 0.004
+        param_named unblurred int 0
+        param_named baseWeight float 0.20
+    }
+}
+
+fragment_program blur_vertical_ps glsl {
+    source blur_vertical_ps.glsl
+    default_params {
+        param_named weights float4 0.18 0.12 0.06 0.04
+        param_named offsets float4 0.001 0.002 0.003 0.004
+        param_named unblurred int 0
+        param_named baseWeight float 0.20
+    }
+}
+
+material compositors/BloomAssemble {
+    technique {
+        pass {
+            cull_hardware none
+            cull_software none
+            depth_check off
+            polygon_mode_overrideable false
+            
+            fragment_program_ref bloom_assemble_ps {
+            }
+            vertex_program_ref bloom_common_vs {
+            }
+            texture_unit {
+                tex_coord_set 0
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit {
+                tex_coord_set 0
+                tex_address_mode clamp
+                filtering trilinear
+            }
+        }
+    }
+}
+
+material compositors/BloomSelect {
+    technique {
+        pass {
+            cull_hardware none
+            cull_software none
+            depth_check off
+            polygon_mode_overrideable false
+            
+            fragment_program_ref bloom_select_ps {
+            }
+            vertex_program_ref bloom_common_vs {
+            }
+            texture_unit {
+                tex_coord_set 0
+                tex_address_mode clamp
+                filtering none  
+            }
+            texture_unit {
+                tex_coord_set 0
+                tex_address_mode clamp
+                filtering none  
+            }
+        }
+    }
+}
+
+material compositors/BlurHorizontal {
+    technique {
+        pass {
+            cull_hardware none
+            cull_software none
+            depth_check off
+            polygon_mode_overrideable false
+            
+            fragment_program_ref blur_horizontal_ps {
+            }
+            vertex_program_ref blur_common_vs {
+            }
+            texture_unit {
+                tex_coord_set 0
+                tex_address_mode clamp
+                filtering trilinear
+            }
+        }
+    }
+}
+
+material compositors/BlurVertical {
+    technique {
+        pass {
+            cull_hardware none
+            cull_software none
+            depth_check off
+            polygon_mode_overrideable false
+            
+            fragment_program_ref blur_vertical_ps {
+            }
+            vertex_program_ref blur_common_vs {
+            }
+            texture_unit {
+                tex_coord_set 0
+                tex_address_mode clamp
+                filtering trilinear
+            }
+        }
+    }
+}

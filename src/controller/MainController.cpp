@@ -1,11 +1,13 @@
 #include "controller/MainController.h"
 #include "model/Car.h"
 #include "util/Timer.h"
+#include "view/InputInit.h"
+#include "view/SceneView.h"
 
 namespace Rally { namespace Controller {
     MainController::MainController() :
             sceneView(SceneView(world)),
-            remoteCarListener(MainController_RemoteCarListener()),
+            remoteCarListener(MainController_RemoteCarListener(world, sceneView)),
             netView(View::RallyNetView(remoteCarListener)) {
     }
 
@@ -17,11 +19,15 @@ namespace Rally { namespace Controller {
 
         sceneView.initialize(resourceConfigPath, pluginConfigPath);
 
-      //  netView.initialize(std::string("127.0.0.1"), 1337, &world.getPlayerCar());
+        netView.initialize(std::string("81.91.1.185"), 1337, &world.getPlayerCar());
+
+        inputInit.setup();
     }
 
     void MainController::start() {
         Rally::Util::Timer frameTimer;
+
+        sceneView.addLogicListener(*this);
 
         frameTimer.reset();
         while(true) {
@@ -39,28 +45,95 @@ namespace Rally { namespace Controller {
 
             // ADD ANYTHING THAT'S NOT FRAME-TIMING CODE BELOW THIS LINE!
 
-      //      netView.pullRemoteChanges();
-
-            world.update(deltaTime);
-
-       //     netView.pushLocalChanges();
+            // PLEASE CONSIDER ADDING YOUR CODE TO updateLogic()!
+            // Performance penalty dragns lurk here.
 
             // TODO: Investigate in which order we'll do things (buffer up graphics commands, do some CPU, flip render buffers)
-            if(!sceneView.renderFrame()) {
+            if(!sceneView.renderFrame(deltaTime)) {
                 return;
             }
         }
     }
 
+    void MainController::updateLogic(float deltaTime) {
+        netView.pullRemoteChanges();
+
+        updateInput();
+
+        world.update(deltaTime);
+
+        netView.pushLocalChanges();
+    }
+
+    void MainController::updateInput() {
+        Rally::Model::Car& car = world.getPlayerCar();
+
+        // Accelerate and break
+        car.setAccelerationRequested(inputInit.isKeyPressed("up"));
+        car.setBreakingRequested(inputInit.isKeyPressed("down") || inputInit.isKeyPressed("x"));
+
+        // Steering
+        bool left = inputInit.isKeyPressed("left");
+        bool right = inputInit.isKeyPressed("right");
+        if(left && !right) {
+            car.setSteeringRequested(1);
+        } else if(!left && right) {
+            car.setSteeringRequested(-1);
+        } else {
+            // neither left nor right, or left and right
+            car.setSteeringRequested(0);
+        }
+
+        if(inputInit.isKeyPressedDebounced("d")) {
+		    sceneView.toggleDebugDraw();
+        }
+
+        if(inputInit.isKeyPressedDebounced("f")) {
+            world.gravityGlitch();
+        }
+
+        if(inputInit.isKeyPressedDebounced("space")) {
+		    world.getPlayerCar().cycleCarType();
+		    sceneView.playerCarTypeUpdated();
+        }
+
+        if(inputInit.isKeyPressedDebounced("r")) {
+		    sceneView.toggleReflections();
+        }
+
+        if(inputInit.isKeyPressedDebounced("b")) {
+		    sceneView.togglePostProcessing();
+        }
+
+        if(inputInit.isKeyPressed("p")) {
+            std::cout << car.getPosition() << std::endl;
+        }
+    }
+
     void MainController_RemoteCarListener::carUpdated(unsigned short carId,
             Rally::Vector3 position,
-            Rally::Vector3 orientation,
-            Rally::Vector3 velocity) {
-        std::cout << "Updated or added car " << carId << "." << std::endl;
+            Rally::Quaternion orientation,
+            Rally::Vector3 velocity,
+            char carType,
+            Rally::Vector4 tractionVector) {
+        Rally::Model::RemoteCar& remoteCar = world.getRemoteCar(carId); // carId is upcast to int
+
+        remoteCar.setTargetTransform(position, velocity, orientation);
+
+        remoteCar.setTractionVector(tractionVector);
+
+        bool carTypeChanged = false;
+        if(remoteCar.getCarType() != carType) {
+            remoteCar.setCarType(carType);
+            carTypeChanged = true;
+        }
+
+        sceneView.remoteCarUpdated(carId, remoteCar, carTypeChanged);
     }
 
     void MainController_RemoteCarListener::carRemoved(unsigned short carId) {
-        std::cout << "Removed car " << carId << "." << std::endl;
-    }
+        sceneView.remoteCarRemoved(carId, world.getRemoteCar(carId)); // carId is upcast to int
 
+        world.removeRemoteCar(carId); // carId is upcast to int
+    }
 } }

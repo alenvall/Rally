@@ -139,6 +139,20 @@ if(WIN32 AND MSVC)
 	source_group(view src/view/*)
 	source_group(util src/util/*)
 	add_executable(Rally WIN32 ${GAME_SOURCES})
+	
+	foreach( src_file ${GAME_SOURCES} )
+		set_source_files_properties(
+			${src_file}
+			PROPERTIES
+			COMPILE_FLAGS "/Yustdafx.h /Zm239 /FIstdafx.h"
+		)
+	endforeach( src_file ${GAME_SOURCES} )
+	
+	set_source_files_properties(src/stdafx.cpp
+		PROPERTIES
+		COMPILE_FLAGS "/Ycstdafx.h /Zm239"
+	)
+    list(APPEND GAME_SOURCES stdafx.cpp)
 else()
 	aux_source_directory(src SRCS)
 	aux_source_directory(src/model SRCS)
@@ -194,14 +208,28 @@ if(WIN32)
 		${OIS_LIBRARIES}
 		${OGRE_Overlay_LIBRARIES}
 		${OGRE_Terrain_LIBRARIES}
-		${BULLET_LIBS}/BulletDynamics_vs2010_debug.lib
-		${BULLET_LIBS}/BulletCollision_vs2010_debug.lib
-		${BULLET_LIBS}/LinearMath_vs2010_debug.lib
-		${BULLET_LIBS}/../Extras/lib/BulletWorldImporter_vs2010_debug.lib
-		${BULLET_LIBS}/../Extras/lib/BulletFileLoader_vs2010_debug.lib
+		//${BULLET_LIBS}/BulletDynamics_vs2010_debug.lib
+		//${BULLET_LIBS}/BulletCollision_vs2010_debug.lib
+		//${BULLET_LIBS}/LinearMath_vs2010_debug.lib
+		//${BULLET_LIBS}/../Extras/lib/BulletWorldImporter_vs2010_debug.lib
+		//${BULLET_LIBS}/../Extras/lib/BulletFileLoader_vs2010_debug.lib
 		${MYGUI_LIBS}/MyGUIEngine_d.lib
 		${MYGUI_LIBS}/MyGUI.OgrePlatform_d.lib
 		)
+	)
+	
+	SET(LINK_LIBRARY1 optimized ${BULLET_LIBS}/BulletDynamics_vs2010.lib debug ${BULLET_LIBS}/BulletDynamics_vs2010_debug.lib)
+	SET(LINK_LIBRARY2 optimized ${BULLET_LIBS}/BulletCollision_vs2010.lib debug ${BULLET_LIBS}/BulletCollision_vs2010_debug.lib)
+	SET(LINK_LIBRARY3 optimized ${BULLET_LIBS}/LinearMath_vs2010.lib debug ${BULLET_LIBS}/LinearMath_vs2010_debug.lib)
+	SET(LINK_LIBRARY4 optimized ${BULLET_LIBS}/../Extras/lib/BulletWorldImporter_vs2010.lib debug ${BULLET_LIBS}/../Extras/lib/BulletWorldImporter_vs2010_debug.lib)
+	SET(LINK_LIBRARY5 optimized ${BULLET_LIBS}/../Extras/lib/BulletFileLoader_vs2010.lib debug ${BULLET_LIBS}/../Extras/lib/BulletFileLoader_vs2010_debug.lib)
+	
+	target_link_libraries(Rally ${LINK_LIBRARY1})
+	target_link_libraries(Rally ${LINK_LIBRARY2})
+	target_link_libraries(Rally ${LINK_LIBRARY3})
+	target_link_libraries(Rally ${LINK_LIBRARY4})
+	target_link_libraries(Rally ${LINK_LIBRARY5})
+	target_link_libraries(Rally ${LINK_LIBRARY6})
 else() 
 	target_link_libraries(Rally
 		${OGRE_LIBRARIES}

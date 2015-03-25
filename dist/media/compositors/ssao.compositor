@@ -1,0 +1,53 @@
+compositor compositors/SSAOCompositor {
+    technique {
+        texture ping target_width target_height PF_R8G8B8
+        texture pong target_width target_height PF_R8G8B8
+        
+        texture_ref gbuffer compositors/GBufferCompositor gbuffer
+        texture_ref original compositors/GBufferCompositor original
+        
+        // Filter out the cool stuff into ping
+        target ping {
+            input none
+            pass render_quad {
+                identifier 100
+                material compositors/SSAOSelect
+                // One for each of the render targets in the MRT
+                input 0 gbuffer 0
+                input 1 gbuffer 1
+            }
+        }
+        
+        // Gaussian blur x into pong
+        target pong {
+            input none
+            pass render_quad {
+                identifier 200
+                material compositors/BlurHorizontal
+                input 0 ping
+            }
+        }
+        
+        // Gaussian blur y into ping
+        target ping {
+            input none
+            pass render_quad {
+                identifier 300
+                material compositors/BlurVertical
+                input 0 pong
+            }
+        }
+        
+        // Combine filtered and blurred image with original
+        target_output {
+            input none
+            pass render_quad {
+                identifier 400
+                material compositors/SSAOAssemble
+                input 0 original
+                input 1 ping
+            }
+        }
+    }
+}
+

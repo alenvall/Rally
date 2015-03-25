@@ -39,6 +39,15 @@ namespace Rally { namespace View {
             memcpy(packet + 2*4, &vector.z, 4);
         }
 
+        // Some ugly code to fill in a vector3 to a packet. Should endian-convert from
+        // host to network byte order if necessary. (Usually it isn't necessary for float.)
+        void writeQuaternionToPacket(char* packet, const Rally::Quaternion& quaternion) {
+            memcpy(packet + 0*4, &quaternion.w, 4);
+            memcpy(packet + 1*4, &quaternion.x, 4);
+            memcpy(packet + 2*4, &quaternion.y, 4);
+            memcpy(packet + 3*4, &quaternion.z, 4);
+        }
+
         // Takes a packet with offset pre-added and returns a Vector3. This should
         // convert from network to host byte order if necessary (usually not for float).
         Rally::Vector3 packetToVector3(char* packet) {
@@ -49,12 +58,42 @@ namespace Rally { namespace View {
             return Rally::Vector3(*a, *b, *c);
         }
 
+        // Takes a packet with offset pre-added and returns a Vector3. This should
+        // convert from network to host byte order if necessary (usually not for float).
+        Rally::Quaternion packetToQuaternion(char* packet) {
+            float* w = reinterpret_cast<float*>(packet + 0*4);
+            float* x = reinterpret_cast<float*>(packet + 1*4);
+            float* y = reinterpret_cast<float*>(packet + 2*4);
+            float* z = reinterpret_cast<float*>(packet + 3*4);
+
+            return Rally::Quaternion(*w, *x, *y, *z);
+        }
+
         // Windows does it another way. Actually a better way too...
         int getErrno() {
 #ifdef PLATFORM_WINDOWS
             return ::WSAGetLastError();
 #else
             return errno;
+#endif
+        }
+
+        bool isNonblockErrno() {
+            int error = getErrno();
+#ifdef PLATFORM_WINDOWS
+            return error == WSAEWOULDBLOCK; // There's no WSAEAGAIN
+#else
+            return (error == EWOULDBLOCK || error == EAGAIN);
+#endif
+        }
+
+        bool isBadConnErrno() {
+            // Typically we get WSAECONNRESET on windows, ECONNREFUSED on *nix
+            int error = getErrno();
+#ifdef PLATFORM_WINDOWS
+            return (error == WSAECONNREFUSED || error == WSAECONNABORTED || error == WSAECONNRESET);
+#else
+            return (error == ECONNREFUSED || error == ECONNABORTED || error == ECONNRESET);
 #endif
         }
     }
@@ -133,7 +172,7 @@ namespace Rally { namespace View {
     }
 
     void RallyNetView::pushCar() {
-        char packet[40];
+        char packet[48];
 
         packet[0] = 1; // Type = 1
 
@@ -141,20 +180,25 @@ namespace Rally { namespace View {
         unsigned short packetId = htons(++lastSentPacketId);
         memcpy(packet + 1, &packetId, 2);
 
-        packet[3]  = 0; // Car type = 0
+        packet[3]  = playerCar->getCarType();
 
         writeVector3toPacket(packet + 4 + 0*3*4, playerCar->getPosition());
-        writeVector3toPacket(packet + 4 + 1*3*4, playerCar->getOrientation());
-        writeVector3toPacket(packet + 4 + 2*3*4, playerCar->getVelocity());
+        writeVector3toPacket(packet + 4 + 1*3*4, playerCar->getVelocity());
+        writeQuaternionToPacket(packet + 4 + 2*3*4, playerCar->getOrientation());
+
+        Rally::Vector4 tractionVector = playerCar->getTractionVector();
+        packet[44] = static_cast<unsigned char>(tractionVector.x*255.0f);
+        packet[45] = static_cast<unsigned char>(tractionVector.y*255.0f);
+        packet[46] = static_cast<unsigned char>(tractionVector.z*255.0f);
+        packet[47] = static_cast<unsigned char>(tractionVector.w*255.0f);
 
         int status = ::send(socket, packet, sizeof(packet), 0x00000000);
         if(status < 0) {
-            int error = getErrno();
-            if(error == EWOULDBLOCK || error == EAGAIN) {
+            if(isNonblockErrno()) {
                 // Since we have a non-blocking socket, we may use this. This means we
                 // didn't throttle the messages well enough for our own system, so just
                 // skip this update and try again with fresh data next time...
-            } else if(error == ECONNREFUSED) {
+            } else if(isBadConnErrno()) {
                 // We may actually get this if the server replies with an ICMP packet
                 // (i.e. server application not started, so the port is not in use).
             } else {
@@ -169,18 +213,16 @@ namespace Rally { namespace View {
         while(true) {
             int receivedBytes = ::recv(socket, packet, MAX_PACKET_SIZE, 0x00000000);
             if(receivedBytes < 0) {
-                int error = getErrno();
-                if(error == EWOULDBLOCK || error == EAGAIN) {
+                if(isNonblockErrno()) {
                     // No more messages, goto remote client cleanup below
                     break;
-                } else if(error == ECONNREFUSED) {
+                } else if(isBadConnErrno()) {
                     // We may actually get this if the server replies with an ICMP packet
                     // (i.e. server application not started, so the port is not in use).
                 } else {
-                    std::cout << error << std::endl;
                     throw std::runtime_error("Socket error when receiving packet.");
                 }
-            } if(receivedBytes == 42 && packet[0] == 1) { // complete packetType == 1
+            } if(receivedBytes == 50 && packet[0] == 1) { // complete packetType == 1
                 unsigned short sequenceId;
                 memcpy(&sequenceId, packet+1, 2);
                 sequenceId = ntohs(sequenceId);
@@ -211,12 +253,15 @@ namespace Rally { namespace View {
                 internalClient.lastPacketArrival = ::time(0);
 
                 char carType = packet[3];
+                Rally::Vector4 tractionVector = Rally::Vector4(packet[46], packet[47], packet[48], packet[49]) / 255.0f;
 
                 listener.carUpdated(
                     playerId,
                     packetToVector3(packet + 6 + 0*4*3),
+                    packetToQuaternion(packet + 6 + 2*4*3),
                     packetToVector3(packet + 6 + 1*4*3),
-                    packetToVector3(packet + 6 + 2*4*3));
+                    carType,
+                    tractionVector);
             }
         }
 
@@ -232,7 +277,9 @@ namespace Rally { namespace View {
             RallyNetView_InternalClient& internalClient = clientIterator->second;
 
             // Remove client if it hasn't responded the last CLIENT_TIMEOUT_DELAY seconds.
-            if(internalClient.lastPacketArrival + CLIENT_TIMEOUT_DELAY < now) {
+            // difftime(end, start) -> double seconds
+            if(internalClient.lastPacketArrival != 0 &&
+                    difftime(now, internalClient.lastPacketArrival) >= CLIENT_TIMEOUT_DELAY) {
                 listener.carRemoved(clientIterator->first);
                 clients.erase(clientIterator++); // Copy iterator, advance, then delete from copied iterator
             } else {

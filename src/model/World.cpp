@@ -7,7 +7,9 @@ namespace Rally { namespace Model {
 
     World::World() :
             physicsWorld(),
-            playerCar(physicsWorld) {
+            playerCar(physicsWorld),
+			finish(physicsWorld),
+			start(physicsWorld) {
     }
 
     World::~World() {
@@ -16,9 +18,25 @@ namespace Rally { namespace Model {
     void World::initialize(const std::string & bulletFile) {
         physicsWorld.initialize(bulletFile);
         playerCar.attachToWorld();
+        // "Rally/src/model/Checkpoint.h|18|note:   no known conversion for argument 1 from ‘btVector3’ to ‘btVector3&’|
+        // TODO: Fix compile error.
+		//finish.attachToWorld(btVector3(-1.3f, 0.f, -1.1f), btVector3(0.1f, 6.f, 3.2f));
+		//start.attachToWorld(btVector3(90.0f, 8.f, 110.0f), btVector3(3.f, 3.f, 3.f));
+        finishTimer.reset();
     }
 
     void World::update(float deltaTime) {
         physicsWorld.update(deltaTime);
+		printFinishedTime();
     }
+
+	void World::printFinishedTime(){
+		/*if(!start.hasCollided())
+			finishTimer.reset();
+
+		if(start.hasCollided() && finish.hasCollided() && finish.isEnabled()){
+			finish.setEnabled(false);
+			std::cout << "Finished after: " << finishTimer.getElapsedSeconds() << " seconds!" << std::endl;
+		}*/
+	}
 } }

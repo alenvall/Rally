@@ -94,7 +94,7 @@ namespace Rally { namespace View {
 	}
 
 	void SkidmarkView::createSkidmark(Rally::Vector3 position, Rally::Vector3 normal, Rally::Vector3 direction){
-		Ogre::Billboard* b = skidmarkBillboards->createBillboard(Rally::Vector3(position.x, position.y+0.05, position.z),
+		Ogre::Billboard* b = skidmarkBillboards->createBillboard(Rally::Vector3(position.x, position.y+0.05f, position.z),
 			Ogre::ColourValue::Black);
 
 		b->mDirection = normal;

@@ -1,0 +1,83 @@
+fragment_program ssao_assemble_ps glsl {
+    source ssao_assemble_ps.glsl
+    default_params {
+        param_named original int 0
+        param_named ssaoMap int 1
+    }
+}
+
+fragment_program ssao_select_ps glsl {
+    source ssao_select_ps.glsl
+    default_params {
+        param_named_auto viewportSize viewport_size
+
+        param_named gbuffer_position int 0
+        param_named gbuffer_normal int 1
+    }
+}
+
+vertex_program ssao_common_vs glsl {
+    source ssao_common_vs.glsl
+    default_params {
+        param_named_auto worldViewProj worldviewproj_matrix
+    }
+}
+
+material compositors/SSAOAssemble {
+    technique {
+        pass {
+            cull_hardware none
+            cull_software none
+            depth_check off
+            polygon_mode_overrideable false
+            
+            fragment_program_ref ssao_assemble_ps {
+            }
+            vertex_program_ref ssao_common_vs {
+            }
+            
+            texture_unit {
+                tex_coord_set 0
+                tex_address_mode clamp
+                filtering none
+            }
+            
+            texture_unit {
+                tex_coord_set 0
+                tex_address_mode clamp
+                filtering trilinear
+            }
+        }
+    }
+}
+
+material compositors/SSAOSelect {
+    technique {
+        pass {
+            cull_hardware none
+            cull_software none
+            depth_check off
+            polygon_mode_overrideable false
+            
+            fragment_program_ref ssao_select_ps {
+            }
+            vertex_program_ref ssao_common_vs {
+            }
+            
+            // MRT 0
+            texture_unit {
+                tex_coord_set 0
+                tex_address_mode clamp
+                filtering none  
+            }
+            
+            // MRT 1
+            texture_unit {
+                tex_coord_set 0
+                tex_address_mode clamp
+                filtering none  
+            }
+        }
+    }
+}
+

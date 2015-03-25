@@ -5,6 +5,8 @@
 #include "view/CheckpointView.h"
 #include "view/PlayerCarView.h"
 #include "view/PortalView.h"
+#include "view/GBufferView.h"
+#include "view/SSAOView.h"
 #include "view/BloomView.h"
 #include "view/LensFlareView.h"
 #include "model/World.h"
@@ -87,6 +89,8 @@ class SceneView {
 
         Rally::Util::BulletDebugDrawer* bulletDebugDrawer;
 
+        Rally::View::GBufferView gbufferView;
+        Rally::View::SSAOView ssaoView;
         Rally::View::BloomView bloomView;
 		Rally::View::LensFlareView* lensflare;
 };

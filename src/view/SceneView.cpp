@@ -31,6 +31,8 @@ SceneView::~SceneView() {
     playerCarView.detach();
 
     bloomView.detach();
+    ssaoView.detach();
+    gbufferView.detach();
 
 	lensflare->end();
 	delete lensflare;
@@ -66,6 +68,8 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     Ogre::Viewport* viewport = this->addViewport(camera);
     camera->setAspectRatio(Ogre::Real(viewport->getActualWidth()) / Ogre::Real(viewport->getActualHeight()));
 
+    gbufferView.attachTo(viewport);
+    ssaoView.attachTo(viewport, &world.getPlayerCar());
     bloomView.attachTo(viewport, &world.getPlayerCar());
 
     Ogre::SceneNode* sceneNode = sceneManager->getRootSceneNode()->createChildSceneNode();
@@ -205,6 +209,7 @@ void SceneView::updatePlayerCar(float deltaTime) {
     // Todo: Move to separate view
     Rally::Model::Car& playerCar = world.getPlayerCar();
     Rally::Vector3 position = playerCar.getPosition();
+    playerCarView.setEffectFactor(playerCar.getEffectFactor());
     playerCarView.updateBody(playerCar.getPosition(), playerCar.getOrientation());
     playerCarView.updateWheels(
         playerCar.getRightFrontWheelOrientation(),

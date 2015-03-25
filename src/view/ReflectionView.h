@@ -34,6 +34,7 @@ class ReflectionView : public Ogre::FrameListener, public Ogre::RenderTargetList
 
         void detach();
         void attachTo(Ogre::SceneManager* sceneManager, Ogre::Entity* entity, const std::string& reflectionName);
+        void setEffectFactor(float effectFactor);
         void moveCamera(const Rally::Vector3& position);
 
         void setReflectionReceivers(const std::set<std::string>& reflectionReceivers) {

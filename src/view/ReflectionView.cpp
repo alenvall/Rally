@@ -6,7 +6,7 @@
 #include <OgreHardwarePixelBuffer.h>
 
 #include <sstream>
-#include <set>
+#include <stdexcept>
 
 namespace Rally { namespace View {
 
@@ -123,11 +123,6 @@ namespace Rally { namespace View {
                 Ogre::TextureUnitState* textureUnitState = newMaterial->getTechnique(0)->getPass(0)->createTextureUnitState();
                 textureUnitState->setCubicTexture(&reflectionTexture, true);
                 textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
-                textureUnitState->setColourOperationEx(
-                    Ogre::LBX_BLEND_MANUAL,
-                    Ogre::LBS_TEXTURE, Ogre::LBS_CURRENT,
-                    Ogre::ColourValue::White, Ogre::ColourValue::White,
-                    0.25f);
                 textureUnitState->setEnvironmentMap(true, Ogre::TextureUnitState::ENV_REFLECTION);
 
                 oldMaterialPtrs[subEntityId] = oldMaterial;
@@ -138,6 +133,36 @@ namespace Rally { namespace View {
         }
 
         Ogre::Root::getSingleton().addFrameListener(this);
+    }
+
+    void ReflectionView::setEffectFactor(float effectFactor) {
+        // TODO: Find a faster and more robust way to do this.
+
+        unsigned int subEntityCount = entity->getNumSubEntities();
+        for(unsigned int subEntityId = 0; subEntityId < subEntityCount; subEntityId++) {
+            Ogre::Pass::TextureUnitStateIterator textureUnitStateIterator = entity->getSubEntity(subEntityId)
+                ->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitStateIterator();
+
+            bool foundOnce = false;
+            while(textureUnitStateIterator.hasMoreElements()) {
+                Ogre::TextureUnitState* textureUnitState = textureUnitStateIterator.getNext();
+
+                if(textureUnitState->isCubic()) {
+                    if(foundOnce) {
+                        // Oops, we encountered more than one cubic texture.
+                        // We must find a better way to do the whole thing.
+                        throw std::runtime_error("ReflectionView setEffectFactor hack failed miserably.");
+                    }
+                    foundOnce = true;
+
+                    textureUnitState->setColourOperationEx(
+                        Ogre::LBX_BLEND_MANUAL,
+                        Ogre::LBS_TEXTURE, Ogre::LBS_CURRENT,
+                        Ogre::ColourValue::White, Ogre::ColourValue::White,
+                        0.25f + 0.75f * effectFactor);
+                }
+            }
+        }
     }
 
     bool ReflectionView::frameStarted(const Ogre::FrameEvent& event) {

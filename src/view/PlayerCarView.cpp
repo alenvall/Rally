@@ -67,4 +67,10 @@ namespace Rally { namespace View {
         CarView::updateBody(position, orientation);
     }
 
+    void PlayerCarView::setEffectFactor(float effectFactor) {
+        if(reflectionsOn) {
+            reflectionView.setEffectFactor(effectFactor);
+        }
+    }
+
 } }

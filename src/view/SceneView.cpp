@@ -204,6 +204,7 @@ void SceneView::updatePlayerCar(float deltaTime) {
     // Todo: Move to separate view
     Rally::Model::Car& playerCar = world.getPlayerCar();
     Rally::Vector3 position = playerCar.getPosition();
+    playerCarView.setEffectFactor(playerCar.getEffectFactor());
     playerCarView.updateBody(playerCar.getPosition(), playerCar.getOrientation());
     playerCarView.updateWheels(
         playerCar.getRightFrontWheelOrientation(),

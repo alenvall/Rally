@@ -55,10 +55,13 @@ void main() {
         highFrequencyNoise/4.0
     );
     // We check if it's >= 4 and clamp to 3 (4 might appear as a roundig issue).
-    // When we check, we might aswell remap the values...
-    // 0 -> 0, 1 -> 1, 2 -> 2, 3 -> 1.5/2.5 to remove some liearity in the noise.
-    if(highFrequencyNoise.x >= 3.0) highFrequencyNoise.x = 1.5;
-    if(highFrequencyNoise.y >= 3.0) highFrequencyNoise.y = 2.5;
+    // Also, we must remap so that we get equally much randomness in one direction
+    // than the other, otherwise the shadows will appear different when viewed
+    // from opposite directions.
+    // 0 -> -1.5, 1 -> -0.5, 2 -> 0.5, 3 -> 1.5
+    highFrequencyNoise -= 1.5;
+    if(highFrequencyNoise.x >= 1.5) highFrequencyNoise.x = 1.5;
+    if(highFrequencyNoise.y >= 1.5) highFrequencyNoise.y = 1.5;
     
     // Finally, add 0.1 (we don't want a 0-vector below), and normalize.
     highFrequencyNoise = normalize(0.1 + highFrequencyNoise);
@@ -75,9 +78,10 @@ void main() {
     // normalized, we have a great chance at finding something non-colinear.
     // randomness may be regarded as normalized, as highFrequencyNoise is that
     // and one of randomness' components is 0.
-    if(normal.x > normal.y && normal.x > normal.z) {
+    vec3 normalAbs = abs(normal);
+    if(normalAbs.x > normalAbs.y && normalAbs.x > normalAbs.z) {
         randomness = vec3(0.0, highFrequencyNoise.x, highFrequencyNoise.y);
-    } else if (normal.y > normal.x && normal.y > normal.z) {
+    } else if (normalAbs.y > normalAbs.x && normalAbs.y > normalAbs.z) {
         randomness = vec3(highFrequencyNoise.x, 0.0, highFrequencyNoise.y);
     } else {
         // Not catching solutions around x = y = z is acceptable (fuzzy =).

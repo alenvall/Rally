@@ -8,6 +8,9 @@ material skidmark
 			scene_blend alpha_blend
 			depth_write off
 			
+			diffuse vertexcolour
+			ambient vertexcolour
+			
             texture_unit
             {
 				texture skidmark9.png

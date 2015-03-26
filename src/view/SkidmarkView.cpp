@@ -45,10 +45,21 @@ namespace Rally { namespace View {
 		std::list<Rally::Vector3>::iterator iteratorNormals;
 		std::list<Rally::Vector3>::iterator iteratorDirections;
 
+        float traction = 1.0f;
+
 		for(int i = 0; i < 4; i++){
 			positions = car->getSkidmarkPositions(i);
 			normals = car->getSkidmarkNormals(i);
 			directions = car->getSkidmarkDirections(i);
+            
+            if(i == 0)
+                traction = car->getPhysicsCar().getRightFrontWheelTraction();
+            if(i == 1)
+                traction = car->getPhysicsCar().getLeftFrontWheelTraction();
+            if(i == 2)
+                traction = car->getPhysicsCar().getRightBackWheelTraction();
+            if(i == 3)
+                traction = car->getPhysicsCar().getLeftBackWheelTraction();
 
 			if(positions.size() > 0){
 				iterator = positions.begin();
@@ -57,7 +68,7 @@ namespace Rally { namespace View {
 
 				if(positions.size() >= 2 && normals.size() >= 2 && directions.size() >= 2){
 					createSkidmark(*iterator, *iteratorNormals, 
-						*iteratorDirections);
+						*iteratorDirections, traction);
 					for(int n = 0, size = positions.size(); n < size; n++){
 						Rally::Vector3 temp = *iterator;
 						Rally::Vector3 tempDir = *iterator;
@@ -71,7 +82,7 @@ namespace Rally { namespace View {
 							}
 
 							createSkidmark((*iterator).midPoint(temp), *iteratorNormals, 
-								(*iteratorDirections));	
+								(*iteratorDirections), traction);	
 
 							for(int b = 0; b < m; b++){
 								--iterator;
@@ -93,9 +104,15 @@ namespace Rally { namespace View {
 		}
 	}
 
-	void SkidmarkView::createSkidmark(Rally::Vector3 position, Rally::Vector3 normal, Rally::Vector3 direction){
-		Ogre::Billboard* b = skidmarkBillboards->createBillboard(Rally::Vector3(position.x, position.y+0.05, position.z), 
+	void SkidmarkView::createSkidmark(Rally::Vector3 position, Rally::Vector3 normal, Rally::Vector3 direction, float traction){
+		Ogre::Billboard* b = skidmarkBillboards->createBillboard(Rally::Vector3(position.x, position.y+0.05f, position.z), 
 			Ogre::ColourValue::Black);
+
+        double lengthAdjust = 0.03;
+        float alphaAdjust = 4.0f;
+
+        b->setDimensions(Ogre::Real(0.2), Ogre::Real(Ogre::Math::Clamp(lengthAdjust*car->getPhysicsCar().getVelocity().length(), 0.15, 1.0)));
+        b->setColour(Ogre::ColourValue(0,0,0, traction*alphaAdjust));
 
 		b->mDirection = normal;
 

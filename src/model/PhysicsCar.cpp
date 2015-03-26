@@ -374,7 +374,7 @@ namespace Rally { namespace Model {
 		if(getVelocity().length() > 5)
 		for(int i = 0; i < 4; i++){
 			if(raycastVehicle->getWheelInfo(i).m_raycastInfo.m_isInContact &&
-				raycastVehicle->getWheelInfo(i).m_skidInfo < 0.3){
+				raycastVehicle->getWheelInfo(i).m_skidInfo < 0.1){
 
 					if(raycastVehicle->getWheelInfo(i).m_raycastInfo.m_contactNormalWS.getY() > 0.2){
 					skidmarkPositions[i].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(i).m_raycastInfo.m_contactPointWS));

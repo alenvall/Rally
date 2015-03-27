@@ -28,9 +28,6 @@ class CarView {
 		
 		void initParticleSystem(const std::string& carName);
 		void enableWheelParticles(bool enabled[], Rally::Vector3 position[]);
-		
-		void initSkidmarks();
-		void updateSkidmarks(Rally::Vector3 position, Rally::Vector3 normal, Rally::Vector3 direction, float speed);
 
         virtual void changeCar(char carType);
 

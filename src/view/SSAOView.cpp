@@ -86,7 +86,7 @@ namespace Rally { namespace View {
 
         effectFactor *= effectFactor;
 
-        float sigma = 1.0f + 0.2f*effectFactor;//9.0f*effectFactor;
+        float sigma = 2.5f - effectFactor;
 
         // This is an optimized version of the normal distribution.
         // It's not entirely accurate (up to the tail after the highest x.

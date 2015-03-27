@@ -1,0 +1,18 @@
+material dirtparticles
+{
+	technique
+	{
+		pass
+		{
+
+			scene_blend alpha_blend
+			depth_write off
+			
+            texture_unit
+            {
+				texture dirt.png
+				tex_address_mode clamp
+            }
+		}
+	}
+}

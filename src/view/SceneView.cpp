@@ -108,6 +108,9 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     sceneNode->attachObject(skyLight1);
 
 	playerCarView.attachTo(sceneManager, world.getPlayerCar());
+   	sceneManager->getEntity("PlayerCar_lambo")->setCastShadows(false);
+   	sceneManager->getEntity("PlayerCar_740sedan")->setCastShadows(false);
+   	sceneManager->getEntity("PlayerCar_740kombi")->setCastShadows(false);
 
 	//goalView.attachTo(sceneManager, "Finish", "car.mesh", world.getFinish());
 	goalView.attachTo(sceneManager, "Start", "car.mesh", world.getStart());

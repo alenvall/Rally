@@ -70,6 +70,11 @@ namespace Rally { namespace View {
         rightBackWheelEntity = sceneManager->createEntity(carName + "_RightBackWheel", "hjul.mesh");
         leftBackWheelEntity = sceneManager->createEntity(carName + "_LeftBackWheel", "hjul.mesh");
 
+        rightFrontWheelEntity->setCastShadows(false);
+        leftFrontWheelEntity->setCastShadows(false);
+        rightBackWheelEntity->setCastShadows(false);
+        leftBackWheelEntity->setCastShadows(false);
+
         rightFrontWheelNode->attachObject(rightFrontWheelEntity);
         leftFrontWheelNode->attachObject(leftFrontWheelEntity);
         rightBackWheelNode->attachObject(rightBackWheelEntity);

@@ -82,6 +82,16 @@ namespace Rally { namespace Model {
         return Rally::Quaternion(orientation.w(), orientation.x(), orientation.y(), orientation.z());
     }
 
+    Rally::Vector3 PhysicsRemoteCar::getVelocity() const {
+
+        if(bodyRigidBody == NULL) {
+            return Rally::Vector3(0, 0, 0);
+        }
+
+        const btVector3 velocity = bodyRigidBody->getLinearVelocity();
+        return Rally::Vector3(velocity.x(), velocity.y(), velocity.z());
+    }
+
     void PhysicsRemoteCar_BodyMotionState::setTargetTransform(const Rally::Vector3& targetPosition,
             const Rally::Vector3& incomingVelocity,
             const Rally::Quaternion& targetOrientation) {

@@ -98,6 +98,18 @@ namespace Rally { namespace Model {
 					skidmarkDirections[wheel].pop_back();
 			}
 
+            std::list<float> getSkidmarkTractions(int wheel){
+				return skidmarkTractions[wheel];
+			}
+
+			void clearSkidmarkTractions(int wheel){
+				if(skidmarkTractions[wheel].size() > 3){
+					skidmarkTractions[wheel].pop_back();
+					skidmarkTractions[wheel].pop_back();
+
+				}else
+					skidmarkTractions[wheel].pop_back();
+			}
         private:
             void initializeConstructionInfo();
             bool isAllWheelsOnGround();
@@ -129,6 +141,7 @@ namespace Rally { namespace Model {
 			std::list<Rally::Vector3> skidmarkPositions[4];
 			std::list<Rally::Vector3> skidmarkNormals[4];
 			std::list<Rally::Vector3> skidmarkDirections[4];
+			std::list<float> skidmarkTractions[4];
 
     };
 

@@ -30,7 +30,7 @@ namespace Rally { namespace View {
 		skidmarkBillboards->setCommonUpVector(up);
 		skidmarkBillboards->setCommonDirection(common);
 		skidmarkBillboards->setBillboardsInWorldSpace(true);
-		skidmarkBillboards->setDefaultDimensions(Ogre::Real(0.2), Ogre::Real(0.4));
+		skidmarkBillboards->setDefaultDimensions(Ogre::Real(0.15), Ogre::Real(0.4));
 		skidmarkBillboards->setAutoextend(true);
 
 		skidmarkNode->attachObject(skidmarkBillboards);
@@ -42,24 +42,33 @@ namespace Rally { namespace View {
         float speed = car.getVelocity().length();
 
         float heightOffset = -1.0f;
+        float xOffset = 0.60f;
+        float zOffsetFront = 1.50f;
+        float zOffsetBack = -1.25f;
 
         Rally::Vector3 direction = car.getVelocity().normalisedCopy();
+
+        Rally::Vector3 normal(0, 1, 0);
         
+        // Right front
         if(car.getTractionVector().x < tractionReq){
-            createSkidmark(car.getPosition() + Ogre::Vector3(0.7f, heightOffset, 1.50f), 
-                Rally::Vector3(0, 1, 0), direction, car.getTractionVector().x, speed);
+            createSkidmark(car.getPosition() + Ogre::Vector3(xOffset, heightOffset, zOffsetFront), 
+                normal, direction, car.getTractionVector().x, speed);
         }
+        // Left front
         if(car.getTractionVector().y < tractionReq){
-			createSkidmark(car.getPosition() + Ogre::Vector3(-0.7f, heightOffset, 1.50f), 
-                Rally::Vector3(0, 1, 0), direction, car.getTractionVector().y, speed);
+			createSkidmark(car.getPosition() + Ogre::Vector3(-xOffset, heightOffset, zOffsetFront), 
+                normal, direction, car.getTractionVector().y, speed);
         }
+        // Right back
         if(car.getTractionVector().z < tractionReq){
-			createSkidmark(car.getPosition() + Ogre::Vector3(0.7f, heightOffset, -1.25f), 
-                Rally::Vector3(0, 1, 0), direction, car.getTractionVector().z, speed);
+			createSkidmark(car.getPosition() + Ogre::Vector3(xOffset, heightOffset, zOffsetBack), 
+                normal, direction, car.getTractionVector().z, speed);
         }
+        // Left back
         if(car.getTractionVector().w < tractionReq){
-			createSkidmark(car.getPosition() + Ogre::Vector3(-0.7f, heightOffset, -1.25f), 
-                Rally::Vector3(0, 1, 0), direction, car.getTractionVector().w, speed);
+			createSkidmark(car.getPosition() + Ogre::Vector3(-xOffset, heightOffset, zOffsetBack), 
+                normal, direction, car.getTractionVector().w, speed);
         }
         
 	}
@@ -68,7 +77,7 @@ namespace Rally { namespace View {
 		Ogre::Billboard* b = skidmarkBillboards->createBillboard(Rally::Vector3(position.x, position.y+0.05f, position.z), 
 			Ogre::ColourValue::Black);
         
-        double lengthAdjust = 0.008;
+        double lengthAdjust = 0.012;
         float alphaAdjust = 4.0f;
 
         b->setDimensions(Ogre::Real(0.2), Ogre::Real(Ogre::Math::Clamp(lengthAdjust*speed, 0.15, 1.0)));

@@ -19,8 +19,10 @@
 SceneView::SceneView(Rally::Model::World& world) :
         world(world),
         camera(NULL),
+        viewport(NULL),
         sceneManager(NULL),
-        renderWindow(NULL) {
+        renderWindow(NULL),
+        postProcessingEnabled(false) {
     debugDrawEnabled = false;
 }
 
@@ -31,6 +33,8 @@ SceneView::~SceneView() {
     playerCarView.detach();
 
     bloomView.detach();
+    ssaoView.detach();
+    gbufferView.detach();
 
 	lensflare->end();
 	delete lensflare;
@@ -63,10 +67,8 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     sceneManager->setSkyDome(true, "Rally/CloudySky", 5, 8);
 
     camera = this->addCamera("MainCamera");
-    Ogre::Viewport* viewport = this->addViewport(camera);
+    viewport = this->addViewport(camera);
     camera->setAspectRatio(Ogre::Real(viewport->getActualWidth()) / Ogre::Real(viewport->getActualHeight()));
-
-    bloomView.attachTo(viewport, &world.getPlayerCar());
 
     Ogre::SceneNode* sceneNode = sceneManager->getRootSceneNode()->createChildSceneNode();
     sceneNode->setPosition(Ogre::Vector3(0, 0, 0));
@@ -205,6 +207,7 @@ void SceneView::updatePlayerCar(float deltaTime) {
     // Todo: Move to separate view
     Rally::Model::Car& playerCar = world.getPlayerCar();
     Rally::Vector3 position = playerCar.getPosition();
+    playerCarView.setEffectFactor(playerCar.getEffectFactor());
     playerCarView.updateBody(playerCar.getPosition(), playerCar.getOrientation());
     playerCarView.updateWheels(
         playerCar.getRightFrontWheelOrientation(),
@@ -217,18 +220,18 @@ void SceneView::updatePlayerCar(float deltaTime) {
 	Rally::Vector3 displacementBase = playerCar.getOrientation() * Ogre::Vector3::UNIT_Z;
 	displacementBase *= -1;
 
-	float xzdisplacement = 7.0f;
+	float xzdisplacement = 6.0f;
 	float ydisplacement = 3.0f;
 
 	Rally::Vector3 displacement(
-		xzdisplacement * displacementBase.x, 
-		ydisplacement, 
+		xzdisplacement * displacementBase.x,
+		ydisplacement,
 		xzdisplacement * displacementBase.z);
 
     Rally::Vector3 endPosition = position + displacement;
 
-	float velocityAdjust = playerCar.getVelocity().length()/6;
-	float lerpAdjust = Ogre::Math::Clamp(velocityAdjust*deltaTime, 0.01f, 0.8f);
+	float velocityAdjust = playerCar.getVelocity().length()/8;
+	float lerpAdjust = Ogre::Math::Clamp(velocityAdjust*deltaTime, 0.025f, 0.9f);
 
 	// Lerp towards the new camera position to get a smoother pan
 	float lerpX = Ogre::Math::lerp(currentCameraPosition.x, endPosition.x, lerpAdjust);
@@ -239,10 +242,10 @@ void SceneView::updatePlayerCar(float deltaTime) {
 	Rally::Vector3 cameraPosition = newPos;
 
 	/*
-	Shoot a ray from the car (with an offset to prevent collision with itself) to the camera.
-	If anyting is intersected the camera is adjusted to prevent that the camera is blocked.
+	Shoot a ray from the car to the camera.
+	If anything is intersected the camera is adjusted to prevent that the camera is blocked.
 	*/
-	btVector3 start(position.x, position.y + 1.1f, position.z);
+	btVector3 start(position.x, position.y + 0.5f, position.z);
 	btVector3 end(newPos.x, newPos.y, newPos.z);
 
 	btCollisionWorld::ClosestRayResultCallback ClosestRayResultCallBack(start, end);
@@ -250,37 +253,20 @@ void SceneView::updatePlayerCar(float deltaTime) {
 	// Perform raycast
 	world.getPhysicsWorld().getDynamicsWorld()->getCollisionWorld()->rayTest(start, end, ClosestRayResultCallBack);
 
+
 	if(ClosestRayResultCallBack.hasHit() &&
-		ClosestRayResultCallBack.m_collisionObject->getInternalType() != btCollisionObject::CO_GHOST_OBJECT) {
+		ClosestRayResultCallBack.m_collisionObject->getInternalType() != btCollisionObject::CO_GHOST_OBJECT
+        && ClosestRayResultCallBack.m_collisionObject->getActivationState() != 4) {
 
 		btVector3 hitLoc = ClosestRayResultCallBack.m_hitPointWorld;
 
-		//If the camera is blocked, the new camera is set to where the collison
-		//happened with a tiny offset.
+		//If the camera is blocked, the new camera is set to where the collison happened.
 		cameraPosition = Rally::Vector3(hitLoc.getX(), hitLoc.getY(), hitLoc.getZ());
-
-		float camOffset = 0.5f;
-
-		//Adjust for X
-		if(hitLoc.getX() > cameraPosition.x)
-			cameraPosition += Rally::Vector3(-camOffset, 0.0f, 0.0f);
-		else if(hitLoc.getX() < cameraPosition.x)
-			cameraPosition += Rally::Vector3(camOffset, 0.0f, 0.0f);
-
-		//Adjust for Y
-		if(hitLoc.getY() > cameraPosition.y)
-			cameraPosition += Rally::Vector3(0.0f, -camOffset, 0.0f);
-
-		//Adjust for Z
-		if(hitLoc.getZ() > cameraPosition.z)
-			cameraPosition += Rally::Vector3(0.0f, 0.0f, -camOffset);
-		else if(hitLoc.getZ() < cameraPosition.z)
-			cameraPosition += Rally::Vector3(0.0f, 0.0f, camOffset);
-
 	}
 
     camera->setPosition(cameraPosition);
 	camera->lookAt(position);
+
 
     // This is a bit of a temporary hack... It is laggy though...
     /*Rally::Vector3 lookVector = (Rally::Vector3(255.0f, 12.0f, 240.0f) - Rally::Vector3(255.0f, 12.0f, 239.0f))*
@@ -334,6 +320,36 @@ void SceneView::toggleReflections() {
     playerCarView.setReflectionsOn(!playerCarView.isReflectionsOn());
 }
 
+void SceneView::togglePostProcessing() {
+    postProcessingEnabled = !postProcessingEnabled;
+
+    if(postProcessingEnabled) {
+        // TODO: Fix so that setEnabled works, can't be that hard...
+        /*gbufferView.setEnabled(true);
+        ssaoView.setEnabled(true);
+        bloomView.setEnabled(true);*/
+        gbufferView.attachTo(viewport);
+        gbufferView.setEnabled(true);
+
+        ssaoView.attachTo(viewport, &world.getPlayerCar());
+        ssaoView.setEnabled(true);
+
+        bloomView.attachTo(viewport, &world.getPlayerCar());
+        bloomView.setEnabled(true);
+
+        motionBlurView.attachTo(viewport, &world.getPlayerCar());
+        motionBlurView.setEnabled(true);
+    } else {
+        motionBlurView.detach();
+        bloomView.detach();
+        ssaoView.detach();
+        gbufferView.detach();
+        /*bloomView.setEnabled(false);
+        ssaoView.setEnabled(false);
+        gbufferView.setEnabled(false);*/
+    }
+}
+
 void SceneView::updateParticles(){
 	bool enabled[4] = {false, false, false, false};
 	Rally::Vector3 positions[4];
@@ -363,4 +379,3 @@ void SceneView::updateParticles(){
 	playerCarView.enableWheelParticles(enabled, positions);
 
 }
-

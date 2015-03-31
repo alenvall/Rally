@@ -5,11 +5,15 @@
 #include "view/CheckpointView.h"
 #include "view/PlayerCarView.h"
 #include "view/PortalView.h"
+#include "view/GBufferView.h"
+#include "view/SSAOView.h"
 #include "view/BloomView.h"
+#include "view/MotionBlurView.h"
 #include "view/LensFlareView.h"
 #include "model/World.h"
 
 #include <OgreCamera.h>
+#include <OgreViewport.h>
 #include <OgreSceneManager.h>
 #include <OgreRenderWindow.h>
 #include "InputInit.h"
@@ -45,6 +49,7 @@ class SceneView {
         void remoteCarRemoved(int carId, const Rally::Model::RemoteCar& remoteCar);
         void toggleDebugDraw();
         void toggleReflections();
+        void togglePostProcessing();
         void addLogicListener(Rally::View::SceneView_LogicListener& logicListener);
 
         void playerCarTypeUpdated() {
@@ -57,18 +62,20 @@ class SceneView {
         void loadResourceConfig(Ogre::String resourceConfigPath);
         void updatePlayerCar(float deltaTime);
         void updateRemoteCars();
-		
+
         void updateCheckPoints();
+
+        bool debugDrawEnabled;
+        bool postProcessingEnabled;
 
 		void updateParticles();
 
 		void updateSkidmarks();
-        
-		bool debugDrawEnabled;
 
         Rally::Model::World& world;
 
         Ogre::Camera* camera;
+        Ogre::Viewport* viewport;
         Ogre::SceneManager* sceneManager;
         Ogre::RenderWindow* renderWindow;
 		Ogre::ParticleSystemManager* particleManager;
@@ -85,7 +92,10 @@ class SceneView {
 
         Rally::Util::BulletDebugDrawer* bulletDebugDrawer;
 
+        Rally::View::GBufferView gbufferView;
+        Rally::View::SSAOView ssaoView;
         Rally::View::BloomView bloomView;
+        Rally::View::MotionBlurView motionBlurView;
 		Rally::View::LensFlareView* lensflare;
 };
 

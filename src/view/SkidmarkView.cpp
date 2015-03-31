@@ -18,8 +18,8 @@ namespace Rally { namespace View {
 		this->car = &car;
 		skidmarkNode = sceneManager->getRootSceneNode()->createChildSceneNode();
 
-		Ogre::BillboardType type = Ogre::BillboardType::BBT_PERPENDICULAR_SELF;
-		Ogre::BillboardRotationType rotationType = Ogre::BillboardRotationType::BBR_VERTEX;
+		Ogre::BillboardType type = Ogre::BBT_PERPENDICULAR_SELF;
+		Ogre::BillboardRotationType rotationType = Ogre::BBR_VERTEX;
 		Rally::Vector3 up(0, 0, 1);
 		Rally::Vector3 common(0, 1, 0);
 
@@ -64,6 +64,7 @@ namespace Rally { namespace View {
 				if(positions.size() >= 2 && normals.size() >= 2 && directions.size() >= 2){
 					createSkidmark(*iterator, *iteratorNormals, 
 						*iteratorDirections, *iteratorTractions);
+
 					for(int n = 0, size = positions.size(); n < size; n++){
 						Rally::Vector3 temp = *iterator;
 						Rally::Vector3 tempDir = *iteratorDirections;

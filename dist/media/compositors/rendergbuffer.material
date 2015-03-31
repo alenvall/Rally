@@ -1,0 +1,33 @@
+// Based on Ogre's SSAO demo
+
+vertex_program render_gbuffer_vs glsl {
+    source render_gbuffer_vs.glsl
+    default_params {
+        param_named_auto worldViewProj worldviewproj_matrix
+        param_named_auto worldView worldview_matrix
+    }
+}
+
+fragment_program render_gbuffer_ps glsl {
+    source render_gbuffer_ps.glsl
+    default_params {
+        // param_named_auto nearClipDistance near_clip_distance
+        // param_named_auto farClipDistance far_clip_distance
+
+        // Note that the emissive color is copied from technique 0 pass 0 in
+        // the compositor code, where the material's GBuffer scheme is created.
+        param_named_auto emissive surface_emissive_colour
+    }
+}
+
+material compositors/RenderGBuffer {
+    technique {
+        pass {
+            fragment_program_ref render_gbuffer_ps {
+            }
+            vertex_program_ref render_gbuffer_vs {
+            }
+        }
+    }
+}
+

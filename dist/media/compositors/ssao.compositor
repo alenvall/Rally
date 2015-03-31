@@ -1,24 +1,20 @@
-compositor compositors/BloomCompositor {
+compositor compositors/SSAOCompositor {
     technique {
-        texture original target_width target_height PF_R8G8B8
-        texture ping target_width target_height PF_R8G8B8
+        texture ping target_width target_height PF_R8G8B8 chain_scope
         texture pong target_width target_height PF_R8G8B8
         
         texture_ref gbuffer compositors/GBufferCompositor gbuffer
-        
-        // Fill in the original
-        target original {
-            input previous
-        }
+        texture_ref original compositors/GBufferCompositor original
         
         // Filter out the cool stuff into ping
         target ping {
             input none
             pass render_quad {
                 identifier 100
-                material compositors/BloomSelect
-                input 0 original
-                input 1 gbuffer 0
+                material compositors/SSAOSelect
+                // One for each of the render targets in the MRT
+                input 0 gbuffer 0
+                input 1 gbuffer 1
             }
         }
         
@@ -47,10 +43,11 @@ compositor compositors/BloomCompositor {
             input none
             pass render_quad {
                 identifier 400
-                material compositors/BloomAssemble
+                material compositors/SSAOAssemble
                 input 0 original
                 input 1 ping
             }
         }
     }
 }
+

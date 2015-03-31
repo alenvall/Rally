@@ -1,0 +1,41 @@
+compositor compositors/MotionBlurCompositor {
+    technique {
+        texture lastScene target_width target_height PF_R8G8B8
+        texture original target_width target_height PF_R8G8B8
+        
+        texture_ref occlusionMap compositors/SSAOCompositor ping
+        
+        // Fill in the original to the lastScene texture the first time
+        target lastScene {
+            input previous
+            only_initial on
+        }
+        
+        // Also, fill it in on the original, every frame
+        target original {
+            input previous
+        }
+        
+        // Now, blend the current scene into lastScene. Notice how lastScene now
+        // will contain the current scene, which will be used as lastScene the
+        // next frame.
+        target lastScene {
+            input none
+            pass render_quad {
+                identifier 100
+                material compositors/MotionBlurBlend
+                input 0 original
+                input 1 occlusionMap
+            }
+        }
+        
+        // Now we just need to draw the lastScene, which actually is the current
+        target_output {
+            input none
+            pass render_quad {
+                material compositors/MotionBlurDraw
+                input 0 lastScene
+            }
+        }
+    }
+}

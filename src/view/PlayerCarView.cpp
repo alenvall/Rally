@@ -69,4 +69,10 @@ namespace Rally { namespace View {
 		skidmarkView.update();
     }
 
+    void PlayerCarView::setEffectFactor(float effectFactor) {
+        if(reflectionsOn) {
+            reflectionView.setEffectFactor(effectFactor);
+        }
+    }
+
 } }

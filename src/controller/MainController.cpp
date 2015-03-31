@@ -101,6 +101,10 @@ namespace Rally { namespace Controller {
 		    sceneView.toggleReflections();
         }
 
+        if(inputInit.isKeyPressedDebounced("b")) {
+		    sceneView.togglePostProcessing();
+        }
+
         if(inputInit.isKeyPressed("p")) {
             std::cout << car.getPosition() << std::endl;
         }

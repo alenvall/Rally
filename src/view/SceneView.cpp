@@ -220,7 +220,7 @@ void SceneView::updatePlayerCar(float deltaTime) {
 	Rally::Vector3 displacementBase = playerCar.getOrientation() * Ogre::Vector3::UNIT_Z;
 	displacementBase *= -1;
 
-	float xzdisplacement = 6.0f;
+	float xzdisplacement = 5.0f;
 	float ydisplacement = 3.0f;
 
 	Rally::Vector3 displacement(
@@ -229,9 +229,9 @@ void SceneView::updatePlayerCar(float deltaTime) {
 		xzdisplacement * displacementBase.z);
 
     Rally::Vector3 endPosition = position + displacement;
-
-	float velocityAdjust = playerCar.getVelocity().length()/8;
-	float lerpAdjust = Ogre::Math::Clamp(velocityAdjust*deltaTime, 0.025f, 0.9f);
+    
+	float velocityAdjust = playerCar.getVelocity().length()/10;
+	float lerpAdjust = Ogre::Math::Clamp(velocityAdjust*deltaTime, 0.001f, 0.8f);
 
 	// Lerp towards the new camera position to get a smoother pan
 	float lerpX = Ogre::Math::lerp(currentCameraPosition.x, endPosition.x, lerpAdjust);

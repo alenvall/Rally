@@ -126,10 +126,12 @@ namespace Rally { namespace View {
 		b->setRotation(r);
         
         double lengthAdjust = 0.03;
-        float alphaAdjust = 6.0f;
+        float alphaAdjust = 15.0f;
+
+        float trac = 1 - traction;
 
         b->setDimensions(Ogre::Real(0.2), Ogre::Real(Ogre::Math::Clamp(lengthAdjust*car->getPhysicsCar().getVelocity().length(), 0.4, 0.7)));
-        b->setColour(Ogre::ColourValue(1.0f, 1.0f, 1.0f, traction*alphaAdjust));
+        b->setColour(Ogre::ColourValue(1.0f, 1.0f, 1.0f, Ogre::Math::Pow(trac, alphaAdjust)));
 
 		if(skidmarkBillboards->getNumBillboards() > 1000)
 			skidmarkBillboards->removeBillboard(skidmarkBillboards->getBillboard(skidmarkBillboards->getNumBillboards()-1000));

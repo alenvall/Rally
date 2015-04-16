@@ -50,9 +50,9 @@ namespace Rally { namespace View {
     void CarView::attachTo(Ogre::SceneManager* sceneManager, const std::string& carName) {
         this->sceneManager = sceneManager;
 
-        carEntities.push_back(sceneManager->createEntity(carName + "_lambo", "car.mesh"));
-        carEntities.push_back(sceneManager->createEntity(carName + "_740sedan", "car740.mesh"));
-        carEntities.push_back(sceneManager->createEntity(carName + "_740kombi", "car740.mesh"));
+        carEntities.push_back(sceneManager->createEntity(carName + "_lambo", "carlambo.mesh"));
+        carEntities.push_back(sceneManager->createEntity(carName + "_740sedan", "carkombi.mesh"));
+        carEntities.push_back(sceneManager->createEntity(carName + "_740kombi", "cargt40.mesh"));
         carEntity = carEntities[0];
 
         carEntity->getSubEntity(4)->setMaterialName("carcolourred");
@@ -69,6 +69,11 @@ namespace Rally { namespace View {
         leftFrontWheelEntity = sceneManager->createEntity(carName + "_LeftFrontWheel", "hjul.mesh");
         rightBackWheelEntity = sceneManager->createEntity(carName + "_RightBackWheel", "hjul.mesh");
         leftBackWheelEntity = sceneManager->createEntity(carName + "_LeftBackWheel", "hjul.mesh");
+
+        rightFrontWheelEntity->setCastShadows(false);
+        leftFrontWheelEntity->setCastShadows(false);
+        rightBackWheelEntity->setCastShadows(false);
+        leftBackWheelEntity->setCastShadows(false);
 
         rightFrontWheelNode->attachObject(rightFrontWheelEntity);
         leftFrontWheelNode->attachObject(leftFrontWheelEntity);

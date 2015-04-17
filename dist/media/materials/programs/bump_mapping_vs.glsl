@@ -21,7 +21,7 @@ varying vec3 oTSLightDir;
 void main() {
     vec4 vertex = gl_Vertex;
     vec3 normal = gl_Normal;
-    vec3 tangent = gl_Normal;
+    vec3 tangent = cross(gl_Normal, normalize(vec3(0.1, 0.2, 0.3))); // TODO: Do properly
     vec4 uv0 = gl_MultiTexCoord0;
 
 	// Calculate output position

@@ -1,11 +1,11 @@
 vertex_program Examples/BumpMapVP glsl {
-    source Example_BumpMappingVP.glsl
+    source bump_mapping_vs.glsl
     default_params {
     }
 }
 
 fragment_program Examples/BumpMapFP glsl {
-    source Example_BumpMappingFP.glsl
+    source bump_mapping_ps.glsl
     default_params {
     }
 }

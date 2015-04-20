@@ -19,8 +19,10 @@ namespace Rally { namespace Model {
         physicsWorld.initialize(bulletFile);
         playerCar.attachToWorld();
 		finish.attachToWorld(btVector3(-1.3f, 0.f, -1.1f), btVector3(0.1f, 6.f, 3.2f));
-		start.attachToWorld(btVector3(90.0f, 8.f, 110.0f), btVector3(3.f, 3.f, 3.f));
+		start.attachToWorld(btVector3(113.0f, 0.f, 183.0f), btVector3(10.f, 10.f, 10.f));
         finishTimer.reset();
+		start.collide();
+
     }
 
     void World::update(float deltaTime) {
@@ -30,11 +32,17 @@ namespace Rally { namespace Model {
 
 	void World::printFinishedTime(){
 		if(!start.hasCollided())
-			finishTimer.reset();
+			finish.reset();
 
 		if(start.hasCollided() && finish.hasCollided() && finish.isEnabled()){
-			finish.setEnabled(false);
-			std::cout << "Finished after: " << finishTimer.getElapsedSeconds() << " seconds!" << std::endl;
+			//finish.setEnabled(false);
+			if(finishTimer.getElapsedSeconds() > 2)
+			  std::cout << "Finished after: " << finishTimer.getElapsedSeconds() << " seconds!" << std::endl;
+			finish.reset();
+			start.reset();
+			finishTimer.reset();
+
+
 		}
 	}
 } }

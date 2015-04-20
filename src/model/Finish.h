@@ -1,4 +1,4 @@
-#include "model/Checkpoint.h"
+	#include "model/Checkpoint.h"
 
 #include "Rally.h"
 #include "model/PhysicsWorld.h"
@@ -20,6 +20,14 @@ namespace Rally { namespace Model {
 
 		bool hasCollided(){
 			return collided;
+		}
+
+		void reset(){
+			collided = false;
+		}
+
+		void collide(){
+			collided = true;
 		}
 	};
 

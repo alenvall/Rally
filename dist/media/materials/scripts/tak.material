@@ -27,7 +27,7 @@ material tak
 			// Vertex program reference
 			vertex_program_ref Examples/BumpMapVP
 			{
-				param_named_auto lightPosition light_position_object_space 0
+				param_named_auto lightPosition light_position_object_space 1
 				param_named_auto worldViewProj worldviewproj_matrix
 			}
 
@@ -40,8 +40,8 @@ material tak
 			// Base bump map
 			texture_unit
 			{
-				texture taknorm.png
-				colour_op 
+				texture tak2.png
+				colour_op modulate
 			}			
 		}
 

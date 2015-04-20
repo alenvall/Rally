@@ -35,7 +35,7 @@ namespace Rally { namespace Controller {
 
             // Allow max 1000 FPS for precision/stability reasons.
             // This is hopefully capped by vsync or atleast computation below.
-            if(deltaTime < 0.001f) {
+            if(deltaTime < 0.03f) {
                 continue;
             }
 
@@ -108,6 +108,7 @@ namespace Rally { namespace Controller {
         if(inputInit.isKeyPressed("p")) {
             std::cout << car.getPosition() << std::endl;
         }
+
     }
 
     void MainController_RemoteCarListener::carUpdated(unsigned short carId,

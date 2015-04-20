@@ -83,6 +83,7 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     sceneManager->getEntity("fysikgrans")->setCastShadows(false);
     sceneManager->getEntity("maskin")->setCastShadows(false);
     sceneManager->getEntity("plank")->setCastShadows(false);
+	sceneManager->getEntity("direction")->setCastShadows(false);
     sceneManager->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE);
     sceneManager->setAmbientLight(Ogre::ColourValue(1, 1, 1));
     sceneManager->setShadowFarDistance(250);
@@ -94,7 +95,7 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     Ogre::Light* sunLight = sceneManager->createLight("sunLight");
     sunLight->setType(Ogre::Light::LT_DIRECTIONAL);
     sunLight->setCastShadows(true);
-    sunLight->setDirection(Ogre::Vector3( 1, -3, 1 ));
+    sunLight->setDirection(Ogre::Vector3( 0, -3, 0 ));
     sunLight->setDiffuseColour(Ogre::ColourValue(1, 1, 1));
     sunLight->setSpecularColour(Ogre::ColourValue(1, 1, 1));
     sceneNode->attachObject(sunLight);
@@ -113,7 +114,7 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
    	sceneManager->getEntity("PlayerCar_740kombi")->setCastShadows(false);
 
 	//goalView.attachTo(sceneManager, "Finish", "car.mesh", world.getFinish());
-	goalView.attachTo(sceneManager, "Start", "car.mesh", world.getStart());
+	goalView.attachTo(sceneManager, "Start", "carkombi.mesh", world.getStart());
 
     // Debug draw Bullet
     bulletDebugDrawer = new Rally::Util::BulletDebugDrawer(sceneManager);
@@ -129,13 +130,14 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 
     // Snap a picture for the magic surface at Kopparbunken.
 	tunnelPortalView.moveCamera(
-        Rally::Vector3(255.0f, 12.0f, 240.0f), // position
-        Rally::Vector3(255.0f, 12.0f, 239.0f)); // look at
+        Rally::Vector3(255.0f, 0.0f, 240.0f), // position
+        Rally::Vector3(255.0f, 0.0f, 239.0f)); // look at
     tunnelPortalView.takeSnapshot();
 
 	lensflare = new Rally::View::LensFlareView();
 	lensflare->init(sceneManager, camera, viewport->getWidth(), viewport->getHeight(), 800, 30, "LensFlareHalo", "LensFlareCircle", "LensFlareBurst");
 	lensflare->setPosition(Ogre::Vector3(-800, 500, -800));
+
 }
 
 

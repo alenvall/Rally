@@ -47,7 +47,7 @@ namespace Rally { namespace Model {
             dynamicsWorld(NULL),
             bodyShape(NULL),
             lowerMassCenterShape(NULL),
-            bodyMotionState(btTransform(btQuaternion(0.0f, 0.0f, 0.0f, 1.0f), btVector3(90.0f, 20.2f, 75.0f))),
+            bodyMotionState(btTransform(btQuaternion(0.0f, 0.0f, 0.0f, 1.0f), btVector3(83.0f, 5.0f, -30.0f))),
             bodyConstructionInfo(NULL),
             bodyRigidBody(NULL),
             vehicleRaycaster(NULL),

@@ -39,7 +39,7 @@ material tegelvagg
 			texture_unit
 			{
 				texture tegelvaggnorm.png
-				colour_op 
+				colour_op modulate
 			}			
 		}
 

@@ -25,5 +25,5 @@ void main()
 	vec3 bumpVec = expand(texture(normalMap, oUv0.xy).xyz);
 
 	// Calculate dot product
-	fragColour = lightDiffuse * dot(bumpVec, lightVec);
+	fragColour = lightDiffuse * dot(bumpVec, lightVec) * 0.9;
 }

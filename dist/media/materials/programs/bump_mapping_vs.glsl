@@ -32,16 +32,17 @@ void main() {
 	// Non-normalised since we'll do that in the fragment program anyway
 	vec3 lightDir = lightPosition.xyz - (vertex * lightPosition.w).xyz;
 
-	// Calculate the binormal (NB we assume both normal and tangent are
-	// already normalised)
-
-	// Fixed handedness
-	vec3 binormal = cross(normal, tangent);
+	// Use the Gram-Schmidt-process to get back to a truly orthonormal base.
+	// (The lerp gl does makes the interpolated tangent a linear combination of
+	// mostly the true tanegnt, but also some of the normal.)
+	vec3 trueTangent = normalize(tangent - dot(normal, tangent)*tangent);
+	
+	vec3 binormal = cross(normal, trueTangent);
 
 	// Form a rotation matrix out of the vectors, column major for glsl
-	mat3 rotation = mat3(vec3(tangent[0], binormal[0], normal[0]),
-						vec3(tangent[1], binormal[1], normal[1]),
-						vec3(tangent[2], binormal[2], normal[2]));
+	mat3 rotation = mat3(vec3(trueTangent[0], binormal[0], normal[0]),
+						vec3(trueTangent[1], binormal[1], normal[1]),
+						vec3(trueTangent[2], binormal[2], normal[2]));
 	
 	// Transform the light vector according to this matrix
 	oTSLightDir = rotation * lightDir;

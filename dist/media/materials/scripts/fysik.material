@@ -26,21 +26,17 @@ material fysik
 			// Vertex program reference
 			vertex_program_ref Examples/BumpMapVP
 			{
-				param_named_auto lightPosition light_position_object_space 0
-				param_named_auto worldViewProj worldviewproj_matrix
 			}
 
 			// Fragment program
 			fragment_program_ref Examples/BumpMapFP
 			{
-				param_named_auto lightDiffuse light_diffuse_colour 0
 			}
 			
 			// Base bump map
 			texture_unit
 			{
 				texture fysiknorm.png
-				colour_op 
 			}			
 		}
 

@@ -9,23 +9,20 @@
 // parameters
 uniform vec4 lightPosition; // object space
 uniform mat4 worldViewProj;
+uniform float lightNumber; // counts up for each once_per_light: 1, 2, 3...
 
-/*attribute vec4 vertex;
+attribute vec4 vertex;
 attribute vec3 normal;
 attribute vec3 tangent;
-attribute vec4 uv0;*/
+attribute vec4 uv0;
 
 varying vec4 oUv0;
 varying vec3 oTSLightDir;
 
 void main() {
-    vec4 vertex = gl_Vertex;
-    vec3 normal = gl_Normal;
-    vec3 tangent = cross(gl_Normal, normalize(vec3(0.1, 0.2, 0.3))); // TODO: Do properly
-    vec4 uv0 = gl_MultiTexCoord0;
-
 	// Calculate output position
 	gl_Position = worldViewProj * vertex;
+	gl_Position.z += 0.001*(1.0 + lightNumber);
 
 	// Pass the main uvs straight through unchanged
 	oUv0 = uv0;

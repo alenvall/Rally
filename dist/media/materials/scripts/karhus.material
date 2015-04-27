@@ -30,7 +30,7 @@ material karhus
 
             texture_unit 
             {
-                texture karhuset.png
+                texture karhuset.png gamma
                 tex_address_mode wrap
                 scale 1.0 1.0
                 colour_op modulate

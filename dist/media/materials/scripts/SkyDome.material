@@ -9,7 +9,7 @@ material Rally/CloudySky
 
 			texture_unit
 			{
-				texture clouds.jpg
+				texture clouds.jpg gamma
 
 				scroll_anim 0.03 0
 			}

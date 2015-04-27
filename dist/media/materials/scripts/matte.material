@@ -50,7 +50,7 @@ material matte
 			scene_blend modulate
 			texture_unit
 			{
-				texture mattehuset.png
+				texture mattehuset.png gamma
 			}
 		}
 

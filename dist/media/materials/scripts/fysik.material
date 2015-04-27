@@ -36,7 +36,7 @@ material fysik
 			// Base bump map
 			texture_unit
 			{
-				texture fysiknorm.png
+				texture fysiknorm.png gamma
 			}			
 		}
 
@@ -47,7 +47,7 @@ material fysik
 			scene_blend modulate
 			texture_unit
 			{
-				texture fysik.png
+				texture fysik.png gamma
 			}
 		}
                 pass

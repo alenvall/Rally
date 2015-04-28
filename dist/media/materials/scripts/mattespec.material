@@ -59,7 +59,7 @@ material mattespec
      
         {
                 
-        texture mattehuset.png
+        texture mattehuset.png gamma
         
         tex_address_mode wrap
         

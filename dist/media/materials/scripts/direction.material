@@ -15,7 +15,7 @@ material direction
 		scene_blend alpha_blend
        	 	texture_unit
 	 		{
-         	texture direction2.png
+         	texture direction2.png gamma
   
        	colour_op modulate
          		}

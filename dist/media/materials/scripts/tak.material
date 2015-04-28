@@ -52,7 +52,7 @@ material tak
 			scene_blend modulate
 			texture_unit
 			{
-				texture tak.png
+				texture tak.png gamma
 			}
 		}
 		pass

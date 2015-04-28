@@ -9,7 +9,7 @@ material Rally/CloudySky
 
 			texture_unit
 			{
-				texture clouds.jpg
+				texture clouds.jpg gamma
 
 				scroll_anim 0.03 0
 			}
@@ -22,7 +22,7 @@ material Rally/CloudySky
 	    pass {
 	        lighting off
 	        depth_write off
-	        color_write off
+	        //colour_write off
 	    }
 	}
 }

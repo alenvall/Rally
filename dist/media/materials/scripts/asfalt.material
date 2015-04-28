@@ -50,7 +50,7 @@ material asfalt
 			scene_blend modulate
 			texture_unit
 			{
-				texture asfalt.png
+				texture asfalt.png gamma
 			}
 		}
 	}

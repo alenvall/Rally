@@ -55,10 +55,13 @@ void main() {
         highFrequencyNoise/4.0
     );
     // We check if it's >= 4 and clamp to 3 (4 might appear as a roundig issue).
-    // When we check, we might aswell remap the values...
-    // 0 -> 0, 1 -> 1, 2 -> 2, 3 -> 1.5/2.5 to remove some liearity in the noise.
-    if(highFrequencyNoise.x >= 3.0) highFrequencyNoise.x = 1.5;
-    if(highFrequencyNoise.y >= 3.0) highFrequencyNoise.y = 2.5;
+    // Also, we must remap so that we get equally much randomness in one direction
+    // than the other, otherwise the shadows will appear different when viewed
+    // from opposite directions.
+    // 0 -> -1.5, 1 -> -0.5, 2 -> 0.5, 3 -> 1.5
+    highFrequencyNoise -= 1.5;
+    if(highFrequencyNoise.x >= 1.5) highFrequencyNoise.x = 1.5;
+    if(highFrequencyNoise.y >= 1.5) highFrequencyNoise.y = 1.5;
     
     // Finally, add 0.1 (we don't want a 0-vector below), and normalize.
     highFrequencyNoise = normalize(0.1 + highFrequencyNoise);
@@ -75,9 +78,10 @@ void main() {
     // normalized, we have a great chance at finding something non-colinear.
     // randomness may be regarded as normalized, as highFrequencyNoise is that
     // and one of randomness' components is 0.
-    if(normal.x > normal.y && normal.x > normal.z) {
+    vec3 normalAbs = abs(normal);
+    if(normalAbs.x > normalAbs.y && normalAbs.x > normalAbs.z) {
         randomness = vec3(0.0, highFrequencyNoise.x, highFrequencyNoise.y);
-    } else if (normal.y > normal.x && normal.y > normal.z) {
+    } else if (normalAbs.y > normalAbs.x && normalAbs.y > normalAbs.z) {
         randomness = vec3(highFrequencyNoise.x, 0.0, highFrequencyNoise.y);
     } else {
         // Not catching solutions around x = y = z is acceptable (fuzzy =).
@@ -100,6 +104,7 @@ void main() {
         vec4(position.x, position.y, position.z, 1.0));
         
     float occlusion = 0.0;
+    float edgeDetection = 0.0;
     for(int i = 0; i < 16; ++i) {
         vec3 hemisphereLocalSamplePosition = hemisphere[i];
         
@@ -112,6 +117,8 @@ void main() {
         sampleCoord.y = 1.0 - sampleCoord.y;
         vec3 sampleRealPosition = texture2D(gbuffer_position, sampleCoord.xy).xyz;
         
+        float distance = abs(sampleProbedPosition.z - sampleRealPosition.z);
+        
         // Only count if this sampled pixel was in fact in front of the (guessed) probed pixel
         // (meaning it was occluding the current pixel in the rendered scene).
         if(sampleRealPosition.z >= sampleProbedPosition.z) {
@@ -119,18 +126,23 @@ void main() {
             
             // Filter off stuff that is too far away (outside our hemisphere),
             // for example edges of houses etc. (The only differ in their z-coord).
-            float distance = abs(sampleProbedPosition.z - sampleRealPosition.z);
             if(distance > farDist) {
                 // Provide some falloff, so that the shadow doesn't suddenly disappear.
                 occlusionAdd = clamp(/* works better without for some reason: farDist* */ farDist/(distance*distance), 0.0, 1.0);
+                edgeDetection += 1.0 - occlusionAdd;
             }
             
             // The sky box is off the GBuffer, but otherwise we could filter away
             // the SSAO from it here as it seems to interfere with it.
             occlusion += occlusionAdd;
+        } else if(distance > farDist) {
+            edgeDetection += 1.0;
         }
     }
     
     float occlusionColor = 1.0 - (occlusion / 16.0);
-    gl_FragColor = vec4(occlusionColor, occlusionColor, occlusionColor, 1.0);
+    
+    // This is shared with the motion blur compositor
+    float edgeDetectionForMotionBlur = effectFactor * (0.5 + 0.5 * edgeDetection / 16.0); // Used in the motionblur_blend shader
+    gl_FragColor = vec4(occlusionColor, edgeDetection, edgeDetectionForMotionBlur, 1.0);
 }

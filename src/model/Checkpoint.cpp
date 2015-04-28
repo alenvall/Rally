@@ -9,7 +9,7 @@ namespace Rally { namespace Model {
 	Checkpoint::~Checkpoint(){
 	}
 
-	void Checkpoint::init(btVector3& position, btVector3& shape){
+	void Checkpoint::init(const btVector3& position, const btVector3& shape){
 		ghostObject = new btPairCachingGhostObject();
 		btCollisionShape* tempShape = new btBoxShape(shape);
 		ghostObject->setCollisionShape(tempShape);
@@ -21,7 +21,7 @@ namespace Rally { namespace Model {
 		enabled = true;
 	}
 
-	void Checkpoint::attachToWorld(btVector3& position, btVector3& shape){
+	void Checkpoint::attachToWorld(const btVector3& position, const btVector3& shape){
 		init(position, shape);
 
 		physicsWorld.getDynamicsWorld()->addCollisionObject(ghostObject);
@@ -38,14 +38,14 @@ namespace Rally { namespace Model {
         const btQuaternion orientation = ghostObject->getWorldTransform().getRotation();
         return Rally::Quaternion(orientation.w(), orientation.x(), orientation.y(), orientation.z());
     }
-		
+
 	void Checkpoint::processCollision(btCollisionObject* colObj){
 
 	}
 
 	void Checkpoint::checkCollision(){
 		btBroadphasePairArray& collisionPairs = ghostObject->getOverlappingPairCache()->getOverlappingPairArray();
-		const int	numObjects = collisionPairs.size();	
+		const int	numObjects = collisionPairs.size();
 		static btManifoldArray	m_manifoldArray;
 
 		btCollisionObject* colObj = NULL;
@@ -54,7 +54,7 @@ namespace Rally { namespace Model {
 			m_manifoldArray.resize(0);
 			const btBroadphasePair& cPair = collisionPairs[i];
 			const btBroadphasePair* collisionPair = physicsWorld.getDynamicsWorld()->getPairCache()->findPair(cPair.m_pProxy0,cPair.m_pProxy1);
-			if (!collisionPair) continue;		
+			if (!collisionPair) continue;
 			if (collisionPair->m_algorithm) collisionPair->m_algorithm->getAllContactManifolds(m_manifoldArray);
 
 			for (int j=0;j<m_manifoldArray.size();j++)	{
@@ -75,7 +75,7 @@ namespace Rally { namespace Model {
 			processCollision(colObj);
 		}
 	}
-	
+
 	void Checkpoint::stepped(float deltaTime) {
 		checkCollision();
 	}

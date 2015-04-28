@@ -1,5 +1,3 @@
-// carcolour genrated by blender2ogre 0.6.0
-
 material carcolouryellow 
 {
     receive_shadows on 

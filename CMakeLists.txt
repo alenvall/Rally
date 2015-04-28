@@ -88,9 +88,10 @@ if (NOT OGRE_BUILD_PLATFORM_IPHONE)
 	if (NOT Boost_FOUND)
 		# Try again with the other type of libs
 		set(Boost_USE_STATIC_LIBS NOT ${Boost_USE_STATIC_LIBS})
-		find_package(Boost COMPONENTS ${OGRE_BOOST_COMPONENTS} QUIET)
+		find_package(Boost COMPONENTS ${OGRE_BOOST_COMPONENTS})
 	endif()
-	find_package(Boost QUIET)
+	find_package(Boost)
+	message(STATUS "(Not finding boost above is not a big deal for the Rally-project right now. Try setting Boost_COMPILER = -vc110 for correct operation.)")
  
 	# Set up referencing of Boost
 	include_directories(${Boost_INCLUDE_DIR})
@@ -181,12 +182,14 @@ include_directories( ${OIS_INCLUDE_DIRS}
 set_target_properties(Rally PROPERTIES DEBUG_POSTFIX _d)
 
 if(WIN32)
-	set_target_properties(Rally PROPERTIES LINK_FLAGS_DEBUG "/SUBSYSTEM:CONSOLE")
+	# See bug http://public.kitware.com/Bug/view.php?id=11171
+	# In essence: use console, not CONSOLE, use windows, not WINDOWS.
+	set_target_properties(Rally PROPERTIES LINK_FLAGS_DEBUG "/SUBSYSTEM:console")
 	set_target_properties(Rally PROPERTIES COMPILE_DEFINITIONS_DEBUG "_CONSOLE")
-	set_target_properties(Rally PROPERTIES LINK_FLAGS_RELWITHDEBINFO "/SUBSYSTEM:CONSOLE")
+	set_target_properties(Rally PROPERTIES LINK_FLAGS_RELWITHDEBINFO "/SUBSYSTEM:console")
 	set_target_properties(Rally PROPERTIES COMPILE_DEFINITIONS_RELWITHDEBINFO "_CONSOLE")
-	set_target_properties(Rally PROPERTIES LINK_FLAGS_RELEASE "/SUBSYSTEM:CONSOLE")
-	set_target_properties(Rally PROPERTIES LINK_FLAGS_MINSIZEREL "/SUBSYSTEM:CONSOLE")
+	set_target_properties(Rally PROPERTIES LINK_FLAGS_RELEASE "/SUBSYSTEM:console")
+	set_target_properties(Rally PROPERTIES LINK_FLAGS_MINSIZEREL "/SUBSYSTEM:console")
    
 	target_link_libraries(Rally
 		${OGRE_LIBRARIES}
@@ -240,6 +243,16 @@ endif(MINGW OR UNIX)
  
 if(WIN32)
  
+	# Note: This is a hack we employ as everyone in the project probably don't have things
+	# set up correctly. The better way to do it is setting Boost_COMPILER = -vc110 as
+	# that's not set in FindBoost.cmake for CMake 2.8.6 that Rally requires (-vc100 and below is listed!).
+	# When that one is set, it is possible to use Boost_SYSTEM_LIBRARY to find the correct
+	# dll. Note that Boost_LIBRARY_DIR is not necessartily set (but Boost_LIBRARY_DIRS was
+	# on my system). However, just overriding it with an environment variable does the job.
+	if(NOT DEFINED Boost_LIBRARY_DIR)
+		set(Boost_LIBRARY_DIR $ENV{BOOST_LIBRARYDIR})
+	endif(NOT DEFINED Boost_LIBRARY_DIR)
+
 	install(TARGETS Rally
 		RUNTIME DESTINATION bin
 		CONFIGURATIONS All)

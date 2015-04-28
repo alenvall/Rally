@@ -1,0 +1,76 @@
+
+
+material fonster 
+  
+{
+    
+  receive_shadows on 
+
+    
+  technique
+    
+    {
+        
+    pass fonster
+        
+      {
+            
+      ambient 0.44 0.44 0.44 1.0
+            
+      diffuse 0.88 0.88 0.88 1.0
+            
+      specular 1.0 1.0 1.0 1.0 128      
+      emissive 0.0 0.0 0.0 1.0
+
+      
+      alpha_to_coverage off
+      
+      colour_write on
+    
+      cull_hardware clockwise
+      
+      depth_check on
+     
+      depth_func less_equal
+       
+      depth_write on
+      
+      illumination_stage 
+      
+      light_clip_planes off
+       
+      light_scissor off
+      
+      lighting on
+      
+      normalise_normals off
+       
+      polygon_mode solid
+        
+      scene_blend modulate    
+      scene_blend_op add
+       
+      shading gouraud
+       
+      transparent_sorting on
+
+      
+      texture_unit 
+     
+        {
+                
+        texture svart.png
+        
+        tex_address_mode wrap
+        
+        scale 1.0 1.0
+        
+        colour_op modulate
+     
+        }
+
+      }
+    
+   }
+
+}

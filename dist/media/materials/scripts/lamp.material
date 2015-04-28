@@ -1,5 +1,3 @@
-// lamp genrated by blender2ogre 0.6.0
-
 material lamp 
 {
     receive_shadows on 

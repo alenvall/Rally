@@ -1,0 +1,63 @@
+fragment_program motionblur_blend_ps glsl {
+    source motionblur_blend_ps.glsl
+    default_params {
+        param_named original int 0
+        param_named occlusionMap int 1
+    }
+}
+
+vertex_program common_vs glsl {
+    source common_vs.glsl
+    default_params {
+        param_named_auto worldViewProj worldviewproj_matrix
+    }
+}
+
+material compositors/MotionBlurBlend {
+    technique {
+        pass {
+            cull_hardware none
+            cull_software none
+            depth_check off
+            polygon_mode_overrideable false
+            
+            // The shader modulates how much of the original scene goes into
+            // the last scene, to form the new blurred scene.
+            scene_blend alpha_blend
+            
+            fragment_program_ref motionblur_blend_ps {
+            }
+            vertex_program_ref common_vs {
+            }
+            
+            texture_unit {
+                tex_coord_set 0
+                tex_address_mode clamp
+                filtering none
+            }
+            
+            texture_unit {
+                tex_coord_set 0
+                tex_address_mode clamp
+                filtering trilinear
+            }
+        }
+    }
+}
+
+material compositors/MotionBlurDraw {
+    technique {
+        pass {
+            cull_hardware none
+            cull_software none
+            depth_check off
+            polygon_mode_overrideable false
+            
+            texture_unit {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}
+

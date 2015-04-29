@@ -11,6 +11,9 @@
 #include <OgreCompositorManager.h>
 #include <OgreWindowEventUtilities.h>
 
+#include <MyGUI_Gui.h>
+#include <MyGUI_OgrePlatform.h>
+
 #include <sstream>
 #include <string>
 
@@ -136,6 +139,17 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 	lensflare = new Rally::View::LensFlareView();
 	lensflare->init(sceneManager, camera, viewport->getWidth(), viewport->getHeight(), 800, 30, "LensFlareHalo", "LensFlareCircle", "LensFlareBurst");
 	lensflare->setPosition(Ogre::Vector3(-800, 500, -800));
+   
+    // MyGUI test code
+
+    MyGUI::Gui* mGUI;
+    MyGUI::OgrePlatform* mPlatform;
+
+    mPlatform = new MyGUI::OgrePlatform();
+    mPlatform->initialise(renderWindow, sceneManager);
+
+    mGUI = new MyGUI::Gui();
+    mGUI->initialise();   
 }
 
 

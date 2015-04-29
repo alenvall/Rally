@@ -14,7 +14,10 @@ project(Rally)
 
 if(WIN32)
 	if(NOT DEFINED ENV{BOOST_LIBRARYDIR})
-		message(FATAL_ERROR "BOOST_LIBRARYDIR not set?")
+		message(FATAL_ERROR "BOOST_LIBRARYDIR not set? Make sure Boost is properly set up!")
+	endif()
+	if(NOT DEFINED ENV{MYGUI_ROOT})
+		message(FATAL_ERROR "MYGUI_ROOT not set? Make sure MyGUI is properly set up!")
 	endif()
 	
 	set(CMAKE_MODULE_PATH "$ENV{OGRE_HOME}/CMake/;${CMAKE_MODULE_PATH}")
@@ -117,6 +120,22 @@ else()
  
 set(HDRS )
 
+if(NOT MYGUI_LIBS)
+	set(MYGUI_LIBS $ENV{MYGUI_ROOT}/build/lib)
+endif()
+if(NOT MYGUI_INCLUDE_DIR)
+	set(MYGUI_INCLUDE_DIR $ENV{MYGUI_ROOT}/MyGUIEngine/include)
+endif()
+if(NOT MYGUI_INCLUDE_OGRE_DIR)
+	set(MYGUI_INCLUDE_OGRE_DIR $ENV{MYGUI_ROOT}/Platforms/Ogre/OgrePlatform/include )
+endif()
+if(NOT MYGUI_PLUGIN_DIR)
+	file( TO_CMAKE_PATH $ENV{MYGUI_ROOT}/build/bin MYGUI_PLUGIN_DIR )
+endif()
+if(NOT BOOST_SPECIAL_LIBS)
+	set(BOOST_SPECIAL_LIBS $ENV{BOOST_LIBRARYDIR})
+endif()
+
 # Pretty confused about this stuff... seems to be working, eh.. /Erik
 if(WIN32 AND MSVC)
 	set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -145,13 +164,13 @@ if(WIN32 AND MSVC)
 		set_source_files_properties(
 			${src_file}
 			PROPERTIES
-			COMPILE_FLAGS "/Yustdafx.h /Zm239 /FIstdafx.h"
+			COMPILE_FLAGS "/Yustdafx.h /Zm251 /FIstdafx.h"
 		)
 	endforeach( src_file ${GAME_SOURCES} )
 	
 	set_source_files_properties(src/stdafx.cpp
 		PROPERTIES
-		COMPILE_FLAGS "/Ycstdafx.h /Zm239"
+		COMPILE_FLAGS "/Ycstdafx.h /Zm251"
 	)
     list(APPEND GAME_SOURCES stdafx.cpp)
 else()
@@ -164,11 +183,6 @@ else()
 	add_executable(Rally WIN32 ${HDRS} ${SRCS})
 endif()
 
-#set(SRCS
-#	./src/main.cpp
-#)
-
- 
 include_directories( ${OIS_INCLUDE_DIRS}
 	${OGRE_INCLUDE_DIRS}
 	${OGRE_SAMPLES_INCLUDEPATH}
@@ -176,6 +190,8 @@ include_directories( ${OIS_INCLUDE_DIRS}
 	${OGRE_Terrain_INCLUDE_DIRS}
 	${BULLET_HEADERS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${MYGUI_INCLUDE_DIR}
+    ${MYGUI_INCLUDE_OGRE_DIR}
 )
  
  
@@ -198,11 +214,21 @@ if(WIN32)
 		${OGRE_Terrain_LIBRARIES}
 	)
 	
+	# the following way to link library is probably not the best practice by a long shot, but time is of the essence...
 	SET(LINK_LIBRARY1 optimized ${BULLET_LIBS}/BulletDynamics_vs2010.lib debug ${BULLET_LIBS}/BulletDynamics_vs2010_debug.lib)
 	SET(LINK_LIBRARY2 optimized ${BULLET_LIBS}/BulletCollision_vs2010.lib debug ${BULLET_LIBS}/BulletCollision_vs2010_debug.lib)
 	SET(LINK_LIBRARY3 optimized ${BULLET_LIBS}/LinearMath_vs2010.lib debug ${BULLET_LIBS}/LinearMath_vs2010_debug.lib)
 	SET(LINK_LIBRARY4 optimized ${BULLET_LIBS}/../Extras/lib/BulletWorldImporter_vs2010.lib debug ${BULLET_LIBS}/../Extras/lib/BulletWorldImporter_vs2010_debug.lib)
 	SET(LINK_LIBRARY5 optimized ${BULLET_LIBS}/../Extras/lib/BulletFileLoader_vs2010.lib debug ${BULLET_LIBS}/../Extras/lib/BulletFileLoader_vs2010_debug.lib)
+	SET(LINK_LIBRARY5 optimized ${BULLET_LIBS}/../Extras/lib/BulletFileLoader_vs2010.lib debug ${BULLET_LIBS}/../Extras/lib/BulletFileLoader_vs2010_debug.lib)
+	SET(LINK_LIBRARY6 optimized ${MYGUI_LIBS}/Release/MyGUIEngine.lib debug ${MYGUI_LIBS}/Debug/MyGUIEngine_d.lib)
+	SET(LINK_LIBRARY7 optimized ${MYGUI_LIBS}/Release/MyGUI.OgrePlatform.lib debug ${MYGUI_LIBS}/Debug/MyGUI.OgrePlatform_d.lib)
+	
+	# explicitly link some boost libraries due to MyGUI messing with us
+	SET(LINK_LIBRARY8 optimized ${BOOST_SPECIAL_LIBS}/libboost_system-vc110-mt-1_55.lib debug ${BOOST_SPECIAL_LIBS}/libboost_system-vc110-mt-gd-1_55.lib)
+	SET(LINK_LIBRARY9 optimized ${BOOST_SPECIAL_LIBS}/libboost_thread-vc110-mt-1_55.lib debug ${BOOST_SPECIAL_LIBS}/libboost_thread-vc110-mt-gd-1_55.lib)
+	SET(LINK_LIBRARY10 optimized ${BOOST_SPECIAL_LIBS}/libboost_date_time-vc110-mt-1_55.lib debug ${BOOST_SPECIAL_LIBS}/libboost_date_time-vc110-mt-gd-1_55.lib)
+	SET(LINK_LIBRARY11 optimized ${BOOST_SPECIAL_LIBS}/libboost_chrono-vc110-mt-1_55.lib debug ${BOOST_SPECIAL_LIBS}/libboost_chrono-vc110-mt-gd-1_55.lib)
 	
 	target_link_libraries(Rally ${LINK_LIBRARY1})
 	target_link_libraries(Rally ${LINK_LIBRARY2})
@@ -210,6 +236,11 @@ if(WIN32)
 	target_link_libraries(Rally ${LINK_LIBRARY4})
 	target_link_libraries(Rally ${LINK_LIBRARY5})
 	target_link_libraries(Rally ${LINK_LIBRARY6})
+	target_link_libraries(Rally ${LINK_LIBRARY7})
+	target_link_libraries(Rally ${LINK_LIBRARY8})
+	target_link_libraries(Rally ${LINK_LIBRARY9})
+	target_link_libraries(Rally ${LINK_LIBRARY10})
+	target_link_libraries(Rally ${LINK_LIBRARY11})
 else() 
 	target_link_libraries(Rally
 		${OGRE_LIBRARIES}
@@ -247,7 +278,7 @@ if(WIN32)
 	# set up correctly. The better way to do it is setting Boost_COMPILER = -vc110 as
 	# that's not set in FindBoost.cmake for CMake 2.8.6 that Rally requires (-vc100 and below is listed!).
 	# When that one is set, it is possible to use Boost_SYSTEM_LIBRARY to find the correct
-	# dll. Note that Boost_LIBRARY_DIR is not necessartily set (but Boost_LIBRARY_DIRS was
+	# dll. Note that Boost_LIBRARY_DIR is not necessarily set (but Boost_LIBRARY_DIRS was
 	# on my system). However, just overriding it with an environment variable does the job.
 	if(NOT DEFINED Boost_LIBRARY_DIR)
 		set(Boost_LIBRARY_DIR $ENV{BOOST_LIBRARYDIR})
@@ -290,6 +321,7 @@ if(WIN32)
 		${OGRE_PLUGIN_DIR_REL}/Plugin_OctreeZone.dll
 		${OGRE_PLUGIN_DIR_REL}/Plugin_OctreeSceneManager.dll
 		${OGRE_PLUGIN_DIR_REL}/OIS.dll
+		${MYGUI_PLUGIN_DIR}/release/MyGUIEngine.dll
 		DESTINATION bin/release
 		CONFIGURATIONS Release RelWithDebInfo
 	)
@@ -306,6 +338,7 @@ if(WIN32)
 		${OGRE_PLUGIN_DIR_DBG}/Plugin_OctreeZone_d.dll
 		${OGRE_PLUGIN_DIR_DBG}/Plugin_OctreeSceneManager_d.dll
 		${OGRE_PLUGIN_DIR_DBG}/OIS_d.dll
+		${MYGUI_PLUGIN_DIR}/debug/MyGUIEngine_d.dll
 		DESTINATION bin/debug
 		CONFIGURATIONS Debug
 	)

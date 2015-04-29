@@ -40,6 +40,10 @@
 #include <Terrain/OgreTerrainGroup.h>
 #include <Terrain/OgreTerrainMaterialGeneratorA.h>
 
+// MyGUI
+#include <MyGUI_Gui.h>
+#include <MyGUI_OgrePlatform.h>
+
 // Bullet
 #include <btBulletDynamicsCommon.h>
 #include <../Extras/Serialize/BulletWorldImporter/btBulletWorldImporter.h>

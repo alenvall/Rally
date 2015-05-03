@@ -33,7 +33,7 @@ namespace Rally { namespace View {
 
         // Some ugly code to fill in a vector3 to a packet. Should endian-convert from
         // host to network byte order if necessary. (Usually it isn't necessary for float.)
-        void writeVector3toPacket(char* packet, const Rally::Vector3 & vector) {
+        void writeVector3toPacket(unsigned char* packet, const Rally::Vector3 & vector) {
             memcpy(packet + 0*4, &vector.x, 4);
             memcpy(packet + 1*4, &vector.y, 4);
             memcpy(packet + 2*4, &vector.z, 4);
@@ -41,7 +41,7 @@ namespace Rally { namespace View {
 
         // Some ugly code to fill in a vector3 to a packet. Should endian-convert from
         // host to network byte order if necessary. (Usually it isn't necessary for float.)
-        void writeQuaternionToPacket(char* packet, const Rally::Quaternion& quaternion) {
+        void writeQuaternionToPacket(unsigned char* packet, const Rally::Quaternion& quaternion) {
             memcpy(packet + 0*4, &quaternion.w, 4);
             memcpy(packet + 1*4, &quaternion.x, 4);
             memcpy(packet + 2*4, &quaternion.y, 4);
@@ -50,7 +50,7 @@ namespace Rally { namespace View {
 
         // Takes a packet with offset pre-added and returns a Vector3. This should
         // convert from network to host byte order if necessary (usually not for float).
-        Rally::Vector3 packetToVector3(char* packet) {
+        Rally::Vector3 packetToVector3(unsigned char* packet) {
             float* a = reinterpret_cast<float*>(packet + 0*4);
             float* b = reinterpret_cast<float*>(packet + 1*4);
             float* c = reinterpret_cast<float*>(packet + 2*4);
@@ -60,7 +60,7 @@ namespace Rally { namespace View {
 
         // Takes a packet with offset pre-added and returns a Vector3. This should
         // convert from network to host byte order if necessary (usually not for float).
-        Rally::Quaternion packetToQuaternion(char* packet) {
+        Rally::Quaternion packetToQuaternion(unsigned char* packet) {
             float* w = reinterpret_cast<float*>(packet + 0*4);
             float* x = reinterpret_cast<float*>(packet + 1*4);
             float* y = reinterpret_cast<float*>(packet + 2*4);
@@ -172,7 +172,7 @@ namespace Rally { namespace View {
     }
 
     void RallyNetView::pushCar() {
-        char packet[48];
+        unsigned char packet[48];
 
         packet[0] = 1; // Type = 1
 
@@ -192,7 +192,7 @@ namespace Rally { namespace View {
         packet[46] = static_cast<unsigned char>(tractionVector.z*255.0f);
         packet[47] = static_cast<unsigned char>(tractionVector.w*255.0f);
 
-        int status = ::send(socket, packet, sizeof(packet), 0x00000000);
+        int status = ::send(socket, reinterpret_cast<char*>(packet), sizeof(packet), 0x00000000);
         if(status < 0) {
             if(isNonblockErrno()) {
                 // Since we have a non-blocking socket, we may use this. This means we
@@ -209,9 +209,9 @@ namespace Rally { namespace View {
     }
 
     void RallyNetView::pullCars() {
-        char packet[MAX_PACKET_SIZE];
+        unsigned char packet[MAX_PACKET_SIZE];
         while(true) {
-            int receivedBytes = ::recv(socket, packet, MAX_PACKET_SIZE, 0x00000000);
+            int receivedBytes = ::recv(socket, reinterpret_cast<char*>(packet), MAX_PACKET_SIZE, 0x00000000);
             if(receivedBytes < 0) {
                 if(isNonblockErrno()) {
                     // No more messages, goto remote client cleanup below

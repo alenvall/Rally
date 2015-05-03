@@ -96,6 +96,14 @@ namespace Rally { namespace View {
             return (error == ECONNREFUSED || error == ECONNABORTED || error == ECONNRESET);
 #endif
         }
+
+		void cleanupSocket(int socket) {
+#ifdef PLATFORM_WINDOWS
+			if(socket) ::closesocket(socket);
+#else
+			if(socket) ::close(socket);
+#endif
+		}
     }
 
     RallyNetView::RallyNetView(RallyNetView_NetworkCarListener & listener)
@@ -105,12 +113,10 @@ namespace Rally { namespace View {
     }
 
     RallyNetView::~RallyNetView() {
-    #ifdef PLATFORM_WINDOWS
-        if(socket) ::closesocket(socket);
-        ::WSACleanup();
-    #else
-        if(socket) ::close(socket);
-    #endif
+		cleanupSocket(socket);
+#ifdef PLATFORM_WINDOWS
+		::WSACleanup();
+#endif
     }
 
     void RallyNetView::initialize(const std::string & serverAddress, unsigned short serverPort, const Model::Car* playerCar) {
@@ -125,7 +131,11 @@ namespace Rally { namespace View {
 
         socket = ::socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
         if(socket <= 0) {
-            throw std::runtime_error("Could not connect!");
+			std::cerr << "Could not create socket for RallyNet. Starting without multiplayer support!" << std::endl;
+			cleanupSocket(socket);
+			socket = 0;
+			return;
+            //throw std::runtime_error("Could not connect!");
         }
 
         sockaddr_in address;
@@ -139,7 +149,13 @@ namespace Rally { namespace View {
         if(::connect(socket, (const sockaddr*) & address, sizeof(sockaddr_in)) < 0) {
             // Throwing here is ok, since we're using UDP so no connection will actually happen,
             // meaning it won't fail because of network problems.
-            throw std::runtime_error("Could not connect to server!");
+            // throw std::runtime_error("Could not connect to server!");
+
+			// The above is out-commented, but still applies. There was suspicion that
+			std::cerr << "Could not connect to RallyNet. Starting without multiplayer support!" << std::endl;
+			cleanupSocket(socket);
+			socket = 0;
+			return;
         }
 
         bool nonBlockSucceded = false;
@@ -161,10 +177,14 @@ namespace Rally { namespace View {
     }
 
     void RallyNetView::pullRemoteChanges() {
+		if(!socket) return;
+
         pullCars();
     }
 
     void RallyNetView::pushLocalChanges() {
+		if(!socket) return;
+
         if(rateLimitTimer.getElapsedSeconds() >= SEND_RATE_LIMIT) {
             rateLimitTimer.reset();
             pushCar();

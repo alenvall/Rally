@@ -1,42 +1,77 @@
-// matte genrated by blender2ogre 0.6.0
-
-material matte 
+material matte
 {
-    receive_shadows on 
+	technique
+	{
+		// First base ambient light pass
+		pass
+		{
+			lighting on
+			ambient 0.4 0.4 0.4
+			diffuse 0.4 0.4 0.4
+		}
+		
+		// Bump map light pass	
+		pass
+		{
+			// base colours, not needed for rendering, but as information
+			// to lighting pass categorisation routine
+			ambient 0 0 0
 
-    technique
-    {
-        pass matte
-        {
-            ambient 0.30000001192092896 0.30000001192092896 0.30000001192092896 1.0
-            diffuse 0.6000000238418579 0.6000000238418579 0.6000000238418579 1.0
-            specular 0.0 0.0 0.0 1.0 12.5
-            emissive 0.0 0.0 0.0 1.0
+			// do this for each light
+			iteration once_per_light
+		
+			scene_blend add
 
-            alpha_to_coverage off
-            colour_write on
-            cull_hardware clockwise
-            depth_check on
-            depth_func less_equal
-            depth_write on
-            illumination_stage 
-            light_clip_planes off
-            light_scissor off
-            lighting on
-            normalise_normals off
-            polygon_mode solid
-            scene_blend one zero
-            scene_blend_op add
-            shading gouraud
-            transparent_sorting on
+			// Vertex program reference
+			vertex_program_ref Examples/BumpMapVP
+			{
+				param_named_auto lightPosition light_position_object_space 0
+				param_named_auto worldViewProj worldviewproj_matrix
+			}
 
-            texture_unit 
-            {
-                texture mattehuset.png
-                tex_address_mode wrap
-                scale 1.0 1.0
-                colour_op modulate
-            }
-        }
-    }
+			// Fragment program
+			fragment_program_ref Examples/BumpMapFP
+			{
+				param_named_auto lightDiffuse light_diffuse_colour 0
+			}
+			
+			// Base bump map
+			texture_unit
+			{
+				texture mattehusetnorm.png
+				colour_op 
+			}			
+		}
+
+		//Texture pass: Texture multiplied by amount of light from bump map pass
+		pass
+		{
+			lighting off
+			scene_blend modulate
+			texture_unit
+			{
+				texture mattehuset.png gamma
+			}
+		}
+
+		pass
+      		{
+       	 	ambient 0.4 0.4 0.4
+        	diffuse 0.6 0.6 0.6
+        	specular 1 1 1 1 128
+		emissive 0 0 0
+		alpha_rejection greater 1
+        	lighting on
+		scene_blend alpha_blend
+       	 	texture_unit
+	 		{
+         	texture mattehusetspeca.png
+  
+       	colour_op modulate
+         		}
+
+      		}  
+
+	}
 }
+

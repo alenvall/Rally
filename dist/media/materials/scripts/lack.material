@@ -1,5 +1,3 @@
-// lack genrated by blender2ogre 0.6.0
-
 material lack 
 {
     receive_shadows on 
@@ -32,7 +30,7 @@ material lack
 
             texture_unit 
             {
-                texture car.png
+                texture car.png gamma
                 tex_address_mode wrap
                 scale 1.0 1.0
                 colour_op modulate

@@ -1,0 +1,27 @@
+material direction
+{
+        receive_shadows off
+	technique
+	{
+		
+                pass
+      		{
+       	 	ambient 0.5 0.5 0.5
+        	diffuse 0.6 0.6 0.6
+        	specular 0 0 0 1
+		emissive 0 0 0
+		alpha_rejection greater 128
+        	lighting on
+		scene_blend alpha_blend
+       	 	texture_unit
+	 		{
+         	texture direction2.png gamma
+  
+       	colour_op modulate
+         		}
+
+      		}  
+
+	}
+}
+

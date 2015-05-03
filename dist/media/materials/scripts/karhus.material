@@ -1,5 +1,3 @@
-// karhus genrated by blender2ogre 0.6.0
-
 material karhus 
 {
     receive_shadows on 
@@ -8,8 +6,8 @@ material karhus
     {
         pass karhus
         {
-            ambient 0.30000001192092896 0.30000001192092896 0.30000001192092896 1.0
-            diffuse 0.6000000238418579 0.6000000238418579 0.6000000238418579 1.0
+            ambient 0.6 0.6 0.6 1.0
+            diffuse 0.9 0.9 0.9 1.0
             specular 0.0 0.0 0.0 1.0 12.5
             emissive 0.0 0.0 0.0 1.0
 
@@ -32,7 +30,7 @@ material karhus
 
             texture_unit 
             {
-                texture karhuset.png
+                texture karhuset.png gamma
                 tex_address_mode wrap
                 scale 1.0 1.0
                 colour_op modulate

@@ -1,4 +1,4 @@
-	#include "model/Checkpoint.h"
+#include "model/Checkpoint.h"
 
 #include "Rally.h"
 #include "model/PhysicsWorld.h"

@@ -1,5 +1,16 @@
 <scene previous_export_time="1424957155.532474" formatVersion="1.0.1" exported_by="Erik" export_time="1425129215.69861" >
   <nodes >
+<node name="direction2" >
+      <position y="0.000000" z="0.000000" x="0.000000" />
+      <rotation qz="0.000000" qy="0.000000" qw="0.707107" qx="-0.707107" />
+      <scale y="0.025400" z="0.025400" x="0.025400" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity damping_trans="0.03999999910593033" lock_rot_z="False" actor="False" damping_rot="0.10000000149011612" anisotropic_friction="False" friction_y="1.0" mass="1.0" inertia_tensor="0.4000000059604645" lock_trans_y="False" physics_type="STATIC" lock_trans_x="False" meshFile="direction2.mesh" friction_x="1.0" velocity_max="0.0" mass_radius="1.0" velocity_min="0.0" name="direction2" lock_trans_z="False" friction_z="1.0" lock_rot_y="False" lock_rot_x="False" ghost="False" />
+    </node>
+
 <node name="direction" >
       <position x="0.000000" y="0.000000" z="0.000000" />
       <rotation qz="0.000000" qw="0.707107" qy="0.000000" qx="-0.707107" />

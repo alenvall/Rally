@@ -14,7 +14,12 @@
 #include <sstream>
 #include <string>
 
+
 #include <btBulletDynamicsCommon.h>
+
+#include <OgreOverlaySystem.h>
+
+int Rally::View::OgreText::init=0;
 
 SceneView::SceneView(Rally::Model::World& world) :
         world(world),
@@ -22,13 +27,31 @@ SceneView::SceneView(Rally::Model::World& world) :
         viewport(NULL),
         sceneManager(NULL),
         renderWindow(NULL),
-        postProcessingEnabled(false) {
+        postProcessingEnabled(false),
+		showKeyMenu(true),
+		timeText(NULL),
+		speedText(NULL),
+		lastTimeText(NULL),
+        highScoreText(NULL),
+		kmhText(NULL),
+		keyText(NULL),
+		titleText(NULL),
+		trackText(NULL){
     debugDrawEnabled = false;
 }
 
 SceneView::~SceneView() {
+	delete timeText;
+	delete speedText;
+	delete lastTimeText;
+	delete highScoreText;
+	delete kmhText;
+	delete keyText;
+	delete titleText;
+	delete trackText;
+
     //delete bulletDebugDrawer;
-    tunnelPortalView.detach();
+    //tunnelPortalView.detach();
 
     playerCarView.detach();
 
@@ -39,6 +62,7 @@ SceneView::~SceneView() {
 	lensflare->end();
 	delete lensflare;
 	lensflare = NULL;
+
 
     Ogre::Root* root = Ogre::Root::getSingletonPtr();
     delete root;
@@ -84,6 +108,9 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     sceneManager->getEntity("maskin")->setCastShadows(false);
     sceneManager->getEntity("plank")->setCastShadows(false);
 	sceneManager->getEntity("direction")->setCastShadows(false);
+	sceneManager->getEntity("direction2")->setCastShadows(false);
+	sceneManager->getEntity("direction")->setVisible(false);
+	sceneManager->getEntity("direction2")->setVisible(false);
     sceneManager->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE);
     sceneManager->setAmbientLight(Ogre::ColourValue(1, 1, 1));
     sceneManager->setShadowFarDistance(250);
@@ -115,6 +142,7 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 
 	//goalView.attachTo(sceneManager, "Finish", "car.mesh", world.getFinish());
 	goalView.attachTo(sceneManager, "Start", "carkombi.mesh", world.getStart());
+	sceneManager->getEntity("Start")->setCastShadows(false);
 
     // Debug draw Bullet
     bulletDebugDrawer = new Rally::Util::BulletDebugDrawer(sceneManager);
@@ -123,21 +151,69 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     sceneManager->setSkyDome(true, "Rally/CloudySky", 5, 8);
 
 	// Place the magic surface at the end of the tunnel.
-	tunnelPortalView.attachTo(sceneManager, "TunnelPortal");
-	tunnelPortalView.setScale(15.0f, 5.0f, true);
-    tunnelPortalView.setPosition(Rally::Vector3(86.0f, 5.0f, -134.0f));
-    tunnelPortalView.setOrientation(Rally::Quaternion(Ogre::Math::Sqrt(0.5f), 0, -Ogre::Math::Sqrt(0.5f), 0));
+	// tunnelPortalView.attachTo(sceneManager, "TunnelPortal");
+	// tunnelPortalView.setScale(15.0f, 5.0f, true);
+    // tunnelPortalView.setPosition(Rally::Vector3(86.0f, 5.0f, -134.0f));
+    // tunnelPortalView.setOrientation(Rally::Quaternion(Ogre::Math::Sqrt(0.5f), 0, -Ogre::Math::Sqrt(0.5f), 0));
 
     // Snap a picture for the magic surface at Kopparbunken.
-	tunnelPortalView.moveCamera(
-        Rally::Vector3(255.0f, 0.0f, 240.0f), // position
-        Rally::Vector3(255.0f, 0.0f, 239.0f)); // look at
-    tunnelPortalView.takeSnapshot();
+	//tunnelPortalView.moveCamera(
+      //  Rally::Vector3(255.0f, 0.0f, 240.0f), // position
+       // Rally::Vector3(255.0f, 0.0f, 239.0f)); // look at
+    //tunnelPortalView.takeSnapshot();
 
 	lensflare = new Rally::View::LensFlareView();
 	lensflare->init(sceneManager, camera, viewport->getWidth(), viewport->getHeight(), 800, 30, "LensFlareHalo", "LensFlareCircle", "LensFlareBurst");
 	lensflare->setPosition(Ogre::Vector3(-800, 500, -800));
 
+
+	// Overlay
+	Ogre::OverlaySystem* pOverlaySystem = new Ogre::OverlaySystem();
+	sceneManager->addRenderQueueListener(pOverlaySystem);
+	timeText=new Rally::View::OgreText;
+	timeText->setText("Hello World!");    // Text to be displayed
+			                               // Now it is possible to use the Ogre::String as parameter too
+	timeText->setPos(0.05f,0.05f);        // Text position, using relative co-ordinates
+	timeText->setCol(1.0f,1.0f,1.0f,0.5f);    // Text colour (Red, Green, Blue, Alpha)
+	timeText->setTextSize(0.06f);
+
+	speedText=new Rally::View::OgreText;                             
+	speedText->setPos(0.75f,0.80f);        
+	speedText->setCol(1.0f,0.0f,0.0f,0.7f); 
+	speedText->setTextSize(0.17f);
+	
+	kmhText=new Rally::View::OgreText;
+	kmhText->setText("km/h");
+	kmhText->setPos(0.85f,0.83f);        
+	kmhText->setCol(1.0f,1.0f,1.0f,0.5f); 
+	kmhText->setTextSize(0.06f);
+
+	lastTimeText=new Rally::View::OgreText;                             
+	lastTimeText->setPos(0.05f,0.85f);        
+	lastTimeText->setCol(1.0f,1.0f,1.0f,0.5f);
+	lastTimeText->setTextSize(0.06f);
+
+	highScoreText=new Rally::View::OgreText;                             
+	highScoreText->setPos(0.05f,0.80f);        
+	highScoreText->setCol(1.0f,1.0f,1.0f,0.5f);
+	highScoreText->setTextSize(0.06f);
+
+	keyText=new Rally::View::OgreText;                             
+	keyText->setPos(0.20f,0.70f);        
+	keyText->setCol(1.0f,1.0f,1.0f,0.9f);
+	keyText->setTextSize(0.06f);
+
+	titleText=new Rally::View::OgreText;                             
+	titleText->setPos(0.20f,0.20f);        
+	titleText->setCol(1.0f,0.0f,0.0f,0.9f);
+	titleText->setTextSize(0.25f);
+
+	trackText=new Rally::View::OgreText;                             
+	trackText->setPos(0.75f,0.05f);        
+	trackText->setCol(1.0f,1.0f,1.0f,0.5f);
+	trackText->setTextSize(0.06f);
+
+	SceneView::toggleKeyMenu();
 }
 
 
@@ -193,6 +269,7 @@ bool SceneView::renderFrame(float deltaTime) {
         updateRemoteCars();
 		//updateCheckPoints();
 		updateParticles();
+		updateOverlay();
 		lensflare->update();
 
     if(debugDrawEnabled){
@@ -355,6 +432,53 @@ void SceneView::togglePostProcessing() {
     }
 }
 
+void SceneView::toggleKeyMenu(){
+	showKeyMenu = !showKeyMenu;
+
+	if(!showKeyMenu){
+		titleText->setText("RALLY SPORT \n RACING GAME");
+		keyText->setText(" /up: accelerate/down: brake/left: left/right: right/ \n /space: switch car/f: float \n /r: reflections/t: track/k: key");
+		timeText->setCol(0.0f,0.0f,0.0f,0.0f);
+		speedText->setCol(0.0f,0.0f,0.0f,0.0f);
+		lastTimeText->setCol(0.0f,0.0f,0.0f,0.0f);
+		highScoreText->setCol(0.0f,0.0f,0.0f,0.0f);
+		kmhText->setCol(0.0f,0.0f,0.0f,0.0f);
+	} else {
+		keyText->setText("");
+		titleText->setText("");
+		timeText->setCol(1.0f,1.0f,1.0f,0.5f);
+		speedText->setCol(1.0f,0.0f,0.0f,0.7f);
+		lastTimeText->setCol(1.0f,1.0f,1.0f,0.5f);
+		highScoreText->setCol(1.0f,1.0f,1.0f,0.5f);
+		kmhText->setCol(1.0f,1.0f,1.0f,0.5f);
+	}
+}
+
+void SceneView::toggleTrack(){
+
+	if(sceneManager->getEntity("direction")->isVisible()){
+		sceneManager->getEntity("direction")->setVisible(false);
+		sceneManager->getEntity("direction2")->setVisible(true);
+		lastTimeText->setCol(1.0f,1.0f,1.0f,0.5f);
+		highScoreText->setCol(1.0f,1.0f,1.0f,0.5f);
+		timeText->setCol(1.0f,1.0f,1.0f,0.5f);
+		trackText->setText("Track 2");
+	} else if(sceneManager->getEntity("direction2")->isVisible()){
+	    sceneManager->getEntity("direction2")->setVisible(false);
+		lastTimeText->setCol(0.0f,0.0f,0.0f,0.0f);
+		highScoreText->setCol(0.0f,0.0f,0.0f,0.0f);
+		timeText->setCol(0.0f,0.0f,0.0f,0.0f);
+		trackText->setText("");
+	} else {
+		sceneManager->getEntity("direction")->setVisible(true);
+		lastTimeText->setCol(1.0f,1.0f,1.0f,0.5f);
+		highScoreText->setCol(1.0f,1.0f,1.0f,0.5f);
+		timeText->setCol(1.0f,1.0f,1.0f,0.5f);
+		trackText->setText("track 1");
+		
+	}
+}
+
 void SceneView::updateParticles(){
 	bool enabled[4] = {false, false, false, false};
 	Rally::Vector3 positions[4];
@@ -383,4 +507,20 @@ void SceneView::updateParticles(){
 
 	playerCarView.enableWheelParticles(enabled, positions);
 
+}
+
+void SceneView::updateOverlay(){
+	std::ostringstream timeOut;
+	std::ostringstream speedOut;
+	std::ostringstream lastTimeOut;
+	std::ostringstream highScoreOut;
+	timeOut << "Time " << world.getElapsedSeconds(); //world.getPlayerCar().getEffectFactor();
+	timeText->setText(timeOut.str());
+	speedOut << (int)(world.getPlayerCar().getVelocity().length() * 3.6);
+	speedText->setText(speedOut.str());
+	lastTimeOut << "Last time: " << world.getLastTime();
+	lastTimeText->setText(lastTimeOut.str());
+	highScoreOut << "High Score: " << world.getHighScore();
+	highScoreText->setText(highScoreOut.str());
+	
 }

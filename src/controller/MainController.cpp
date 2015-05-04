@@ -108,7 +108,13 @@ namespace Rally { namespace Controller {
         if(inputInit.isKeyPressed("p")) {
             std::cout << car.getPosition() << std::endl;
         }
-
+		if(inputInit.isKeyPressedDebounced("k")) {
+            sceneView.toggleKeyMenu();
+        }
+		if(inputInit.isKeyPressedDebounced("t")) {
+            sceneView.toggleTrack();
+			world.resetHighScore();
+        }
     }
 
     void MainController_RemoteCarListener::carUpdated(unsigned short carId,

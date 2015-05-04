@@ -6,42 +6,10 @@ material asfalt
 		pass
 		{
 			lighting on
-			ambient 0.0 0.0 0.0
-			diffuse 0.0 0.0 0.0
+			ambient 0.3 0.3 0.3
+			diffuse 1.0 1.0 1.0
 		}
 		
-		// Bump map light pass	
-		pass
-		{
-			// base colours, not needed for rendering, but as information
-			// to lighting pass categorisation routine
-			ambient 0 0 0
-
-			// do this for each light
-			iteration once_per_light
-		
-			scene_blend add
-
-			// Vertex program reference
-			vertex_program_ref Examples/BumpMapVP
-			{
-				param_named_auto lightPosition light_position_object_space 0
-				param_named_auto worldViewProj worldviewproj_matrix
-			}
-
-			// Fragment program
-			fragment_program_ref Examples/BumpMapFP
-			{
-				param_named_auto lightDiffuse light_diffuse_colour 0
-			}
-			
-			// Base bump map
-			texture_unit
-			{
-				texture asfaltnorm.png
-				colour_op 
-			}			
-		}
 
 		//Texture pass: Texture multiplied by amount of light from bump map pass
 		pass

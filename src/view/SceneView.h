@@ -11,6 +11,7 @@
 #include "view/MotionBlurView.h"
 #include "view/LensFlareView.h"
 #include "model/World.h"
+#include "view/OgreText.h"
 
 #include <OgreCamera.h>
 #include <OgreViewport.h>
@@ -50,6 +51,8 @@ class SceneView {
         void toggleDebugDraw();
         void toggleReflections();
         void togglePostProcessing();
+		void toggleKeyMenu();
+		void toggleTrack();
         void addLogicListener(Rally::View::SceneView_LogicListener& logicListener);
 
         void playerCarTypeUpdated() {
@@ -67,8 +70,11 @@ class SceneView {
 
         bool debugDrawEnabled;
         bool postProcessingEnabled;
+		bool showKeyMenu;
 
 		void updateParticles();
+
+		void updateOverlay();
 
 		void updateSkidmarks();
 
@@ -86,7 +92,7 @@ class SceneView {
         Rally::View::PlayerCarView playerCarView;
         std::map<int, Rally::View::RemoteCarView> remoteCarViews;
 
-        Rally::View::PortalView tunnelPortalView;
+        //Rally::View::PortalView tunnelPortalView;
 
         //std::map<const Rally::Model::RemoteCar&, TheViewType&> remoteCarViews;
 
@@ -97,6 +103,15 @@ class SceneView {
         Rally::View::BloomView bloomView;
         Rally::View::MotionBlurView motionBlurView;
 		Rally::View::LensFlareView* lensflare;
+
+		Rally::View::OgreText* timeText;
+		Rally::View::OgreText* speedText;
+		Rally::View::OgreText* lastTimeText;
+		Rally::View::OgreText* highScoreText;
+		Rally::View::OgreText* kmhText;
+		Rally::View::OgreText* keyText;
+		Rally::View::OgreText* titleText;
+		Rally::View::OgreText* trackText;
 };
 
 #endif // RALLY_VIEW_SCENEVIEW_H_

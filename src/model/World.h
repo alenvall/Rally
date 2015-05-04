@@ -66,6 +66,11 @@ namespace Rally { namespace Model {
                 physicsWorld.gravityGlitch();
             }
 
+			float getElapsedSeconds();
+			float getLastTime();
+			float getHighScore();
+			void resetHighScore();
+
         private:
             Rally::Model::PhysicsWorld physicsWorld;
             Rally::Model::Car playerCar;
@@ -74,6 +79,8 @@ namespace Rally { namespace Model {
             //std::map<int, Rally::Model::Checkpoint> checkPoints;
             std::map<int, Rally::Model::RemoteCar> remoteCars;
 			Rally::Util::Timer finishTimer;
+			float lastTime;
+			float highScore;
 
     };
 

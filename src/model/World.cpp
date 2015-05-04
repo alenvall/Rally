@@ -1,7 +1,11 @@
 #include "model/World.h"
 #include "model/PhysicsWorld.h"
 
+#include <fstream>
+#include <iostream>
 #include <sstream>
+
+	
 
 namespace Rally { namespace Model {
 
@@ -9,7 +13,7 @@ namespace Rally { namespace Model {
             physicsWorld(),
             playerCar(physicsWorld),
 			finish(physicsWorld),
-			start(physicsWorld) {
+			start(physicsWorld){
     }
 
     World::~World() {
@@ -22,12 +26,14 @@ namespace Rally { namespace Model {
 		start.attachToWorld(btVector3(113.0f, 0.f, 183.0f), btVector3(10.f, 10.f, 10.f));
         finishTimer.reset();
 		start.collide();
+		highScore = 200;
 
     }
 
     void World::update(float deltaTime) {
         physicsWorld.update(deltaTime);
 		printFinishedTime();
+
     }
 
 	void World::printFinishedTime(){
@@ -38,11 +44,32 @@ namespace Rally { namespace Model {
 			//finish.setEnabled(false);
 			if(finishTimer.getElapsedSeconds() > 2)
 			  std::cout << "Finished after: " << finishTimer.getElapsedSeconds() << " seconds!" << std::endl;
+			lastTime = finishTimer.getElapsedSeconds();
+			if(highScore == 200)
+				highScore = 199;
+			else if(lastTime < highScore)
+				highScore = lastTime;
 			finish.reset();
 			start.reset();
 			finishTimer.reset();
 
 
 		}
+	}
+
+	float World::getElapsedSeconds(){
+	    return finishTimer.getElapsedSeconds();
+	}
+
+	float World::getLastTime(){
+		return lastTime;
+	}
+
+	float World::getHighScore(){
+		return highScore;
+	}
+
+	void World::resetHighScore(){
+		highScore = 200;
 	}
 } }

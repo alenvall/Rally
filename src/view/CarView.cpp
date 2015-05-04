@@ -84,25 +84,6 @@ namespace Rally { namespace View {
 
     }
 
-	void CarView::initParticleSystem(const std::string& carName){
-		bodyParticleNode = sceneManager->getRootSceneNode()->createChildSceneNode();
-
-		rightBackSystem = sceneManager->createParticleSystem(carName + "_RightBackParticleSystem", "Car/Dirt");
-		leftBackSystem = sceneManager->createParticleSystem(carName + "_LeftBackParticleSystem", "Car/Dirt");
-		rightFrontSystem = sceneManager->createParticleSystem(carName + "_RightFrontParticleSystem", "Car/Dirt");
-		leftFrontSystem = sceneManager->createParticleSystem(carName + "_LeftFrontParticleSystem", "Car/Dirt");
-
-		bodyParticleNode->attachObject(rightBackSystem);
-		bodyParticleNode->attachObject(leftBackSystem);
-		bodyParticleNode->attachObject(rightFrontSystem);
-		bodyParticleNode->attachObject(leftFrontSystem);
-
-		rightBackSystem->getEmitter(0)->setEnabled(false);
-		leftBackSystem->getEmitter(0)->setEnabled(false);
-		rightFrontSystem->getEmitter(0)->setEnabled(false);
-		leftFrontSystem->getEmitter(0)->setEnabled(false);
-	}
-
     void CarView::updateBody(const Rally::Vector3& position, const Rally::Quaternion& orientation) {
         carNode->setPosition(position);
         carNode->setOrientation(orientation);
@@ -119,6 +100,49 @@ namespace Rally { namespace View {
         rightBackWheelNode->setOrientation(localCompensation*rightBackWheelOrientation);
         leftBackWheelNode->setOrientation(localCompensation*leftBackWheelOrientation);
     }
+
+	void CarView::initParticleSystem(const std::string& carName){
+		bodyParticleNode = sceneManager->getRootSceneNode()->createChildSceneNode();
+
+		rightBackSystem = sceneManager->createParticleSystem(carName + "_RightBackParticleSystem", "Car/Dirt");
+		leftBackSystem = sceneManager->createParticleSystem(carName + "_LeftBackParticleSystem", "Car/Dirt");		
+		rightFrontSystem = sceneManager->createParticleSystem(carName + "_RightFrontParticleSystem", "Car/Dirt");
+		leftFrontSystem = sceneManager->createParticleSystem(carName + "_LeftFrontParticleSystem", "Car/Dirt");
+		
+		bodyParticleNode->attachObject(rightBackSystem);
+		bodyParticleNode->attachObject(leftBackSystem);
+		bodyParticleNode->attachObject(rightFrontSystem);
+		bodyParticleNode->attachObject(leftFrontSystem);
+
+		rightBackSystem->getEmitter(0)->setEnabled(false);
+		leftBackSystem->getEmitter(0)->setEnabled(false);
+		rightFrontSystem->getEmitter(0)->setEnabled(false);
+		leftFrontSystem->getEmitter(0)->setEnabled(false);
+	}
+
+	void CarView::enableWheelParticles(bool enabled[], Rally::Vector3 position[]){
+		Rally::Vector3 offset(0.f, -0.25f, 0.f);
+
+		rightBackSystem->getEmitter(0)->setEnabled(enabled[0]);
+		if(enabled[0]){
+			rightBackSystem->getEmitter(0)->setPosition(position[0] + offset);
+		}
+
+		rightFrontSystem->getEmitter(0)->setEnabled(enabled[1]);
+		if(enabled[1]){
+			rightFrontSystem->getEmitter(0)->setPosition(position[1] + offset);
+		}
+
+		leftBackSystem->getEmitter(0)->setEnabled(enabled[2]);
+		if(enabled[2]){
+			leftBackSystem->getEmitter(0)->setPosition(position[2] + offset);
+		}
+
+		leftFrontSystem->getEmitter(0)->setEnabled(enabled[3]);
+		if(enabled[3]){
+			leftFrontSystem->getEmitter(0)->setPosition(position[3] + offset);
+		}
+	}
 
     void CarView::changeCar(char carType) {
         if(carType < 'a' || carType > 'r') {
@@ -195,28 +219,5 @@ namespace Rally { namespace View {
             break;
         }
     }
-
-	void CarView::enableWheelParticles(bool enabled[], Rally::Vector3 position[]){
-		Rally::Vector3 offset(0.f, -0.25f, 0.f);
-
-		rightBackSystem->getEmitter(0)->setEnabled(enabled[0]);
-		if(enabled[0]){
-			rightBackSystem->getEmitter(0)->setPosition(position[0] + offset);
-		}
-
-		rightFrontSystem->getEmitter(0)->setEnabled(enabled[1]);
-		if(enabled[1]){
-			rightFrontSystem->getEmitter(0)->setPosition(position[1] + offset);
-		}
-
-		leftBackSystem->getEmitter(0)->setEnabled(enabled[2]);
-		if(enabled[2]){
-			leftBackSystem->getEmitter(0)->setPosition(position[2] + offset);
-		}
-
-		leftFrontSystem->getEmitter(0)->setEnabled(enabled[3]);
-		if(enabled[3]){
-			leftFrontSystem->getEmitter(0)->setPosition(position[3] + offset);
-		}
-	}
 } }
+

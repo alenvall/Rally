@@ -32,7 +32,7 @@ material mark
 
             texture_unit 
             {
-                texture mark.png
+                texture mark.png gamma
                 tex_address_mode wrap
                 scale 1.0 1.0
                 colour_op modulate

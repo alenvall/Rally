@@ -17,7 +17,7 @@ material taktegel
 			scene_blend modulate
 			texture_unit
 			{
-				texture taktegel.png
+				texture taktegel.png gamma
 			}
 		}
 	}

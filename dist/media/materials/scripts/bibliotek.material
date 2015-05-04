@@ -18,7 +18,7 @@ material bibliotek
 			scene_blend modulate
 			texture_unit
 			{
-				texture bibliotek.png
+				texture bibliotek.png gamma
 			}
 		}
 

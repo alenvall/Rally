@@ -20,7 +20,7 @@ material taksvart
 
       texture_unit
         {
-        texture taksvart.png
+        texture taksvart.png gamma
         tex_address_mode wrap
                 
         scale 1.0 1.0

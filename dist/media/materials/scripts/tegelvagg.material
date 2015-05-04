@@ -18,7 +18,7 @@ material tegelvagg
 			scene_blend modulate
 			texture_unit
 			{
-				texture tegelvagg.png
+				texture tegelvagg.png gamma
 			}
 		}
 		

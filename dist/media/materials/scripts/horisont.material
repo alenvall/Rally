@@ -32,7 +32,7 @@ material horisont
 
             texture_unit 
             {
-                texture horisont.png
+                texture horisont.png gamma
                 tex_address_mode wrap
                 scale 1.0 1.0
                 colour_op modulate

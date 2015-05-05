@@ -109,6 +109,8 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     sceneManager->getEntity("plank")->setCastShadows(false);
 	sceneManager->getEntity("direction")->setCastShadows(false);
 	sceneManager->getEntity("direction2")->setCastShadows(false);
+	sceneManager->getEntity("direction3")->setCastShadows(false);
+	sceneManager->getEntity("direction3")->setVisible(false);
 	sceneManager->getEntity("direction")->setVisible(false);
 	sceneManager->getEntity("direction2")->setVisible(false);
     sceneManager->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE);
@@ -122,7 +124,7 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     Ogre::Light* sunLight = sceneManager->createLight("sunLight");
     sunLight->setType(Ogre::Light::LT_DIRECTIONAL);
     sunLight->setCastShadows(true);
-    sunLight->setDirection(Ogre::Vector3( 0, -3, 0 ));
+    sunLight->setDirection(Ogre::Vector3( 1, -1, -1 ));
     sunLight->setDiffuseColour(Ogre::ColourValue(1, 1, 1));
     sunLight->setSpecularColour(Ogre::ColourValue(1, 1, 1));
     sceneNode->attachObject(sunLight);
@@ -164,7 +166,7 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 
 	lensflare = new Rally::View::LensFlareView();
 	lensflare->init(sceneManager, camera, viewport->getWidth(), viewport->getHeight(), 800, 30, "LensFlareHalo", "LensFlareCircle", "LensFlareBurst");
-	lensflare->setPosition(Ogre::Vector3(-800, 500, -800));
+	lensflare->setPosition(Ogre::Vector3(-800, 300, 800));
 
 
 	// Overlay
@@ -214,6 +216,7 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 	trackText->setTextSize(0.06f);
 
 	SceneView::toggleKeyMenu();
+
 }
 
 
@@ -437,7 +440,7 @@ void SceneView::toggleKeyMenu(){
 
 	if(!showKeyMenu){
 		titleText->setText("RALLY SPORT \n RACING GAME");
-		keyText->setText(" /up: accelerate/down: brake/left: left/right: right/ \n /space: switch car/f: float \n /r: reflections/t: track/k: key");
+		keyText->setText("    /up:accelerate/down:brake/left:left/right:right/ \n /space:switch car/t:switch track/r:reflections/f:float/ \n                  press k!");
 		timeText->setCol(0.0f,0.0f,0.0f,0.0f);
 		speedText->setCol(0.0f,0.0f,0.0f,0.0f);
 		lastTimeText->setCol(0.0f,0.0f,0.0f,0.0f);
@@ -446,10 +449,7 @@ void SceneView::toggleKeyMenu(){
 	} else {
 		keyText->setText("");
 		titleText->setText("");
-		timeText->setCol(1.0f,1.0f,1.0f,0.5f);
 		speedText->setCol(1.0f,0.0f,0.0f,0.7f);
-		lastTimeText->setCol(1.0f,1.0f,1.0f,0.5f);
-		highScoreText->setCol(1.0f,1.0f,1.0f,0.5f);
 		kmhText->setCol(1.0f,1.0f,1.0f,0.5f);
 	}
 }
@@ -462,9 +462,16 @@ void SceneView::toggleTrack(){
 		lastTimeText->setCol(1.0f,1.0f,1.0f,0.5f);
 		highScoreText->setCol(1.0f,1.0f,1.0f,0.5f);
 		timeText->setCol(1.0f,1.0f,1.0f,0.5f);
-		trackText->setText("Track 2");
+		trackText->setText("Track 2 \nquick round");
 	} else if(sceneManager->getEntity("direction2")->isVisible()){
 	    sceneManager->getEntity("direction2")->setVisible(false);
+		sceneManager->getEntity("direction3")->setVisible(true);
+		lastTimeText->setCol(1.0f,1.0f,1.0f,0.5f);
+		highScoreText->setCol(1.0f,1.0f,1.0f,0.5f);
+		timeText->setCol(1.0f,1.0f,1.0f,0.5f);
+		trackText->setText("Track 3 \nthe longest road");
+	} else if(sceneManager->getEntity("direction3")->isVisible()){
+	    sceneManager->getEntity("direction3")->setVisible(false);
 		lastTimeText->setCol(0.0f,0.0f,0.0f,0.0f);
 		highScoreText->setCol(0.0f,0.0f,0.0f,0.0f);
 		timeText->setCol(0.0f,0.0f,0.0f,0.0f);
@@ -474,7 +481,7 @@ void SceneView::toggleTrack(){
 		lastTimeText->setCol(1.0f,1.0f,1.0f,0.5f);
 		highScoreText->setCol(1.0f,1.0f,1.0f,0.5f);
 		timeText->setCol(1.0f,1.0f,1.0f,0.5f);
-		trackText->setText("track 1");
+		trackText->setText("track 1 \nnumber one");
 		
 	}
 }
@@ -521,6 +528,9 @@ void SceneView::updateOverlay(){
 	lastTimeOut << "Last time: " << world.getLastTime();
 	lastTimeText->setText(lastTimeOut.str());
 	highScoreOut << "High Score: " << world.getHighScore();
-	highScoreText->setText(highScoreOut.str());
+	if(world.getHighScore() == 200 || world.getHighScore() == 199)
+		highScoreText->setText("High Score:");
+	else
+	    highScoreText->setText(highScoreOut.str());
 	
 }

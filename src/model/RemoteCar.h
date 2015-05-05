@@ -47,6 +47,10 @@ namespace Rally { namespace Model {
                 return physicsRemoteCar.getVelocity();
             }
 
+            Rally::Model::PhysicsWorld& getPhysicsWorld() const {
+                return physicsWorld;
+            }
+
         private:
             Rally::Model::PhysicsWorld& physicsWorld;
             Rally::Model::PhysicsRemoteCar physicsRemoteCar;

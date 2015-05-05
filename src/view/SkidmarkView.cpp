@@ -31,7 +31,7 @@ namespace Rally { namespace View {
 		skidmarkBillboards->setCommonUpVector(up);
 		skidmarkBillboards->setCommonDirection(common);
 		skidmarkBillboards->setBillboardsInWorldSpace(true);
-		skidmarkBillboards->setDefaultDimensions(Ogre::Real(0.14), Ogre::Real(0.35));
+		skidmarkBillboards->setDefaultDimensions(Ogre::Real(0.14), Ogre::Real(0.5));
 		skidmarkBillboards->setAutoextend(true);
 
 		skidmarkNode->attachObject(skidmarkBillboards);
@@ -61,7 +61,7 @@ namespace Rally { namespace View {
 				iteratorDirections = directions.begin();
                 iteratorTractions = tractions.begin();
 
-                if(positions.size() >= 4 && normals.size() >= 4 && directions.size() >= 4){
+				if(positions.size() >= 2 && normals.size() >= 2 && directions.size() >= 2){
 					createSkidmark(*iterator, *iteratorNormals, 
 						*iteratorDirections, *iteratorTractions);
 
@@ -71,8 +71,8 @@ namespace Rally { namespace View {
 						float tempTraction = *iteratorTractions;
 
 						int m = positions.size()-n-1;
-						if(m > 5)
-							m = 5;
+						if(m > 3)
+							m = 3;
 						while(m > 0){
 							for(int a = 0; a < m; a++){
 								++iterator;
@@ -125,12 +125,12 @@ namespace Rally { namespace View {
 
 		b->setRotation(r);
         
-        double lengthAdjust = 0.07;
-        float alphaAdjust = 28.0f;
+        double lengthAdjust = 0.03;
+        float alphaAdjust = 15.0f;
 
-        float trac = 1 - traction + 0.005;
+        float trac = 1 - traction;
 
-        b->setDimensions(Ogre::Real(0.14), Ogre::Real(Ogre::Math::Clamp(lengthAdjust*car->getPhysicsCar().getVelocity().length(), 0.3, 0.7)));
+        b->setDimensions(Ogre::Real(0.2), Ogre::Real(Ogre::Math::Clamp(lengthAdjust*car->getPhysicsCar().getVelocity().length(), 0.4, 0.7)));
         b->setColour(Ogre::ColourValue(1.0f, 1.0f, 1.0f, Ogre::Math::Pow(trac, alphaAdjust)));
 
 		if(skidmarkBillboards->getNumBillboards() > 1000)

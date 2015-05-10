@@ -120,27 +120,35 @@ namespace Rally { namespace View {
 		leftFrontSystem->getEmitter(0)->setEnabled(false);
 	}
 
-	void CarView::enableWheelParticles(bool enabled[], Rally::Vector3 position[]){
+	void CarView::enableWheelParticles(bool enabled[], Rally::Vector3 position[], float tractions[]){
 		Rally::Vector3 offset(0.f, -0.25f, 0.f);
+
+        int emissionFactor = 100;
+        int emissionMax = 5000;
+        int emissionMin = 800;
 
 		rightBackSystem->getEmitter(0)->setEnabled(enabled[0]);
 		if(enabled[0]){
 			rightBackSystem->getEmitter(0)->setPosition(position[0] + offset);
+            rightBackSystem->getEmitter(0)->setEmissionRate(Ogre::Math::Clamp((int)(emissionFactor/(tractions[0]+0.01)), emissionMin, emissionMax));
 		}
 
 		rightFrontSystem->getEmitter(0)->setEnabled(enabled[1]);
 		if(enabled[1]){
 			rightFrontSystem->getEmitter(0)->setPosition(position[1] + offset);
+            rightFrontSystem->getEmitter(0)->setEmissionRate(Ogre::Math::Clamp((int)(emissionFactor/(tractions[1]+0.01)), emissionMin, emissionMax));
 		}
 
 		leftBackSystem->getEmitter(0)->setEnabled(enabled[2]);
 		if(enabled[2]){
 			leftBackSystem->getEmitter(0)->setPosition(position[2] + offset);
+            leftBackSystem->getEmitter(0)->setEmissionRate(Ogre::Math::Clamp((int)(emissionFactor/(tractions[2]+0.01)), emissionMin, emissionMax));
 		}
 
 		leftFrontSystem->getEmitter(0)->setEnabled(enabled[3]);
 		if(enabled[3]){
 			leftFrontSystem->getEmitter(0)->setPosition(position[3] + offset);
+            leftFrontSystem->getEmitter(0)->setEmissionRate(Ogre::Math::Clamp((int)(emissionFactor/(tractions[3]+0.01)), emissionMin, emissionMax));
 		}
 	}
 

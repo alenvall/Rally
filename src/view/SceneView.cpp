@@ -17,6 +17,7 @@
 #include <MyGUI_TextBox.h>
 #include <MyGUI_ImageBox.h>
 #include <MyGUI_RotatingSkin.h>
+#include <MyGUI_PointerManager.h>
 
 #include <sstream>
 #include <string>
@@ -153,6 +154,9 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 
     mGUI = new MyGUI::Gui();
     mGUI->initialise();
+
+    if(MyGUI::PointerManager::getInstancePtr() != nullptr)
+        MyGUI::PointerManager::getInstancePtr()->setVisible(false);
 
     //Images that represent the speedometer
     MyGUI::ImageBox* parent = MyGUI::Gui::getInstance().createWidget<MyGUI::ImageBox>("ImageBox", 50, 50, 200, 200, MyGUI::Align::Center, "Main");

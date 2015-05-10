@@ -144,8 +144,7 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 	lensflare->init(sceneManager, camera, viewport->getWidth(), viewport->getHeight(), 800, 30, "LensFlareHalo", "LensFlareCircle", "LensFlareBurst");
 	lensflare->setPosition(Ogre::Vector3(-800, 500, -800));
    
-    // MyGUI test code
-
+    // Initialize MyGUI
     MyGUI::Gui* mGUI;
     MyGUI::OgrePlatform* mPlatform;
 

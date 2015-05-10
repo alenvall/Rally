@@ -72,6 +72,8 @@ class SceneView {
 
 		void updateSkidmarks();
 
+        void updateHud();
+
         Rally::Model::World& world;
 
         Ogre::Camera* camera;

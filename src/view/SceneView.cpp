@@ -13,6 +13,10 @@
 
 #include <MyGUI_Gui.h>
 #include <MyGUI_OgrePlatform.h>
+#include <MyGUI_Window.h>
+#include <MyGUI_TextBox.h>
+#include <MyGUI_ImageBox.h>
+#include <MyGUI_RotatingSkin.h>
 
 #include <sstream>
 #include <string>
@@ -149,7 +153,17 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     mPlatform->initialise(renderWindow, sceneManager);
 
     mGUI = new MyGUI::Gui();
-    mGUI->initialise();   
+    mGUI->initialise();
+
+    //Images that represent the speedometer
+    MyGUI::ImageBox* parent = MyGUI::Gui::getInstance().createWidget<MyGUI::ImageBox>("ImageBox", 50, 50, 200, 200, MyGUI::Align::Center, "Main");
+    MyGUI::ImageBox* speedometer = parent->createWidget<MyGUI::ImageBox>("ImageBox", 0, 0, 200, 200, MyGUI::Align::Center);
+    speedometer->setImageTexture("speedmeter_background.png");
+
+    MyGUI::ImageBox* pointer = parent->createWidget<MyGUI::ImageBox>("RotatingSkin", 95, 95, 10, 100, MyGUI::Align::Center, "pointer");
+    pointer->setImageTexture("speedmeter_indicator.png");
+    MyGUI::RotatingSkin* rotation = pointer->getSubWidgetMain()->castType<MyGUI::RotatingSkin>();
+    rotation->setCenter(MyGUI::IntPoint(5, 5));
 }
 
 
@@ -206,6 +220,7 @@ bool SceneView::renderFrame(float deltaTime) {
 		//updateCheckPoints();
 		updateParticles();
 		lensflare->update();
+        updateHud();
 
     if(debugDrawEnabled){
         world.getPhysicsWorld().getDynamicsWorld()->debugDrawWorld();
@@ -395,4 +410,13 @@ void SceneView::updateParticles(){
 
 	playerCarView.enableWheelParticles(enabled, positions);
 
+}
+
+void SceneView::updateHud(){
+    //Update speed display
+    Ogre::Real speed = world.getPlayerCar().getVelocity().length() * Ogre::Real(3.6);
+    //Rotate the "pointer" of the speedometer according to speed
+    MyGUI::ImageBox* box = MyGUI::Gui::getInstance().findWidget<MyGUI::ImageBox>("pointer");
+    MyGUI::RotatingSkin* rotation = box->getSubWidgetMain()->castType<MyGUI::RotatingSkin>();
+    rotation->setAngle(Ogre::Math::lerp(rotation->getAngle(), speed*Ogre::Math::DegreesToRadians(0.8) + Ogre::Math::DegreesToRadians(8.0), 0.025));
 }

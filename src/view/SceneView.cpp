@@ -159,13 +159,15 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
         MyGUI::PointerManager::getInstancePtr()->setVisible(false);
 
     //Images that represent the speedometer
-    MyGUI::ImageBox* parent = MyGUI::Gui::getInstance().createWidget<MyGUI::ImageBox>("ImageBox", 50, 50, 200, 200, MyGUI::Align::Center, "Main");
+    MyGUI::ImageBox* parent = MyGUI::Gui::getInstance().createWidget<MyGUI::ImageBox>
+        ("ImageBox", 50, 50, 200, 200, MyGUI::Align::Center, "speedmeter");
     MyGUI::ImageBox* speedometer = parent->createWidget<MyGUI::ImageBox>("ImageBox", 0, 0, 200, 200, MyGUI::Align::Center);
     speedometer->setImageTexture("speedmeter_background.png");
 
-    MyGUI::ImageBox* pointer = parent->createWidget<MyGUI::ImageBox>("RotatingSkin", 95, 95, 10, 100, MyGUI::Align::Center, "pointer");
-    pointer->setImageTexture("speedmeter_indicator.png");
-    MyGUI::RotatingSkin* rotation = pointer->getSubWidgetMain()->castType<MyGUI::RotatingSkin>();
+    MyGUI::ImageBox* indicator = parent->createWidget<MyGUI::ImageBox>
+        ("RotatingSkin", 95, 95, 10, 100, MyGUI::Align::Center, "speedmeter_indicator");
+    indicator->setImageTexture("speedmeter_indicator.png");
+    MyGUI::RotatingSkin* rotation = indicator->getSubWidgetMain()->castType<MyGUI::RotatingSkin>();
     rotation->setCenter(MyGUI::IntPoint(5, 5));
 }
 
@@ -419,7 +421,7 @@ void SceneView::updateHud(){
     //Update speed display
     Ogre::Real speed = world.getPlayerCar().getVelocity().length() * Ogre::Real(3.6);
     //Rotate the "pointer" of the speedometer according to speed
-    MyGUI::ImageBox* box = MyGUI::Gui::getInstance().findWidget<MyGUI::ImageBox>("pointer");
+    MyGUI::ImageBox* box = MyGUI::Gui::getInstance().findWidget<MyGUI::ImageBox>("speedmeter_indicator");
     MyGUI::RotatingSkin* rotation = box->getSubWidgetMain()->castType<MyGUI::RotatingSkin>();
     rotation->setAngle(Ogre::Math::lerp(rotation->getAngle(), speed*Ogre::Math::DegreesToRadians(0.8) + Ogre::Math::DegreesToRadians(8.0), 0.025));
 }

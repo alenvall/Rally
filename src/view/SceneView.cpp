@@ -160,7 +160,7 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 
     //Images that represent the speedometer
     MyGUI::ImageBox* parent = MyGUI::Gui::getInstance().createWidget<MyGUI::ImageBox>
-        ("ImageBox", 50, 50, 200, 200, MyGUI::Align::Center, "speedmeter");
+        ("ImageBox", 50, 50, 200, 200, MyGUI::Align::Center, "Main");
     MyGUI::ImageBox* speedometer = parent->createWidget<MyGUI::ImageBox>("ImageBox", 0, 0, 200, 200, MyGUI::Align::Center);
     speedometer->setImageTexture("speedmeter_background.png");
 

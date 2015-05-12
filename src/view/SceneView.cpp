@@ -358,13 +358,15 @@ void SceneView::updateParticles(){
 	Rally::Vector3 positions[4];
     float tractions[4] = {1, 1, 1, 1};
 
-	if(world.getPlayerCar().getPhysicsCar().getRightBackWheelTraction() < 0.4){
+    float tractionMin = 0.8;
+
+	if(world.getPlayerCar().getPhysicsCar().getRightBackWheelTraction() < tractionMin){
 		positions[0] = world.getPlayerCar().getPhysicsCar().getRightBackWheelOrigin();
 		enabled[0] = true;
         tractions[0] = world.getPlayerCar().getPhysicsCar().getRightBackWheelTraction();
 	}
 
-	if(world.getPlayerCar().getPhysicsCar().getRightFrontWheelTraction() < 0.4){
+	if(world.getPlayerCar().getPhysicsCar().getRightFrontWheelTraction() < tractionMin){
 		positions[1] = world.getPlayerCar().getPhysicsCar().getRightFrontWheelOrigin();
 		enabled[1] = true;
         tractions[1] = world.getPlayerCar().getPhysicsCar().getRightFrontWheelTraction();
@@ -372,7 +374,7 @@ void SceneView::updateParticles(){
 	}
 
 
-	if(world.getPlayerCar().getPhysicsCar().getLeftBackWheelTraction() < 0.4){
+	if(world.getPlayerCar().getPhysicsCar().getLeftBackWheelTraction() < tractionMin){
 		positions[2] = world.getPlayerCar().getPhysicsCar().getLeftBackWheelOrigin();
 		enabled[2] = true;
         tractions[2] = world.getPlayerCar().getPhysicsCar().getLeftBackWheelTraction();
@@ -380,7 +382,7 @@ void SceneView::updateParticles(){
 	}
 
 
-	if(world.getPlayerCar().getPhysicsCar().getLeftFrontWheelTraction() < 0.4){
+	if(world.getPlayerCar().getPhysicsCar().getLeftFrontWheelTraction() < tractionMin){
 		positions[3] = world.getPlayerCar().getPhysicsCar().getLeftFrontWheelOrigin();
 		enabled[3] = true;
         tractions[3] = world.getPlayerCar().getPhysicsCar().getLeftFrontWheelTraction();

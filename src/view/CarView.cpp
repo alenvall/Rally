@@ -123,9 +123,9 @@ namespace Rally { namespace View {
 	void CarView::enableWheelParticles(bool enabled[], Rally::Vector3 position[], float tractions[]){
 		Rally::Vector3 offset(0.f, -0.25f, 0.f);
 
-        int emissionFactor = 100;
-        int emissionMax = 5000;
-        int emissionMin = 800;
+        int emissionFactor = 20;
+        int emissionMax = 1000;
+        int emissionMin = 500;
 
 		rightBackSystem->getEmitter(0)->setEnabled(enabled[0]);
 		if(enabled[0]){

@@ -1,6 +1,7 @@
 #include "controller/MainController.h"
 #include "model/Car.h"
 #include "util/Timer.h"
+#include "util/Profiler.h"
 #include "view/InputInit.h"
 #include "view/SceneView.h"
 
@@ -30,6 +31,8 @@ namespace Rally { namespace Controller {
         sceneView.addLogicListener(*this);
 
         frameTimer.reset();
+        Rally::Util::Profiler::instance.reset();
+        Rally::Util::Profiler::instance.setCycleModulus(73);
         while(true) {
             float deltaTime = frameTimer.getElapsedSeconds();
 
@@ -42,6 +45,7 @@ namespace Rally { namespace Controller {
             // Don't forget to do this AFTER the epsilon check above
             // (avoiding an infinite loop), but before anything else.
             frameTimer.reset();
+            Rally::Util::Profiler::instance.reset();
 
             // ADD ANYTHING THAT'S NOT FRAME-TIMING CODE BELOW THIS LINE!
 
@@ -52,17 +56,25 @@ namespace Rally { namespace Controller {
             if(!sceneView.renderFrame(deltaTime)) {
                 return;
             }
+
+            Rally::Util::Profiler::instance.printTimes(); // Prints each modulus:th frame.
         }
     }
 
     void MainController::updateLogic(float deltaTime) {
+        Rally::Util::Profiler::instance.checkpoint("SHIM: updateLogicBegin");
+
         netView.pullRemoteChanges();
+        Rally::Util::Profiler::instance.checkpoint("Pull network");
 
         updateInput();
+        Rally::Util::Profiler::instance.checkpoint("Process input");
 
         world.update(deltaTime);
+        Rally::Util::Profiler::instance.checkpoint("Step simulation");
 
         netView.pushLocalChanges();
+        Rally::Util::Profiler::instance.checkpoint("Push network");
     }
 
     void MainController::updateInput() {

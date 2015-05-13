@@ -1,4 +1,5 @@
 #include "view/SSAOView.h"
+#include "util/Profiler.h"
 
 #include <OgreTechnique.h>
 #include <OgreCamera.h>
@@ -60,6 +61,7 @@ namespace Rally { namespace View {
 
     void SSAOView::notifyMaterialRender(Ogre::uint32 compositorPassId, Ogre::MaterialPtr& clonedMaterial) {
         if(compositorPassId == 100) {
+            Rally::Util::Profiler::instance.checkpoint("SSAO begin");
             float effectFactor = car->getEffectFactor();
 
             ssaoSelectShaderParameters->setNamedConstant("sceneProjectionMatrix",
@@ -68,6 +70,7 @@ namespace Rally { namespace View {
 
             recalculateBlur(effectFactor);
         } else if(compositorPassId == 200) {
+            Rally::Util::Profiler::instance.checkpoint("SSAO pre blur");
             blurHorizontalShaderParameters->setNamedConstant("baseWeight", blurBaseWeight);
             blurHorizontalShaderParameters->setNamedConstant("weights", blurWeights);
             blurHorizontalShaderParameters->setNamedConstant("offsets", blurHorizontalOffsets);
@@ -75,6 +78,8 @@ namespace Rally { namespace View {
             blurVerticalShaderParameters->setNamedConstant("baseWeight", blurBaseWeight);
             blurVerticalShaderParameters->setNamedConstant("weights", blurWeights);
             blurVerticalShaderParameters->setNamedConstant("offsets", blurVerticalOffsets);
+        } else if(compositorPassId == 400) {
+            Rally::Util::Profiler::instance.checkpoint("SSAO pre assemble");
         }
     }
 

@@ -221,8 +221,7 @@ else()
 		${BULLET_LIBS}/libBulletDynamics.a
 		${BULLET_LIBS}/libBulletCollision.a
 		${BULLET_LIBS}/libLinearMath.a
-		)
-	#    -lGL -lGLU)
+	    -lGL) # -lGLU)
  endif()
  
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/bin/debug)

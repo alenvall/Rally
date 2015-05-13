@@ -23,7 +23,7 @@ void main() {
     // The length is bounded by [1, 4] and the idea is that it should be scaled further so that
     // no texel will test itself for occlusion. A cheap way is to just change radius below and
     // hope for the best, even if the results wouldn't be 100 % accurate.
-    vec3 hemisphere[16] = vec3[](
+    const vec3 hemisphere[16] = vec3[](
         vec3(-0.17947426117077606, -0.2552789504219729, 0.32771201703308744),
         vec3(-0.0929430250903943, -0.15022899751515606, 0.15734721849596883),
         vec3(-0.023182541661165706, 0.08987930735474939, 0.06378498765102361),

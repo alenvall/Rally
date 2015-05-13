@@ -17,8 +17,8 @@ namespace Rally { namespace View {
 	void RemoteSkidmarkView::attachTo(Ogre::SceneManager* sceneManager){
 		skidmarkNode = sceneManager->getRootSceneNode()->createChildSceneNode();
 
-		Ogre::BillboardType type = Ogre::BillboardType::BBT_PERPENDICULAR_SELF;
-		Ogre::BillboardRotationType rotationType = Ogre::BillboardRotationType::BBR_VERTEX;
+		Ogre::BillboardType type = Ogre::BBT_PERPENDICULAR_SELF;
+		Ogre::BillboardRotationType rotationType = Ogre::BBR_VERTEX;
 		Rally::Vector3 up(0, 0, 1);
 		Rally::Vector3 common(0, 1, 0);
 
@@ -49,34 +49,34 @@ namespace Rally { namespace View {
         Rally::Vector3 direction = car.getVelocity().normalisedCopy();
 
         Rally::Vector3 normal(0, 1, 0);
-        
+
         // Right front
         if(car.getTractionVector().x < tractionReq){
-            createSkidmark(car.getPosition() + Ogre::Vector3(xOffset, heightOffset, zOffsetFront), 
+            createSkidmark(car.getPosition() + Ogre::Vector3(xOffset, heightOffset, zOffsetFront),
                 normal, direction, car.getTractionVector().x, speed);
         }
         // Left front
         if(car.getTractionVector().y < tractionReq){
-			createSkidmark(car.getPosition() + Ogre::Vector3(-xOffset, heightOffset, zOffsetFront), 
+			createSkidmark(car.getPosition() + Ogre::Vector3(-xOffset, heightOffset, zOffsetFront),
                 normal, direction, car.getTractionVector().y, speed);
         }
         // Right back
         if(car.getTractionVector().z < tractionReq){
-			createSkidmark(car.getPosition() + Ogre::Vector3(xOffset, heightOffset, zOffsetBack), 
+			createSkidmark(car.getPosition() + Ogre::Vector3(xOffset, heightOffset, zOffsetBack),
                 normal, direction, car.getTractionVector().z, speed);
         }
         // Left back
         if(car.getTractionVector().w < tractionReq){
-			createSkidmark(car.getPosition() + Ogre::Vector3(-xOffset, heightOffset, zOffsetBack), 
+			createSkidmark(car.getPosition() + Ogre::Vector3(-xOffset, heightOffset, zOffsetBack),
                 normal, direction, car.getTractionVector().w, speed);
         }
-        
+
 	}
 
 	void RemoteSkidmarkView::createSkidmark(Rally::Vector3 position, Rally::Vector3 normal, Rally::Vector3 direction, float traction, float speed){
-		Ogre::Billboard* b = skidmarkBillboards->createBillboard(Rally::Vector3(position.x, position.y+0.05f, position.z), 
+		Ogre::Billboard* b = skidmarkBillboards->createBillboard(Rally::Vector3(position.x, position.y+0.05f, position.z),
 			Ogre::ColourValue::Black);
-        
+
         double lengthAdjust = 0.012;
         float alphaAdjust = 4.0f;
 

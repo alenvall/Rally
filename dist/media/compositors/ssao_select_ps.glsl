@@ -10,7 +10,6 @@ uniform mat4 sceneProjectionMatrix;
 uniform vec4 viewportSize;
 
 uniform sampler2D gbuffer_position;
-uniform sampler2D gbuffer_normal;
 
 uniform float effectFactor;
 
@@ -45,7 +44,8 @@ void main() {
     float farDist = 0.5;
 
     vec3 position = texture2D(gbuffer_position, gl_TexCoord[0].xy).xyz;
-    vec3 normal = texture2D(gbuffer_normal, gl_TexCoord[0].xy).xyz; // Already normalized
+    vec3 normal = -normalize(cross(dFdx(position), dFdy(position))); // TODO: we could use these as tangent/bitangent below I suppose....
+    //vec3 normal = texture2D(gbuffer_normal, gl_TexCoord[0].xy).xyz; // Already normalized
     
     // Get some high-frequency noise used below, use the current pixel index and
     // do a modulo 4 on it, so that we get 0, 1, 2, 3, 0, 1, 2, 3.

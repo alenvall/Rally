@@ -35,12 +35,16 @@ namespace Rally { namespace Model {
                 this->tractionVector = tractionVector;
             }
 
-            Rally::Vector4 getTractionVector() {
+            Rally::Vector4 getTractionVector() const{
                 return tractionVector;
             }
 
             Rally::Quaternion getWheelRotation() const {
                 return physicsRemoteCar.getWheelRotation();
+            }
+
+            Rally::Vector3 getVelocity() const {
+                return physicsRemoteCar.getVelocity();
             }
 
         private:

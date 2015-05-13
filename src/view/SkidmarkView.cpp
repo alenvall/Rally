@@ -31,7 +31,7 @@ namespace Rally { namespace View {
 		skidmarkBillboards->setCommonUpVector(up);
 		skidmarkBillboards->setCommonDirection(common);
 		skidmarkBillboards->setBillboardsInWorldSpace(true);
-		skidmarkBillboards->setDefaultDimensions(Ogre::Real(0.2), Ogre::Real(0.5));
+		skidmarkBillboards->setDefaultDimensions(Ogre::Real(0.14), Ogre::Real(0.5));
 		skidmarkBillboards->setAutoextend(true);
 
 		skidmarkNode->attachObject(skidmarkBillboards);
@@ -41,26 +41,34 @@ namespace Rally { namespace View {
 		std::list<Rally::Vector3> positions;
 		std::list<Rally::Vector3> normals;
 		std::list<Rally::Vector3> directions;
+        std::list<float> tractions;
 		std::list<Rally::Vector3>::iterator iterator;
 		std::list<Rally::Vector3>::iterator iteratorNormals;
 		std::list<Rally::Vector3>::iterator iteratorDirections;
+        std::list<float>::iterator iteratorTractions;
+
+        float traction = 1.0f;
 
 		for(int i = 0; i < 4; i++){
 			positions = car->getSkidmarkPositions(i);
 			normals = car->getSkidmarkNormals(i);
 			directions = car->getSkidmarkDirections(i);
+			tractions = car->getSkidmarkTractions(i);
 
 			if(positions.size() > 0){
 				iterator = positions.begin();
 				iteratorNormals = normals.begin();
 				iteratorDirections = directions.begin();
+                iteratorTractions = tractions.begin();
 
 				if(positions.size() >= 2 && normals.size() >= 2 && directions.size() >= 2){
-					createSkidmark(*iterator, *iteratorNormals,
-						*iteratorDirections);
+					createSkidmark(*iterator, *iteratorNormals, 
+						*iteratorDirections, *iteratorTractions);
+
 					for(int n = 0, size = positions.size(); n < size; n++){
 						Rally::Vector3 temp = *iterator;
-						Rally::Vector3 tempDir = *iterator;
+						Rally::Vector3 tempDir = *iteratorDirections;
+						float tempTraction = *iteratorTractions;
 
 						int m = positions.size()-n-1;
 						if(m > 3)
@@ -68,12 +76,14 @@ namespace Rally { namespace View {
 						while(m > 0){
 							for(int a = 0; a < m; a++){
 								++iterator;
+								++iteratorTractions;
 							}
 
-							createSkidmark((*iterator).midPoint(temp), *iteratorNormals,
-								(*iteratorDirections));
+							createSkidmark((*iterator).midPoint(temp), *iteratorNormals, 
+								(*iteratorDirections), ((*iteratorTractions) + tempTraction)/2.0f);	
 
 							for(int b = 0; b < m; b++){
+								--iteratorTractions;
 								--iterator;
 							}
 							m--;
@@ -82,19 +92,21 @@ namespace Rally { namespace View {
 							++iterator;
 							++iteratorNormals;
 							++iteratorDirections;
+							++iteratorTractions;
 						}
 					}
 
 					car->clearSkidmarkPositions(i);
 					car->clearSkidmarkNormals(i);
 					car->clearSkidmarkDirections(i);
+					car->clearSkidmarkTractions(i);
 				}
 			}
 		}
 	}
 
-	void SkidmarkView::createSkidmark(Rally::Vector3 position, Rally::Vector3 normal, Rally::Vector3 direction){
-		Ogre::Billboard* b = skidmarkBillboards->createBillboard(Rally::Vector3(position.x, position.y+0.05f, position.z),
+	void SkidmarkView::createSkidmark(Rally::Vector3 position, Rally::Vector3 normal, Rally::Vector3 direction, float traction){
+		Ogre::Billboard* b = skidmarkBillboards->createBillboard(Rally::Vector3(position.x, position.y+0.05f, position.z), 
 			Ogre::ColourValue::Black);
 
 		b->mDirection = normal;
@@ -112,6 +124,14 @@ namespace Rally { namespace View {
 		}
 
 		b->setRotation(r);
+        
+        double lengthAdjust = 0.03;
+        float alphaAdjust = 15.0f;
+
+        float trac = 1 - traction;
+
+        b->setDimensions(Ogre::Real(0.2), Ogre::Real(Ogre::Math::Clamp(lengthAdjust*car->getPhysicsCar().getVelocity().length(), 0.4, 0.7)));
+        b->setColour(Ogre::ColourValue(1.0f, 1.0f, 1.0f, Ogre::Math::Pow(trac, alphaAdjust)));
 
 		if(skidmarkBillboards->getNumBillboards() > 1000)
 			skidmarkBillboards->removeBillboard(skidmarkBillboards->getBillboard(skidmarkBillboards->getNumBillboards()-1000));

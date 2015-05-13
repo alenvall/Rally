@@ -1,4 +1,4 @@
-material skidmark
+material dirt
 {
 	technique
 	{
@@ -13,7 +13,7 @@ material skidmark
 			
             texture_unit
             {
-				texture skidmark9.png gamma
+				texture dirt.png gamma
 				tex_address_mode clamp
             }
 		}

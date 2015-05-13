@@ -92,6 +92,14 @@ namespace Rally { namespace Model {
 				physicsCar.clearSkidmarkDirections(wheel);
 			}
 
+            std::list<float> getSkidmarkTractions(int wheel){
+				return physicsCar.getSkidmarkTractions(wheel);
+			}
+
+			void clearSkidmarkTractions(int wheel){
+                physicsCar.clearSkidmarkTractions(wheel);
+			}
+
 			Rally::Model::PhysicsCar getPhysicsCar(){
 				return physicsCar;
 			}

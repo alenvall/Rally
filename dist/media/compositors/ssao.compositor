@@ -13,8 +13,9 @@ compositor compositors/SSAOCompositor {
                 identifier 100
                 material compositors/SSAOSelect
                 // One for each of the render targets in the MRT
-                input 0 gbuffer 0
-                input 1 gbuffer 1
+                //input 0 gbuffer 0
+                //input 1 gbuffer 1
+                input 0 gbuffer
             }
         }
         

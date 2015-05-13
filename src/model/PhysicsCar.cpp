@@ -365,26 +365,30 @@ namespace Rally { namespace Model {
 	void PhysicsCar::checkForSkidmarks() {
 
 		for(int i = 0; i < 4; i++){
-			if(skidmarkPositions[i].size() > 5){
+			if(skidmarkPositions[i].size() > 4){
 				skidmarkPositions[i].clear();
 				skidmarkNormals[i].clear();
 				skidmarkDirections[i].clear();
+                skidmarkTractions[i].clear();
 			}
 		}
+
 		if(getVelocity().length() > 5)
 		for(int i = 0; i < 4; i++){
 			if(raycastVehicle->getWheelInfo(i).m_raycastInfo.m_isInContact &&
-				raycastVehicle->getWheelInfo(i).m_skidInfo < 0.3){
+				raycastVehicle->getWheelInfo(i).m_skidInfo < 0.1){
 
 					if(raycastVehicle->getWheelInfo(i).m_raycastInfo.m_contactNormalWS.getY() > 0.2){
 					skidmarkPositions[i].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(i).m_raycastInfo.m_contactPointWS));
 					skidmarkNormals[i].push_front(Rally::Vector3(raycastVehicle->getWheelInfo(i).m_raycastInfo.m_contactNormalWS));
 					skidmarkDirections[i].push_front(getVelocity().normalisedCopy());
+					skidmarkTractions[i].push_front(raycastVehicle->getWheelInfo(i).m_skidInfo);
 				}
 			} else {
 				skidmarkPositions[i].clear();
 				skidmarkNormals[i].clear();
 				skidmarkDirections[i].clear();
+                skidmarkTractions[i].clear();
 			}
 		}
 	}

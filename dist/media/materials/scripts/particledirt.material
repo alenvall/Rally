@@ -1,8 +1,8 @@
 particle_system Car/Dirt
 {
     material dirt
-    particle_width 0.2
-    particle_height 0.2
+    particle_width 0.22
+    particle_height 0.22
     cull_each false
     quota 25000
     billboard_type oriented_self
@@ -17,8 +17,9 @@ particle_system Car/Dirt
         emission_rate 500
         direction 0 1 0
         velocity_min 0.1
-        velocity_max 0.2
+        velocity_max 0.3
 		time_to_live 2
+		colour 1 1 1 0
 		colour 1 1 1 1
     }
 

@@ -115,9 +115,17 @@ namespace Rally { namespace View {
 		bodyParticleNode->attachObject(leftFrontSystem);
 
 		rightBackSystem->getEmitter(0)->setEnabled(false);
+        rightBackSystem->setCastShadows(false);
+
 		leftBackSystem->getEmitter(0)->setEnabled(false);
+        leftBackSystem->setCastShadows(false);
+
 		rightFrontSystem->getEmitter(0)->setEnabled(false);
+        rightFrontSystem->setCastShadows(false);
+
 		leftFrontSystem->getEmitter(0)->setEnabled(false);
+        leftFrontSystem->setCastShadows(false);
+
 	}
 
 	void CarView::enableWheelParticles(bool enabled[], Rally::Vector3 position[], float tractions[]){

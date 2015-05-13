@@ -45,7 +45,7 @@ material compositors/SSAOAssemble {
             texture_unit {
                 tex_coord_set 0
                 tex_address_mode clamp
-                filtering trilinear
+                filtering none
             }
         }
     }

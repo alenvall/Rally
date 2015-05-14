@@ -4,7 +4,8 @@ uniform sampler2D original;
 uniform sampler2D occlusionMap;
 
 void main() {
-    vec4 color = texture2D(original, gl_TexCoord[0].xy);
+    vec2 uvCoords = gl_TexCoord[0].xy;
+    vec4 color = texture2D(original, uvCoords);
     
     // This value is already prescaled with the effectfactor etc. in ssao_select_ps
     float edgeDetection = texture2D(occlusionMap, gl_TexCoord[0].xy).b;
@@ -19,7 +20,8 @@ void main() {
     // also means everything lags behind one frame. Then instead use
     // goodValue = 1.0 - looksQuiteNiceAlpha, it will look the same but is more
     // up-to-date with the current frame.
-    color.a = 1.0 - 0.5 * edgeDetection;
+    float falloff = 3.0*length(uvCoords - vec2(0.5, 0.5));
+    color.a = 1.0 - 0.3 * edgeDetection * falloff*falloff;
     
     gl_FragColor = color;
 }

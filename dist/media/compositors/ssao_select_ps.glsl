@@ -41,7 +41,7 @@ void main() {
         vec3(-0.3014783919444156, -0.21485240026169983, 0.08698036845677733),
         vec3(0.11120756426123887, -0.13074617072995254, 0.03665566895440695)
     );
-    float farDist = 0.5;
+    const float farDist = 0.5;
 
     vec3 position = texture2D(gbuffer_position, gl_TexCoord[0].xy).xyz;
     vec3 normal = -normalize(cross(dFdx(position), dFdy(position))); // TODO: we could use these as tangent/bitangent below I suppose....

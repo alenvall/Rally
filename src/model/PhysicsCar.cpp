@@ -171,6 +171,20 @@ namespace Rally { namespace Model {
         physicsWorld.registerStepCallback(this);
     }
 
+	void PhysicsCar::teleport(const Rally::Vector3& position, const Rally::Quaternion& orientation) {
+		// The rigid body needs to be activated and detached from the world when teleported.
+		// The bodyRigidBody has deactivation disabled so the first thing is gotten care of already.
+
+		dynamicsWorld->removeRigidBody(bodyRigidBody);
+
+		btTransform transform = bodyRigidBody->getWorldTransform();
+		transform.setOrigin(btVector3(position.x, position.y, position.z));
+		transform.setRotation(btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w));
+		bodyRigidBody->setWorldTransform(transform);
+
+		dynamicsWorld->addRigidBody(bodyRigidBody);
+	}
+
     Rally::Vector3 PhysicsCar::getPosition() const {
         // Note that we cannot ask the rigidbody or use raycastVehicle->getForwardVector(),
         // as we won't get interpolated values then. That's motion-state exclusive info.

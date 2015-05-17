@@ -16,6 +16,10 @@ namespace Rally { namespace Model {
 
             void attachToWorld();
 
+            void teleport(const Rally::Vector3& position, const Rally::Quaternion& orientation, bool maintainSpeed) {
+                physicsCar.teleport(position, orientation, maintainSpeed);
+            }
+
             Rally::Vector3 getPosition() const;
             Rally::Quaternion getOrientation() const;
             Rally::Vector3 getVelocity() const;

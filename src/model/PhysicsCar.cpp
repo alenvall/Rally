@@ -171,7 +171,7 @@ namespace Rally { namespace Model {
         physicsWorld.registerStepCallback(this);
     }
 
-	void PhysicsCar::teleport(const Rally::Vector3& position, const Rally::Quaternion& orientation) {
+	void PhysicsCar::teleport(const Rally::Vector3& position, const Rally::Quaternion& orientation, bool maintainSpeed) {
 		// The rigid body needs to be activated and detached from the world when teleported.
 		// The bodyRigidBody has deactivation disabled so the first thing is gotten care of already.
 
@@ -181,6 +181,13 @@ namespace Rally { namespace Model {
 		transform.setOrigin(btVector3(position.x, position.y, position.z));
 		transform.setRotation(btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w));
 		bodyRigidBody->setWorldTransform(transform);
+
+        if(maintainSpeed) {
+            btVector3 direction = quatRotate(transform.getRotation(), btVector3(0.0f, 0.0f, 1.0f));
+            bodyRigidBody->setLinearVelocity(bodyRigidBody->getLinearVelocity().length() * direction);
+        } else {
+            bodyRigidBody->setLinearVelocity(btVector3(0.0f, 0.0f, 0.0f));
+        }
 
 		dynamicsWorld->addRigidBody(bodyRigidBody);
 	}

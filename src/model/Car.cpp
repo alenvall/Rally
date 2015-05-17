@@ -40,7 +40,6 @@ namespace Rally { namespace Model {
         if(carType > 'r') {
             carType = 'a';
         }
-		physicsCar.teleport(Rally::Vector3::UNIT_Y*20.0f, Rally::Quaternion::IDENTITY);
     }
 
 } }

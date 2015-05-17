@@ -16,7 +16,7 @@ namespace Rally { namespace Model {
             virtual ~PhysicsCar();
             void attachTo(PhysicsWorld& physicsWorld);
 
-			void teleport(const Rally::Vector3& position, const Rally::Quaternion& orientation);
+			void teleport(const Rally::Vector3& position, const Rally::Quaternion& orientation, bool maintainSpeed);
 
             Rally::Vector3 getPosition() const;
             Rally::Quaternion getOrientation() const;

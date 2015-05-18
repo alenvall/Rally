@@ -28,9 +28,9 @@ class RemoteSkidmarkView : public SkidmarkView {
 
         Ogre::SceneNode* skidmarkNode;
 		Ogre::BillboardSet* skidmarkBillboards;
-		
+
 		void createSkidmark(Rally::Vector3 position, Rally::Vector3 normal, Rally::Vector3 direction, float traction, float speed);
 };
 
 } }
-#endif RALLY_VIEW_REMOTESKIDMARKVIEW_H_
+#endif // RALLY_VIEW_REMOTESKIDMARKVIEW_H_

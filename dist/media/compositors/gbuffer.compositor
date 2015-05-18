@@ -1,6 +1,7 @@
 compositor compositors/GBufferCompositor {
     technique {
-        texture gbuffer target_width target_height PF_FLOAT16_RGBA PF_FLOAT16_RGBA chain_scope
+        //texture gbuffer target_width target_height PF_FLOAT16_RGBA PF_FLOAT16_RGBA chain_scope
+        texture gbuffer target_width target_height PF_FLOAT16_RGBA chain_scope
         texture original target_width target_height PF_R8G8B8 chain_scope
         
         // Fill in the original
@@ -16,7 +17,7 @@ compositor compositors/GBufferCompositor {
             
             pass clear {
                 depth_value 1.0
-                buffers colour depth stencil
+                buffers colour depth
             }
             
             pass render_scene {

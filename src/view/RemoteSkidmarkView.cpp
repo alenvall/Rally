@@ -17,8 +17,8 @@ namespace Rally { namespace View {
 	void RemoteSkidmarkView::attachTo(Ogre::SceneManager* sceneManager){
 		skidmarkNode = sceneManager->getRootSceneNode()->createChildSceneNode();
 
-		Ogre::BillboardType type = Ogre::BillboardType::BBT_PERPENDICULAR_SELF;
-		Ogre::BillboardRotationType rotationType = Ogre::BillboardRotationType::BBR_VERTEX;
+		Ogre::BillboardType type = Ogre::BBT_PERPENDICULAR_SELF;
+		Ogre::BillboardRotationType rotationType = Ogre::BBR_VERTEX;
 		Rally::Vector3 up(0, 0, 1);
 		Rally::Vector3 common(0, 1, 0);
 
@@ -76,7 +76,7 @@ namespace Rally { namespace View {
             if(isWheelOnGround(position, car))
 			    createSkidmark(position, normal, direction, car.getTractionVector().w, speed);
         }
-        
+
 	}
 
     bool RemoteSkidmarkView::isWheelOnGround(Rally::Vector3 position, const Rally::Model::RemoteCar& car){
@@ -97,9 +97,9 @@ namespace Rally { namespace View {
     }
 
 	void RemoteSkidmarkView::createSkidmark(Rally::Vector3 position, Rally::Vector3 normal, Rally::Vector3 direction, float traction, float speed){
-		Ogre::Billboard* b = skidmarkBillboards->createBillboard(Rally::Vector3(position.x, position.y+0.05f, position.z), 
+		Ogre::Billboard* b = skidmarkBillboards->createBillboard(Rally::Vector3(position.x, position.y+0.05f, position.z),
 			Ogre::ColourValue::Black);
-        
+
         double lengthAdjust = 0.045;
         float alphaAdjust = 15.0f;
 

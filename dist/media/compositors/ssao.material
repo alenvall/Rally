@@ -12,7 +12,7 @@ fragment_program ssao_select_ps glsl {
         param_named_auto viewportSize viewport_size
 
         param_named gbuffer_position int 0
-        param_named gbuffer_normal int 1
+        //param_named gbuffer_normal int 1
     }
 }
 
@@ -45,7 +45,7 @@ material compositors/SSAOAssemble {
             texture_unit {
                 tex_coord_set 0
                 tex_address_mode clamp
-                filtering trilinear
+                filtering none
             }
         }
     }
@@ -72,11 +72,11 @@ material compositors/SSAOSelect {
             }
             
             // MRT 1
-            texture_unit {
-                tex_coord_set 0
-                tex_address_mode clamp
-                filtering none  
-            }
+            //texture_unit {
+            //    tex_coord_set 0
+            //    tex_address_mode clamp
+            //    filtering none  
+            //}
         }
     }
 }

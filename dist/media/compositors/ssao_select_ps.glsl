@@ -10,7 +10,6 @@ uniform mat4 sceneProjectionMatrix;
 uniform vec4 viewportSize;
 
 uniform sampler2D gbuffer_position;
-uniform sampler2D gbuffer_normal;
 
 uniform float effectFactor;
 
@@ -24,7 +23,7 @@ void main() {
     // The length is bounded by [1, 4] and the idea is that it should be scaled further so that
     // no texel will test itself for occlusion. A cheap way is to just change radius below and
     // hope for the best, even if the results wouldn't be 100 % accurate.
-    vec3 hemisphere[16] = vec3[](
+    const vec3 hemisphere[16] = vec3[](
         vec3(-0.17947426117077606, -0.2552789504219729, 0.32771201703308744),
         vec3(-0.0929430250903943, -0.15022899751515606, 0.15734721849596883),
         vec3(-0.023182541661165706, 0.08987930735474939, 0.06378498765102361),
@@ -42,10 +41,11 @@ void main() {
         vec3(-0.3014783919444156, -0.21485240026169983, 0.08698036845677733),
         vec3(0.11120756426123887, -0.13074617072995254, 0.03665566895440695)
     );
-    float farDist = 0.5;
+    const float farDist = 0.5;
 
     vec3 position = texture2D(gbuffer_position, gl_TexCoord[0].xy).xyz;
-    vec3 normal = texture2D(gbuffer_normal, gl_TexCoord[0].xy).xyz; // Already normalized
+    vec3 normal = -normalize(cross(dFdx(position), dFdy(position))); // TODO: we could use these as tangent/bitangent below I suppose....
+    //vec3 normal = texture2D(gbuffer_normal, gl_TexCoord[0].xy).xyz; // Already normalized
     
     // Get some high-frequency noise used below, use the current pixel index and
     // do a modulo 4 on it, so that we get 0, 1, 2, 3, 0, 1, 2, 3.

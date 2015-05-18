@@ -105,10 +105,15 @@ namespace Rally { namespace View {
 		bodyParticleNode = sceneManager->getRootSceneNode()->createChildSceneNode();
 
 		rightBackSystem = sceneManager->createParticleSystem(carName + "_RightBackParticleSystem", "Car/Dirt");
-		leftBackSystem = sceneManager->createParticleSystem(carName + "_LeftBackParticleSystem", "Car/Dirt");		
+		leftBackSystem = sceneManager->createParticleSystem(carName + "_LeftBackParticleSystem", "Car/Dirt");
 		rightFrontSystem = sceneManager->createParticleSystem(carName + "_RightFrontParticleSystem", "Car/Dirt");
 		leftFrontSystem = sceneManager->createParticleSystem(carName + "_LeftFrontParticleSystem", "Car/Dirt");
-		
+
+		rightBackSystem->setRenderQueueGroup(Ogre::RENDER_QUEUE_9);
+		leftBackSystem->setRenderQueueGroup(Ogre::RENDER_QUEUE_9);
+		rightFrontSystem->setRenderQueueGroup(Ogre::RENDER_QUEUE_9);
+		leftFrontSystem->setRenderQueueGroup(Ogre::RENDER_QUEUE_9);
+
 		bodyParticleNode->attachObject(rightBackSystem);
 		bodyParticleNode->attachObject(leftBackSystem);
 		bodyParticleNode->attachObject(rightFrontSystem);

@@ -18,8 +18,7 @@ compositor compositors/BloomCompositor {
                 identifier 100
                 material compositors/BloomSelect
                 input 0 original
-                //input 1 gbuffer 0
-                input 1 gbuffer
+                input 1 gbuffer 0
             }
         }
         

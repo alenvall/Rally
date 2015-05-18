@@ -27,7 +27,7 @@ class CarView {
             const Rally::Quaternion& leftBackWheelOrientation);
 		
 		void initParticleSystem(const std::string& carName);
-		void enableWheelParticles(bool enabled[], Rally::Vector3 position[]);
+		void enableWheelParticles(bool enabled[], Rally::Vector3 position[], float tractions[]);
 
         virtual void changeCar(char carType);
 

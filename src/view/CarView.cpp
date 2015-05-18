@@ -105,42 +105,63 @@ namespace Rally { namespace View {
 		bodyParticleNode = sceneManager->getRootSceneNode()->createChildSceneNode();
 
 		rightBackSystem = sceneManager->createParticleSystem(carName + "_RightBackParticleSystem", "Car/Dirt");
-		leftBackSystem = sceneManager->createParticleSystem(carName + "_LeftBackParticleSystem", "Car/Dirt");		
+		leftBackSystem = sceneManager->createParticleSystem(carName + "_LeftBackParticleSystem", "Car/Dirt");
 		rightFrontSystem = sceneManager->createParticleSystem(carName + "_RightFrontParticleSystem", "Car/Dirt");
 		leftFrontSystem = sceneManager->createParticleSystem(carName + "_LeftFrontParticleSystem", "Car/Dirt");
-		
+
+		rightBackSystem->setRenderQueueGroup(Ogre::RENDER_QUEUE_9);
+		leftBackSystem->setRenderQueueGroup(Ogre::RENDER_QUEUE_9);
+		rightFrontSystem->setRenderQueueGroup(Ogre::RENDER_QUEUE_9);
+		leftFrontSystem->setRenderQueueGroup(Ogre::RENDER_QUEUE_9);
+
 		bodyParticleNode->attachObject(rightBackSystem);
 		bodyParticleNode->attachObject(leftBackSystem);
 		bodyParticleNode->attachObject(rightFrontSystem);
 		bodyParticleNode->attachObject(leftFrontSystem);
 
 		rightBackSystem->getEmitter(0)->setEnabled(false);
+        rightBackSystem->setCastShadows(false);
+
 		leftBackSystem->getEmitter(0)->setEnabled(false);
+        leftBackSystem->setCastShadows(false);
+
 		rightFrontSystem->getEmitter(0)->setEnabled(false);
+        rightFrontSystem->setCastShadows(false);
+
 		leftFrontSystem->getEmitter(0)->setEnabled(false);
+        leftFrontSystem->setCastShadows(false);
+
 	}
 
-	void CarView::enableWheelParticles(bool enabled[], Rally::Vector3 position[]){
+	void CarView::enableWheelParticles(bool enabled[], Rally::Vector3 position[], float tractions[]){
 		Rally::Vector3 offset(0.f, -0.25f, 0.f);
+
+        int emissionFactor = 20;
+        int emissionMax = 1000;
+        int emissionMin = 500;
 
 		rightBackSystem->getEmitter(0)->setEnabled(enabled[0]);
 		if(enabled[0]){
 			rightBackSystem->getEmitter(0)->setPosition(position[0] + offset);
+            rightBackSystem->getEmitter(0)->setEmissionRate(Ogre::Math::Clamp((int)(emissionFactor/(tractions[0]+0.01)), emissionMin, emissionMax));
 		}
 
 		rightFrontSystem->getEmitter(0)->setEnabled(enabled[1]);
 		if(enabled[1]){
 			rightFrontSystem->getEmitter(0)->setPosition(position[1] + offset);
+            rightFrontSystem->getEmitter(0)->setEmissionRate(Ogre::Math::Clamp((int)(emissionFactor/(tractions[1]+0.01)), emissionMin, emissionMax));
 		}
 
 		leftBackSystem->getEmitter(0)->setEnabled(enabled[2]);
 		if(enabled[2]){
 			leftBackSystem->getEmitter(0)->setPosition(position[2] + offset);
+            leftBackSystem->getEmitter(0)->setEmissionRate(Ogre::Math::Clamp((int)(emissionFactor/(tractions[2]+0.01)), emissionMin, emissionMax));
 		}
 
 		leftFrontSystem->getEmitter(0)->setEnabled(enabled[3]);
 		if(enabled[3]){
 			leftFrontSystem->getEmitter(0)->setPosition(position[3] + offset);
+            leftFrontSystem->getEmitter(0)->setEmissionRate(Ogre::Math::Clamp((int)(emissionFactor/(tractions[3]+0.01)), emissionMin, emissionMax));
 		}
 	}
 

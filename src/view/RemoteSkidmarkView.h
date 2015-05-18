@@ -24,12 +24,13 @@ class RemoteSkidmarkView : public SkidmarkView {
 		void update(const Rally::Model::RemoteCar& remoteCar);
 
     private:
+        bool isWheelOnGround(Rally::Vector3 position, const Rally::Model::RemoteCar& car);
 
         Ogre::SceneNode* skidmarkNode;
 		Ogre::BillboardSet* skidmarkBillboards;
-		
+
 		void createSkidmark(Rally::Vector3 position, Rally::Vector3 normal, Rally::Vector3 direction, float traction, float speed);
 };
 
 } }
-#endif RALLY_VIEW_REMOTESKIDMARKVIEW_H_
+#endif // RALLY_VIEW_REMOTESKIDMARKVIEW_H_

@@ -1,37 +1,41 @@
 particle_system Car/Dirt
 {
-    material skidmark
-    particle_width 0.1
-    particle_height 0.1
+    material dirt
+    particle_width 0.22
+    particle_height 0.22
     cull_each false
-    quota 10000
+    quota 25000
     billboard_type oriented_self
-
-    // Area emitter
-    emitter Point
+    
+	// Area emitter
+    emitter Box
     {
-		angle 30
-        emission_rate 250
+		height 0.25
+		width 0.25
+		depth 0.05
+		angle 50
+        emission_rate 500
         direction 0 1 0
-        velocity_min 4
-        velocity_max 6
+        velocity_min 0.1
+        velocity_max 0.3
 		time_to_live 2
-        colour_range_start 0.62 0.31 0
-        colour_range_end 0.68 0.31 0
+		colour 1 1 1 0
+		colour 1 1 1 1
     }
 
     // Gravity
     affector LinearForce
     {
-        force_vector 0 -10 0
+        force_vector 0 0.05 0
         force_application add
     }
 
     // Fader
     affector ColourFader
     {
-        red -0.15
-        //green -0.25
-        blue -0.1
+		red 0
+		green 0
+		blue 0
+		alpha -0.5
     }
 }

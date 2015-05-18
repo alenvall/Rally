@@ -1,0 +1,31 @@
+material dirt
+{
+	technique
+	{
+		pass
+		{
+			scene_blend alpha_blend
+			depth_write off
+			lightning off
+			
+			diffuse vertexcolour
+			ambient vertexcolour
+			
+            texture_unit
+            {
+				texture dirt.png gamma
+				tex_address_mode clamp
+            }
+		}
+	}
+	
+	// Don't interfere with the G-buffer
+	technique {
+	    scheme GBufferScheme
+	    pass {
+	        lighting off
+	        depth_write off
+	        //colour_write off
+	    }
+	}
+}

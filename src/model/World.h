@@ -76,6 +76,7 @@ namespace Rally { namespace Model {
             Rally::Model::Car playerCar;
 			Rally::Model::Finish finish;
 			Rally::Model::Finish start;
+            Rally::Model::Finish tunnelTeleport;
             //std::map<int, Rally::Model::Checkpoint> checkPoints;
             std::map<int, Rally::Model::RemoteCar> remoteCars;
 			Rally::Util::Timer finishTimer;

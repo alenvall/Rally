@@ -70,7 +70,7 @@ material compositors/BloomAssemble {
             texture_unit {
                 tex_coord_set 0
                 tex_address_mode clamp
-                filtering trilinear
+                filtering none
             }
         }
     }
@@ -117,7 +117,7 @@ material compositors/BlurHorizontal {
             texture_unit {
                 tex_coord_set 0
                 tex_address_mode clamp
-                filtering trilinear
+                filtering bilinear
             }
         }
     }
@@ -138,7 +138,7 @@ material compositors/BlurVertical {
             texture_unit {
                 tex_coord_set 0
                 tex_address_mode clamp
-                filtering trilinear
+                filtering bilinear
             }
         }
     }

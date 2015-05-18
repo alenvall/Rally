@@ -18,4 +18,14 @@ material dirt
             }
 		}
 	}
+	
+	// Don't interfere with the G-buffer
+	technique {
+	    scheme GBufferScheme
+	    pass {
+	        lighting off
+	        depth_write off
+	        //colour_write off
+	    }
+	}
 }

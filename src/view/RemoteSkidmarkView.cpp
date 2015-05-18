@@ -41,7 +41,7 @@ namespace Rally { namespace View {
 
         float speed = car.getVelocity().length();
 
-        float heightOffset = -1.0f;
+        float heightOffset = -1.1f;
         float xOffset = 0.60f;
         float zOffsetFront = 1.50f;
         float zOffsetBack = -1.25f;
@@ -49,39 +49,62 @@ namespace Rally { namespace View {
         Rally::Vector3 direction = car.getVelocity().normalisedCopy();
 
         Rally::Vector3 normal(0, 1, 0);
+        
+        Rally::Vector3 position;
 
         // Right front
         if(car.getTractionVector().x < tractionReq){
-            createSkidmark(car.getPosition() + Ogre::Vector3(xOffset, heightOffset, zOffsetFront),
-                normal, direction, car.getTractionVector().x, speed);
+            position = car.getPosition() + Ogre::Vector3(xOffset, heightOffset, zOffsetFront);
+            if(isWheelOnGround(position, car))
+                createSkidmark(position, normal, direction, car.getTractionVector().x, speed);
         }
         // Left front
         if(car.getTractionVector().y < tractionReq){
-			createSkidmark(car.getPosition() + Ogre::Vector3(-xOffset, heightOffset, zOffsetFront),
-                normal, direction, car.getTractionVector().y, speed);
+            position = car.getPosition() + Ogre::Vector3(-xOffset, heightOffset, zOffsetFront);
+            if(isWheelOnGround(position, car))
+			    createSkidmark(position, normal, direction, car.getTractionVector().y, speed);
         }
         // Right back
         if(car.getTractionVector().z < tractionReq){
-			createSkidmark(car.getPosition() + Ogre::Vector3(xOffset, heightOffset, zOffsetBack),
-                normal, direction, car.getTractionVector().z, speed);
+            position = car.getPosition() + Ogre::Vector3(xOffset, heightOffset, zOffsetBack);
+            if(isWheelOnGround(position, car))
+			    createSkidmark(position, normal, direction, car.getTractionVector().z, speed);
         }
         // Left back
         if(car.getTractionVector().w < tractionReq){
-			createSkidmark(car.getPosition() + Ogre::Vector3(-xOffset, heightOffset, zOffsetBack),
-                normal, direction, car.getTractionVector().w, speed);
+            position = car.getPosition() + Ogre::Vector3(-xOffset, heightOffset, zOffsetBack);
+            if(isWheelOnGround(position, car))
+			    createSkidmark(position, normal, direction, car.getTractionVector().w, speed);
         }
 
 	}
+
+    bool RemoteSkidmarkView::isWheelOnGround(Rally::Vector3 position, const Rally::Model::RemoteCar& car){
+        btVector3 start(position.x, position.y + 0.5f, position.z);
+	    btVector3 end(position.x, position.y - 1.5f, position.z);
+
+	    btCollisionWorld::ClosestRayResultCallback ClosestRayResultCallBack(start, end);
+
+	    // Perform raycast
+        car.getPhysicsWorld().getDynamicsWorld()->getCollisionWorld()->rayTest(start, end, ClosestRayResultCallBack);
+
+	    if(ClosestRayResultCallBack.hasHit() && ClosestRayResultCallBack.m_collisionObject->getActivationState() != 4) {
+            std::cout << "raytest came out true " << std::endl;
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 	void RemoteSkidmarkView::createSkidmark(Rally::Vector3 position, Rally::Vector3 normal, Rally::Vector3 direction, float traction, float speed){
 		Ogre::Billboard* b = skidmarkBillboards->createBillboard(Rally::Vector3(position.x, position.y+0.05f, position.z),
 			Ogre::ColourValue::Black);
 
-        double lengthAdjust = 0.012;
-        float alphaAdjust = 4.0f;
+        double lengthAdjust = 0.045;
+        float alphaAdjust = 15.0f;
 
-        b->setDimensions(Ogre::Real(0.2), Ogre::Real(Ogre::Math::Clamp(lengthAdjust*speed, 0.15, 1.0)));
-        b->setColour(Ogre::ColourValue(1.0, 1.0, 1.0, traction*alphaAdjust));
+        b->setDimensions(Ogre::Real(0.14), Ogre::Real(Ogre::Math::Clamp(lengthAdjust*speed, 0.2, 1.0)));
+        b->setColour(Ogre::ColourValue(1.0, 1.0, 1.0, Ogre::Math::Pow(1 - traction, alphaAdjust)));
 
 		b->mDirection = normal;
 

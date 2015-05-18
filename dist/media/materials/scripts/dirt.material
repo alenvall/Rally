@@ -4,9 +4,9 @@ material dirt
 	{
 		pass
 		{
-
 			scene_blend alpha_blend
 			depth_write off
+			lightning off
 			
 			diffuse vertexcolour
 			ambient vertexcolour

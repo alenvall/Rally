@@ -89,7 +89,6 @@ namespace Rally { namespace View {
         car.getPhysicsWorld().getDynamicsWorld()->getCollisionWorld()->rayTest(start, end, ClosestRayResultCallBack);
 
 	    if(ClosestRayResultCallBack.hasHit() && ClosestRayResultCallBack.m_collisionObject->getActivationState() != 4) {
-            std::cout << "raytest came out true " << std::endl;
             return true;
         } else {
             return false;

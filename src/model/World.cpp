@@ -29,7 +29,7 @@ namespace Rally { namespace Model {
         finishTimer.reset();
 		start.collide();
 		highScore = 200;
-
+        lastTime = 0;
     }
 
     void World::update(float deltaTime) {

@@ -35,7 +35,7 @@ namespace Rally { namespace Controller {
 
             // Allow max 1000 FPS for precision/stability reasons.
             // This is hopefully capped by vsync or atleast computation below.
-            if(deltaTime < 0.03f) {
+            if(deltaTime < 0.01667f) {
                 continue;
             }
 

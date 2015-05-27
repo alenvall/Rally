@@ -69,12 +69,12 @@ namespace Rally { namespace Controller {
         Rally::Model::Car& car = world.getPlayerCar();
 
         // Accelerate and break
-        car.setAccelerationRequested(inputInit.isKeyPressed("up"));
-        car.setBreakingRequested(inputInit.isKeyPressed("down") || inputInit.isKeyPressed("x"));
+        car.setAccelerationRequested(inputInit.isKeyPressed("up") || inputInit.isKeyPressed("w"));
+        car.setBreakingRequested(inputInit.isKeyPressed("down") || inputInit.isKeyPressed("s") || inputInit.isKeyPressed("x"));
 
         // Steering
-        bool left = inputInit.isKeyPressed("left");
-        bool right = inputInit.isKeyPressed("right");
+        bool left = inputInit.isKeyPressed("left") || inputInit.isKeyPressed("a");
+        bool right = inputInit.isKeyPressed("right") || inputInit.isKeyPressed("d");
         if(left && !right) {
             car.setSteeringRequested(1);
         } else if(!left && right) {
@@ -84,7 +84,7 @@ namespace Rally { namespace Controller {
             car.setSteeringRequested(0);
         }
 
-        if(inputInit.isKeyPressedDebounced("d")) {
+        if(inputInit.isKeyPressedDebounced("i")) {
 		    sceneView.toggleDebugDraw();
         }
 
@@ -97,15 +97,15 @@ namespace Rally { namespace Controller {
 		    sceneView.playerCarTypeUpdated();
         }
 
-        if(inputInit.isKeyPressedDebounced("r")) {
+        if(inputInit.isKeyPressedDebounced("o")) {
 		    sceneView.toggleReflections();
         }
 
-        if(inputInit.isKeyPressedDebounced("b")) {
+        if(inputInit.isKeyPressedDebounced("p")) {
 		    sceneView.togglePostProcessing();
         }
 
-        if(inputInit.isKeyPressed("p")) {
+        if(inputInit.isKeyPressed("u")) {
             std::cout << car.getPosition() << std::endl;
         }
 		if(inputInit.isKeyPressedDebounced("k")) {

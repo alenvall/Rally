@@ -69,14 +69,18 @@ void InputInit::keyInit() {
     keyMap["right"] = false;
     keyMap["escape"] = false;
     keyMap["space"] = false;
+    keyMap["w"] = false;
+    keyMap["a"] = false;
+    keyMap["s"] = false;
     keyMap["d"] = false;
-    keyMap["f"] = false;
-    keyMap["x"] = false;
-    keyMap["r"] = false;
-    keyMap["p"] = false;
-    keyMap["b"] = false;
+    keyMap["u"] = false;
+    keyMap["i"] = false;
+	keyMap["o"] = false;
+	keyMap["p"] = false;
 	keyMap["k"] = false;
 	keyMap["t"] = false;
+	keyMap["x"] = false;
+	keyMap["f"] = false;
 }
 
 bool InputInit::frameRenderingQueued(const Ogre::FrameEvent& evt)
@@ -134,37 +138,53 @@ bool InputInit::keyPressed(const OIS::KeyEvent& arg) {
     {
         keyMap.at("space") = true;
     }
+    if (arg.key == OIS::KC_W)
+    {
+        keyMap.at("w") = true;
+    }
+    if (arg.key == OIS::KC_A)
+    {
+        keyMap.at("a") = true;
+    }
+    if (arg.key == OIS::KC_S)
+    {
+        keyMap.at("s") = true;
+    }
     if (arg.key == OIS::KC_D)
     {
         keyMap.at("d") = true;
     }
-    if (arg.key == OIS::KC_F)
+    if (arg.key == OIS::KC_U)
     {
-        keyMap.at("f") = true;
+        keyMap.at("u") = true;
+    }
+    if (arg.key == OIS::KC_I)
+    {
+        keyMap.at("i") = true;
+    }
+	if (arg.key == OIS::KC_O)
+    {
+        keyMap.at("o") = true;
+    }
+	if (arg.key == OIS::KC_P)
+    {
+        keyMap.at("p") = true;
+    }
+    if (arg.key == OIS::KC_K)
+    {
+        keyMap.at("k") = true;
+    }
+    if (arg.key == OIS::KC_T)
+    {
+        keyMap.at("t") = true;
     }
     if (arg.key == OIS::KC_X)
     {
         keyMap.at("x") = true;
     }
-    if (arg.key == OIS::KC_R)
+    if (arg.key == OIS::KC_F)
     {
-        keyMap.at("r") = true;
-    }
-    if (arg.key == OIS::KC_P)
-    {
-        keyMap.at("p") = true;
-    }
-    if (arg.key == OIS::KC_B)
-    {
-        keyMap.at("b") = true;
-    }
-	if (arg.key == OIS::KC_K)
-    {
-        keyMap.at("k") = true;
-    }
-	if (arg.key == OIS::KC_T)
-    {
-        keyMap.at("t") = true;
+        keyMap.at("f") = true;
     }
     return true;
 }
@@ -195,37 +215,53 @@ bool InputInit::keyReleased(const OIS::KeyEvent& arg) {
         keyMap.at("escape") = false;
 
     }
+    if (arg.key == OIS::KC_W)
+    {
+        keyMap.at("w") = false;
+    }
+    if (arg.key == OIS::KC_A)
+    {
+        keyMap.at("a") = false;
+    }
+    if (arg.key == OIS::KC_S)
+    {
+        keyMap.at("s") = false;
+    }
     if (arg.key == OIS::KC_D)
     {
         keyMap.at("d") = false;
     }
-    if (arg.key == OIS::KC_F)
+    if (arg.key == OIS::KC_U)
     {
-        keyMap.at("f") = false;
+        keyMap.at("u") = false;
+    }
+    if (arg.key == OIS::KC_I)
+    {
+        keyMap.at("i") = false;
+    }
+	if (arg.key == OIS::KC_O)
+    {
+        keyMap.at("o") = false;
+    }
+	if (arg.key == OIS::KC_P)
+    {
+        keyMap.at("p") = false;
+    }
+    if (arg.key == OIS::KC_K)
+    {
+        keyMap.at("k") = false;
+    }
+    if (arg.key == OIS::KC_T)
+    {
+        keyMap.at("t") = false;
     }
     if (arg.key == OIS::KC_X)
     {
         keyMap.at("x") = false;
     }
-    if (arg.key == OIS::KC_R)
+    if (arg.key == OIS::KC_F)
     {
-        keyMap.at("r") = false;
-    }
-    if (arg.key == OIS::KC_P)
-    {
-        keyMap.at("p") = false;
-    }
-    if (arg.key == OIS::KC_B)
-    {
-        keyMap.at("b") = false;
-    }
-	if (arg.key == OIS::KC_K)
-    {
-        keyMap.at("k") = false;
-    }
-	if (arg.key == OIS::KC_T)
-    {
-        keyMap.at("t") = false;
+        keyMap.at("f") = false;
     }
     return true;
 }

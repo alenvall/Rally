@@ -176,39 +176,39 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 	timeText->setCol(1.0f,1.0f,1.0f,0.5f);    // Text colour (Red, Green, Blue, Alpha)
 	timeText->setTextSize(0.06f);
 
-	speedText=new Rally::View::OgreText;                             
-	speedText->setPos(0.75f,0.80f);        
-	speedText->setCol(1.0f,0.0f,0.0f,0.7f); 
+	speedText=new Rally::View::OgreText;
+	speedText->setPos(0.75f,0.80f);
+	speedText->setCol(1.0f,0.0f,0.0f,0.7f);
 	speedText->setTextSize(0.17f);
-	
+
 	kmhText=new Rally::View::OgreText;
 	kmhText->setText("km/h");
-	kmhText->setPos(0.85f,0.83f);        
-	kmhText->setCol(1.0f,1.0f,1.0f,0.5f); 
+	kmhText->setPos(0.85f,0.83f);
+	kmhText->setCol(1.0f,1.0f,1.0f,0.5f);
 	kmhText->setTextSize(0.06f);
 
-	lastTimeText=new Rally::View::OgreText;                             
-	lastTimeText->setPos(0.05f,0.85f);        
+	lastTimeText=new Rally::View::OgreText;
+	lastTimeText->setPos(0.05f,0.85f);
 	lastTimeText->setCol(1.0f,1.0f,1.0f,0.5f);
 	lastTimeText->setTextSize(0.06f);
 
-	highScoreText=new Rally::View::OgreText;                             
-	highScoreText->setPos(0.05f,0.80f);        
+	highScoreText=new Rally::View::OgreText;
+	highScoreText->setPos(0.05f,0.80f);
 	highScoreText->setCol(1.0f,1.0f,1.0f,0.5f);
 	highScoreText->setTextSize(0.06f);
 
-	keyText=new Rally::View::OgreText;                             
-	keyText->setPos(0.20f,0.70f);        
+	keyText=new Rally::View::OgreText;
+	keyText->setPos(0.05f,0.70f);
 	keyText->setCol(1.0f,1.0f,1.0f,0.9f);
 	keyText->setTextSize(0.06f);
 
-	titleText=new Rally::View::OgreText;                             
-	titleText->setPos(0.20f,0.20f);        
+	titleText=new Rally::View::OgreText;
+	titleText->setPos(0.20f,0.20f);
 	titleText->setCol(1.0f,0.0f,0.0f,0.9f);
 	titleText->setTextSize(0.25f);
 
-	trackText=new Rally::View::OgreText;                             
-	trackText->setPos(0.75f,0.05f);        
+	trackText=new Rally::View::OgreText;
+	trackText->setPos(0.75f,0.05f);
 	trackText->setCol(1.0f,1.0f,1.0f,0.5f);
 	trackText->setTextSize(0.06f);
 
@@ -311,7 +311,7 @@ void SceneView::updatePlayerCar(float deltaTime) {
 		xzdisplacement * displacementBase.z);
 
     Rally::Vector3 endPosition = position + displacement;
-    
+
 	float velocityAdjust = playerCar.getVelocity().length()/10;
 	float lerpAdjust = Ogre::Math::Clamp(velocityAdjust*deltaTime, 0.001f, 0.8f);
 
@@ -437,7 +437,7 @@ void SceneView::toggleKeyMenu(){
 
 	if(!showKeyMenu){
 		titleText->setText("RALLY SPORT \n RACING GAME");
-		keyText->setText("    /up:accelerate/down:brake/left:left/right:right/ \n /space:switch car/t:switch track/r:reflections/f:float/ \n                  press k!");
+		keyText->setText("  Recommended steering: arrows and x / Alternative steering: WASD\n      Toggle car: space / Float: f / Laggy? Lower graphics: P, O\n               Press K to continue, T to start a race!");
 		timeText->setCol(0.0f,0.0f,0.0f,0.0f);
 		speedText->setCol(0.0f,0.0f,0.0f,0.0f);
 		lastTimeText->setCol(0.0f,0.0f,0.0f,0.0f);
@@ -479,7 +479,7 @@ void SceneView::toggleTrack(){
 		highScoreText->setCol(1.0f,1.0f,1.0f,0.5f);
 		timeText->setCol(1.0f,1.0f,1.0f,0.5f);
 		trackText->setText("track 1 \nnumber one");
-		
+
 	}
 }
 
@@ -538,5 +538,5 @@ void SceneView::updateOverlay(){
 		highScoreText->setText("High Score:");
 	else
 	    highScoreText->setText(highScoreOut.str());
-	
+
 }

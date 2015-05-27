@@ -88,8 +88,6 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     // This should be done after creating a scene manager, so that there is a render context (GL/D3D)
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
-    sceneManager->setSkyDome(true, "Rally/CloudySky", 5, 8);
-
     camera = this->addCamera("MainCamera");
     viewport = this->addViewport(camera);
     camera->setAspectRatio(Ogre::Real(viewport->getActualWidth()) / Ogre::Real(viewport->getActualHeight()));
@@ -150,7 +148,7 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     bulletDebugDrawer = new Rally::Util::BulletDebugDrawer(sceneManager);
     world.getPhysicsWorld().getDynamicsWorld()->setDebugDrawer(bulletDebugDrawer);
 
-    sceneManager->setSkyDome(true, "Rally/CloudySky", 5, 8);
+    sceneManager->setSkyDome(true, "Rally/CloudySky", 5, 8, 500);
 
 	// Place the magic surface at the end of the tunnel.
 	// tunnelPortalView.attachTo(sceneManager, "TunnelPortal");
@@ -167,7 +165,6 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 	lensflare = new Rally::View::LensFlareView();
 	lensflare->init(sceneManager, camera, viewport->getWidth(), viewport->getHeight(), 800, 30, "LensFlareHalo", "LensFlareCircle", "LensFlareBurst");
 	lensflare->setPosition(Ogre::Vector3(-800, 300, 800));
-
 
 	// Overlay
 	Ogre::OverlaySystem* pOverlaySystem = new Ogre::OverlaySystem();

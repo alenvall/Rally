@@ -159,7 +159,7 @@ namespace Rally { namespace View {
                         Ogre::LBX_BLEND_MANUAL,
                         Ogre::LBS_TEXTURE, Ogre::LBS_CURRENT,
                         Ogre::ColourValue::White, Ogre::ColourValue::White,
-                        0.25f + 0.75f * effectFactor);
+                        0.25f + 0.75f * 0.5f*effectFactor);
                 }
             }
         }

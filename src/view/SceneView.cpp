@@ -203,7 +203,7 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 	keyText->setTextSize(0.06f);
 
 	titleText=new Rally::View::OgreText;
-	titleText->setPos(0.20f,0.20f);
+	titleText->setPos(0.05f,0.16f);
 	titleText->setCol(1.0f,0.0f,0.0f,0.9f);
 	titleText->setTextSize(0.25f);
 
@@ -436,7 +436,7 @@ void SceneView::toggleKeyMenu(){
 	showKeyMenu = !showKeyMenu;
 
 	if(!showKeyMenu){
-		titleText->setText("RALLY SPORT \n RACING GAME");
+		titleText->setText("  Johannebergs-\n     rallyt");
 		keyText->setText("  Recommended steering: arrows and x / Alternative steering: WASD\n      Toggle car: space / Float: f / Laggy? Lower graphics: P, O\n               Press K to continue, T to start a race!");
 		timeText->setCol(0.0f,0.0f,0.0f,0.0f);
 		speedText->setCol(0.0f,0.0f,0.0f,0.0f);

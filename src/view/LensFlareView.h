@@ -1,6 +1,9 @@
 #ifndef _LENSFLARE_VIEW_H_
 #define _LENSFLARE_VIEW_H_
 
+// This file is provided by BHawk3D and placed into the Public Domain
+// More info: http://www.ogre3d.org/forums/viewtopic.php?f=11&t=65630
+
 #include "Ogre.h"
 namespace Rally { namespace View {
 
@@ -43,7 +46,7 @@ namespace Rally { namespace View {
 		LensFlareView();
 		~LensFlareView();
 		void init(Ogre::SceneManager* sceneManager,
-				Ogre::Camera* camera,       
+				Ogre::Camera* camera,
 				Ogre::Real width, Ogre::Real height,
 				Ogre::Real lensFlareSourceSize,
 				Ogre::Real lensFlareBaseSize,

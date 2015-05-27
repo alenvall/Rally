@@ -1,15 +1,19 @@
 #include "view/LensFlareView.h"
 
+// This file is provided by BHawk3D and placed into the Public Domain
+// The flare images referred to are also placed in the Public Domain.
+// More info: http://www.ogre3d.org/forums/viewtopic.php?f=11&t=65630
+
 namespace Rally { namespace View {
 
 	LensFlareView::LensFlareView() {
 		reset();
 	}
 
-	LensFlareView::~LensFlareView() { } 
+	LensFlareView::~LensFlareView() { }
 
 	void LensFlareView::init(Ogre::SceneManager* sceneManager,
-		Ogre::Camera* camera, 
+		Ogre::Camera* camera,
 		Ogre::Real width, Ogre::Real height,
 		Ogre::Real lensFlareSourceSize,
 		Ogre::Real lensFlareBaseSize,
@@ -120,7 +124,7 @@ namespace Rally { namespace View {
 
 	void LensFlareView::setLensFlareLocations(Ogre::Vector3 dir) {
 		// flares behind the Sun
-		circleSet->getBillboard(0)->setPosition(dir * -0.4f); 
+		circleSet->getBillboard(0)->setPosition(dir * -0.4f);
 		haloSet->getBillboard(0)->setPosition(dir * -0.3f);
 
 		// sun
@@ -147,7 +151,7 @@ namespace Rally { namespace View {
 
 	void LensFlareView::calculateLensFlareScreenLocation() {
 		Ogre::Vector2 r;
-		Ogre::Vector3 point = camera->getProjectionMatrix() * 
+		Ogre::Vector3 point = camera->getProjectionMatrix() *
 			(camera->getViewMatrix() * lightPosition);
 		r.x = (point.x / 2) + 0.5f;
 		r.y = 1 - ((point.y / 2) + 0.5f);
@@ -190,10 +194,10 @@ namespace Rally { namespace View {
 	}
 
 	void LensFlareView::setLensFlareSize() {
-		Ogre::Real size = lensFlareBaseSize * scale; 
+		Ogre::Real size = lensFlareBaseSize * scale;
 
 		// flares behind the Sun
-		circleSet->getBillboard(0)->setDimensions(size * 2, size * 2); 
+		circleSet->getBillboard(0)->setDimensions(size * 2, size * 2);
 		haloSet->getBillboard(0)->setDimensions(size * 3, size * 3);
 
 		// five Circles and a gap
@@ -237,12 +241,12 @@ namespace Rally { namespace View {
 		return visible;
 	}
 
-	void LensFlareView::setHaloColour(Ogre::ColourValue color) { 
+	void LensFlareView::setHaloColour(Ogre::ColourValue color) {
 		baseHaloColor = color;
 	}
 
-	void LensFlareView::setCircleColour(Ogre::ColourValue color) { 
-		baseCircleColor = color; 
+	void LensFlareView::setCircleColour(Ogre::ColourValue color) {
+		baseCircleColor = color;
 	}
 
 	void LensFlareView::setBurstColour(Ogre::ColourValue color) {
@@ -250,14 +254,14 @@ namespace Rally { namespace View {
 		for(int i = 0; i < total; i++) {
 			burstSet->getBillboard(i)->setColour(color);
 		}
-	} 
-
-	void LensFlareView::setPosition(Ogre::Vector3 pos) { 
-		lightPosition = pos;
-		node->setPosition(lightPosition); 
 	}
 
-	Ogre::Real LensFlareView::getScale() { 
+	void LensFlareView::setPosition(Ogre::Vector3 pos) {
+		lightPosition = pos;
+		node->setPosition(lightPosition);
+	}
+
+	Ogre::Real LensFlareView::getScale() {
 		return scale;
 	}
 }}

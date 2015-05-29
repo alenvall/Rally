@@ -4,10 +4,10 @@ Rally Sport Racing Game
 Bachelor Project at Chalmers University of Technology, Spring 2015.
 
 # Credits
-Sofia Edström
-Erik Fägerlind
-Erik Lundholm
-Victor Sandell
+Sofia Edström,
+Erik Fägerlind,
+Erik Lundholm,
+Victor Sandell,
 Joel Severin
 
 # License

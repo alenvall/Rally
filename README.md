@@ -1,7 +1,7 @@
 # Johannebergsrallyt
 Rally Sport Racing Game
 
-Bachelor Project on Chalmers University of Technology, Spring 2015.
+Bachelor Project at Chalmers University of Technology, Spring 2015.
 
 # Credits
 Sofia Edström

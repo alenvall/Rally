@@ -11,6 +11,7 @@ uniform vec4 viewportSize;
 
 uniform sampler2D gbuffer_position;
 uniform sampler2D gbuffer_normal;
+uniform sampler1D random_hemisphere;
 
 uniform float effectFactor;
 
@@ -24,7 +25,7 @@ void main() {
     // The length is bounded by [1, 4] and the idea is that it should be scaled further so that
     // no texel will test itself for occlusion. A cheap way is to just change radius below and
     // hope for the best, even if the results wouldn't be 100 % accurate.
-    const vec3 hemisphere[16] = vec3[](
+    /*const vec3 hemisphere[16] = vec3[](
         vec3(-0.17947426117077606, -0.2552789504219729, 0.32771201703308744),
         vec3(-0.0929430250903943, -0.15022899751515606, 0.15734721849596883),
         vec3(-0.023182541661165706, 0.08987930735474939, 0.06378498765102361),
@@ -41,7 +42,30 @@ void main() {
         vec3(-0.04004902358906149, -0.07537300385054206, 0.07790280988401853),
         vec3(-0.3014783919444156, -0.21485240026169983, 0.08698036845677733),
         vec3(0.11120756426123887, -0.13074617072995254, 0.03665566895440695)
-    );
+    );*/
+
+    // Without const for the hemisphere array: horrible performance. With const: does not work on all cards (non-standard)
+    // The values were converted with the formula Math.round(127.5 + vector*127.5), yielding:
+    /*
+    105 95 169
+    116 108 148
+    125 139 136
+    96 100 153
+    125 84 133
+    136 119 132
+    142 88 154
+    152 141 137
+    144 87 170
+    112 123 159
+    138 141 140
+    135 117 137
+    136 106 155
+    122 118 137
+    89 100 139
+    142 111 132
+    */
+    // These values were specifiedd as xyz = rgb, and saved into a 16x1 texture (not gamma corrected).
+
     const float farDist = 0.5;
 
     vec3 position = texture2D(gbuffer_position, gl_TexCoord[0].xy).xyz;
@@ -106,7 +130,7 @@ void main() {
     float occlusion = 0.0;
     float edgeDetection = 0.0;
     for(int i = 0; i < 16; ++i) {
-        vec3 hemisphereLocalSamplePosition = hemisphere[i];
+        vec3 hemisphereLocalSamplePosition = 2.0*texture1D(random_hemisphere, (0.5/16.0) + (1.0/16.0)*i).rgb - 1.0;
         
         // Now, just project the position onto screen space so that we can sample!
         vec4 sampleProbedPosition = sampleModelView * vec4(hemisphereLocalSamplePosition, 1.0);

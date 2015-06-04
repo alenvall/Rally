@@ -13,6 +13,7 @@ fragment_program ssao_select_ps glsl {
 
         param_named gbuffer_position int 0
         param_named gbuffer_normal int 1
+        param_named random_hemisphere int 2
     }
 }
 
@@ -76,6 +77,15 @@ material compositors/SSAOSelect {
                 tex_coord_set 0
                 tex_address_mode clamp
                 filtering none  
+            }
+
+            // Random hemisphere vectors
+            texture_unit {
+                // no gamma correction, 0 mip maps
+                texture ssao-random-hemisphere.png 1d 0
+                tex_coord_set 0
+                tex_address_mode clamp
+                filtering none
             }
         }
     }

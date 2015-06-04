@@ -42,12 +42,13 @@ namespace Rally { namespace Model {
                 false);
         }
 
-        if(tunnelTeleport.hasCollided()) {
+        // TODO: Removed until the tunnelTeleport.isEnabled/.hasCollided methods are fixed.
+        /*if(tunnelTeleport.hasCollided()) {
             playerCar.teleport(Rally::Vector3(-126.0f, -4.0f, -52.0f),
                 Rally::Quaternion(1.0f, 0.0f, 0.0f, 0.0f),
                 true);
             tunnelTeleport.setEnabled(false);
-        }
+        }*/
 
 		printFinishedTime();
 

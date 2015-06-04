@@ -257,6 +257,11 @@ if(WIN32)
 		RUNTIME DESTINATION bin
 		CONFIGURATIONS All)
  
+	install(FILES ${CMAKE_SOURCE_DIR}/dist/licenses.txt
+		DESTINATION ./
+		CONFIGURATIONS Release RelWithDebInfo Debug
+	)
+	
 	install(DIRECTORY ${CMAKE_SOURCE_DIR}/dist/Media
 		DESTINATION ./
 		CONFIGURATIONS Release RelWithDebInfo Debug
@@ -338,6 +343,11 @@ if(UNIX)
 		CONFIGURATIONS All)
  
 	install(DIRECTORY ${CMAKE_SOURCE_DIR}/dist/media
+		DESTINATION ./
+		CONFIGURATIONS Release RelWithDebInfo Debug
+	)
+	
+	install(FILES ${CMAKE_SOURCE_DIR}/dist/licenses.txt
 		DESTINATION ./
 		CONFIGURATIONS Release RelWithDebInfo Debug
 	)

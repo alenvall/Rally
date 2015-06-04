@@ -18,7 +18,7 @@ material fysik
 			scene_blend modulate
 			texture_unit
 			{
-				texture fysik.png
+				texture fysik.png gamma
 			}
 		}
                 pass

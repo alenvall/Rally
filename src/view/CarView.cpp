@@ -53,7 +53,7 @@ namespace Rally { namespace View {
         carEntities.push_back(sceneManager->createEntity(carName + "_lambo", "carlambo.mesh"));
         carEntities.push_back(sceneManager->createEntity(carName + "_740sedan", "carkombi.mesh"));
         carEntities.push_back(sceneManager->createEntity(carName + "_740kombi", "cargt40.mesh"));
-        carEntity = carEntities[0];
+        carEntity = carEntities[2];
 
         carEntity->getSubEntity(4)->setMaterialName("carcolourred");
 

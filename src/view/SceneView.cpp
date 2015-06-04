@@ -55,6 +55,7 @@ SceneView::~SceneView() {
 
     playerCarView.detach();
 
+    motionBlurView.detach();
     bloomView.detach();
     ssaoView.detach();
     gbufferView.detach();

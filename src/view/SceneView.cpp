@@ -113,7 +113,7 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 	sceneManager->getEntity("direction")->setVisible(false);
 	sceneManager->getEntity("direction2")->setVisible(false);
     sceneManager->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE);
-    sceneManager->setAmbientLight(Ogre::ColourValue(1, 1, 1));
+    sceneManager->setAmbientLight(Ogre::ColourValue(1.0f, 1.0f, 0.95f));
     sceneManager->setShadowFarDistance(250);
     sceneManager->setShadowColour(Ogre::ColourValue(0.80f, 0.80f, 0.80f));
     sceneManager->setShadowTextureSize( 2048 );
@@ -124,8 +124,8 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
     sunLight->setType(Ogre::Light::LT_DIRECTIONAL);
     sunLight->setCastShadows(true);
     sunLight->setDirection(Ogre::Vector3( 1, -1, -1 ));
-    sunLight->setDiffuseColour(Ogre::ColourValue(1, 1, 1));
-    sunLight->setSpecularColour(Ogre::ColourValue(1, 1, 1));
+    sunLight->setDiffuseColour(Ogre::ColourValue(1.0f, 1.0f, 0.7f));
+    sunLight->setSpecularColour(Ogre::ColourValue(1.0f, 1.0f, 1.0f));
     sceneNode->attachObject(sunLight);
 
     Ogre::Light* skyLight1 = sceneManager->createLight("skyLight1");

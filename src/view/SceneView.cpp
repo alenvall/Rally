@@ -214,7 +214,8 @@ void SceneView::initialize(std::string resourceConfigPath, std::string pluginCon
 	trackText->setTextSize(0.06f);
 
 	SceneView::toggleKeyMenu();
-
+    toggleReflections();
+    togglePostProcessing();
 }
 
 

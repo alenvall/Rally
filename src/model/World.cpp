@@ -34,7 +34,7 @@ namespace Rally { namespace Model {
 
     void World::update(float deltaTime) {
         physicsWorld.update(deltaTime);
-
+        /*
         Rally::Vector3 playerCarPosition = playerCar.getPosition();
         if(playerCarPosition.y < -20.0f) {
             playerCar.teleport(Rally::Vector3(playerCarPosition.x, 30.0f, playerCarPosition.z),
